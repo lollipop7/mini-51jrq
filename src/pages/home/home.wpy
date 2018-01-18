@@ -1,0 +1,51 @@
+<style lang='scss'>
+.comm-posis-container {
+  padding: 0 32rpx;
+  .header-container {
+    margin: 20rpx 0 30rpx 0; 
+    image {
+      margin-right: 12rpx;
+      width: 28rpx;
+      height: 28rpx;
+      vertical-align: middle;
+    }
+    text {
+      vertical-align: middle;
+      font-size: 28rpx;
+      color: #353535;
+    }
+  }
+}
+</style>
+
+<template>
+  <view>
+    <bannersearch></bannersearch>
+    <view class="comm-posis-container">
+      <view class="header-container">
+        <image src="/images/home/comm-posi.png"></image>
+        <text>推荐职位</text>
+      </view>
+      <view class="hot-posis-container">
+         <commposi></commposi>   
+         <commposi></commposi>   
+        <repeat for="{{[0, 1, 2, 3, 4]}}">
+          <commposi item="item"></commposi>          
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import BannerSearch from '../../components/bannersearch';
+import CommPosi from '../../components/commposi';
+
+export default class HomePage extends wepy.page {
+  components = {
+    bannersearch: BannerSearch,
+    commposi: CommPosi
+  }
+}
+</script>

@@ -1,0 +1,106 @@
+<style lang="scss">
+    .posi-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 20rpx;
+        padding-bottom: 24rpx;
+        border-top: 1rpx solid #F1F1F1;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .posi-name-sal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 28rpx;
+            .posi-name {
+                font-weight: bold;
+                color: #353535;
+            }
+            .posi-sal {
+                color: #FF9E00;
+            }
+        }
+        .posi-duty {
+            padding-top: 4rpx;
+            font-size: 22rpx;
+            color: #B2B2B2;
+        }
+        .corp-brief {
+            padding-top: 22rpx;
+            display: flex;
+            flex-direction: row;
+            .logo {
+                margin-right: 16rpx;
+                width: 60rpx;
+                height: 60rpx;
+                image {
+                    width: 60rpx;
+                    height: 60rpx;
+                }
+            }
+            .corp-info {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                .corp-name {
+                    font-size: 26rpx;
+                    color: #888;
+                }
+                .corp-size-type {
+                    padding-top: 8rpx;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    font-size: 22rpx;
+                    color: #b2b2b2;
+                    .up-date {
+                        font-size: 24rpx;
+                        color: #a0a0a0;
+                    }
+                }
+            }
+        }
+    }
+</style>
+
+<template>
+  <view class="posi-container">
+      <view class="posi-name-sal">
+          <text class="posi-name">BD Manager/业务拓展经理</text>
+          <text class="posi-sal">10-15k</text>
+      </view>
+      <view class="posi-duty">
+          <text>上海</text>
+          <text class="ver">|</text>
+          <text>浦东新区</text>
+          <text class="ver">|</text>
+          <text>3年以上</text>
+          <text class="ver">|</text>
+          <text>本科</text>
+      </view>
+      <view class="corp-brief">
+          <view class="logo">
+              <image src=""></image>
+          </view>
+          <view class="corp-info">
+              <text class="corp-name">海擎金融信息服务（上海）有限公司</text>
+              <view class="corp-size-type">
+                  <view class="corp-size">
+                    <text>1000-5000人</text>
+                    <text class="ver">|</text>
+                    <text>信托</text>
+                  </view>
+                  <text class="up-date">2018/01/05</text>
+              </view>
+          </view>
+      </view>
+  </view>
+</template>
+
+<script>
+    import wpy from 'wpy';
+    export default  class CommPosi extends wpy.component {
+    
+    }
+</script>
