@@ -1,0 +1,16 @@
+<style lang="scss">
+
+</style>
+
+<template>
+  <view class="posi-detail-container">
+
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class PosiDetail extends wepy.page {}
+</script>
+

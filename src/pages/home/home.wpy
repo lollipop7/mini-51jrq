@@ -27,10 +27,10 @@
         <text>推荐职位</text>
       </view>
       <view class="hot-posis-container">
-         <commposi></commposi>   
-         <commposi></commposi>   
-        <repeat for="{{[0, 1, 2, 3, 4]}}">
-          <commposi item="item"></commposi>          
+        <repeat for="{{posiList}}" key="index" index="index" item="item"> 
+          <view catchtap="onCommPosiTap">
+            <commposi :data.sync="item"></commposi>
+          </view>
         </repeat>
       </view>
     </view>
@@ -39,13 +39,70 @@
 
 <script>
 import wepy from 'wepy';
-import BannerSearch from '../../components/bannersearch';
+import BannerSearch from '../../components/bannersearch'; 
 import CommPosi from '../../components/commposi';
 
+const postData = require('../../data/posis-data.js');
+
 export default class HomePage extends wepy.page {
+  
   components = {
     bannersearch: BannerSearch,
-    commposi: CommPosi
+    commposi: CommPosi 
+  }
+
+  data ={
+    posiList: []
+  }
+
+  async onLoad (options) { 
+    this.posiList = postData.posiList;
+    // const that = this;
+    // wepy.request({
+    //     url: 'http://192.168.1.251:8089/mobile/api/hunterjob',
+    //     method: 'POST',
+    //     data: {
+    //         "head": {
+    //             "transcode": "L0001",
+    //             "type": "h"
+    //         },
+    //         "data": {
+    //         }
+    //     },
+    //     success:function(res){
+    //       that.setData({
+    //         posiList: res.data
+    //       })
+    //     }
+    // })  
+  }
+
+  onShow(){
+        
+  }
+
+  methods = {
+    // onCommPosiTap: function (event) {
+    //   wepy.request({
+    //     url: 'http://192.168.1.251:8089/mobile/api/hunterjob',
+    //     method: 'POST',
+    //     data: {
+    //         "head": {
+    //             "transcode": "L0001",
+    //             "type": "h"
+    //         },
+    //         "data": {
+    //         }
+    //     },
+    //     success:function(res){
+    //       this.setData({
+    //         posiList: res.data
+    //       })
+    //       console.log(res.data)          
+    //     }
+    //   })
+      
+    // }
   }
 }
 </script>

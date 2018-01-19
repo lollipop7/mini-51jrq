@@ -1,0 +1,53 @@
+<style lang="scss">
+    .posi-container {
+        display: flex;
+        flex-direction: column;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .posi-name-sal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 28rpx;
+            .posi-name {
+                font-weight: bold;
+                color: #353535;
+            }
+            .posi-sal {
+                color: #FF9E00;
+            }
+        }
+        .posi-duty {
+            padding-top: 4rpx;
+            font-size: 22rpx;
+            color: #B2B2B2;
+        }
+    }
+</style>
+
+<template>
+  <view class="posi-container">
+      <view class="posi-name-sal">
+          <text class="posi-name">{{data.jobtitle}}</text>
+          <text class="posi-sal">10-15k</text>
+      </view>
+      <view class="posi-duty">
+          <text>上海</text>
+          <text class="ver">|</text>
+          <text>浦东新区</text>
+          <text class="ver">|</text>
+          <text>3年以上</text>
+          <text class="ver">|</text>
+          <text>本科</text>
+      </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    export default class PosiNameDuty extends wepy.component {
+        
+    }
+</script>
+
