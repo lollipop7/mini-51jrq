@@ -57,9 +57,9 @@
           <view class="corp-info">
               <text class="corp-name">{{data.showname}}</text>
               <view class="corp-size-type">
-                  <view class="corp-size">
+                  <!-- <view class="corp-size">
                     <text></text> 
-                  </view>
+                  </view> -->
                   <text class="up-date"></text> 
               </view>
           </view>
