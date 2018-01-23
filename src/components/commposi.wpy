@@ -68,11 +68,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-    import wepy from 'wepy'; 
-    export default  class CommPosi extends wepy.component {  
-    
-=======
     import wepy from 'wepy';
     import PosiNameDuty from './posinameduty';
     export default  class CommPosi extends wepy.component {
@@ -87,6 +82,5 @@
         onLoad(options){
             // console.log(this.porps)
         }
->>>>>>> 1be202015dd3ea17db73c2461fa764136961ba54
     }
 </script>

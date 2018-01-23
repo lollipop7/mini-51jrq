@@ -39,13 +39,8 @@
 
 <script>
 import wepy from 'wepy';
-<<<<<<< HEAD
-import BannerSearch from '../../components/bannersearch';
-import CommPosi from '../../components/commposi';  
-=======
 import BannerSearch from '../../components/bannersearch'; 
 import CommPosi from '../../components/commposi';
->>>>>>> 1be202015dd3ea17db73c2461fa764136961ba54
 
 const postData = require('../../data/posis-data.js');
 
