@@ -63,7 +63,7 @@
         // 跳转公司详情
         goCorpView () {
           wx.navigateTo({
-            url: '../corpview/corpview'
+            url: '../corporation/corpview/corpview'
           })
         }
       };

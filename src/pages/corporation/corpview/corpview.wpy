@@ -128,7 +128,7 @@
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
         <view class="address">
-            <image src="../../images/icons/location_blue.png"></image>
+            <image src="../../../images/icons/location_blue.png"></image>
             <view class="addr-info">{{corpDetails.corpInfo.address}}</view>
         </view>
     </view>
@@ -160,7 +160,7 @@
 import wepy from 'wepy'
 
 // 获取公司详情数据
-const corpData = require('../../data/corp-details.js');
+const corpData = require('../../../data/corp-details.js');
 
 export default class CorpDatailsView extends wepy.page {
   data = {
