@@ -128,7 +128,7 @@
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
         <view class="address">
-            <image src="../../images/icons/location_blue.png"></image>
+            <image src="../../../images/icons/location_blue.png"></image>
             <view class="addr-info">{{corpDetails.corpInfo.address}}</view>
         </view>
     </view>

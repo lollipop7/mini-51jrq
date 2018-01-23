@@ -10,9 +10,10 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/home/home',      
-      'pages/home/homedetail',      
-      'pages/corpview/corpview',
-      'pages/corporation/corporation',      
+      'pages/home/homedetail', 
+      'pages/corporation/corporation',  
+      'pages/corporation/corpview',
+      'pages/home/home',
       'pages/personal/personal',
       'pages/login/login'
     ],
