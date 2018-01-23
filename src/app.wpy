@@ -16,8 +16,9 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/home/home',
       'pages/corporation/corporation',
+      'pages/corpview/corpview',
+      'pages/home/home',
       'pages/personal/personal',
       'pages/login/login'
     ],
@@ -85,5 +86,6 @@ export default class extends wepy.app {
       }
     })
   }
+
 }
 </script>

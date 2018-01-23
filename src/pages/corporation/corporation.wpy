@@ -1,20 +1,22 @@
-<style>
-
+<style lang='scss'>
 </style>
 
-<template>
+<template>  
   <view>
     <bannersearch></bannersearch>
+    <corplist></corplist>
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
 import BannerSearch from '../../components/bannersearch';
+import CorpList from '../../components/corplist';
 
 export default class CorpPage extends wepy.page {
   components = {
-    bannersearch: BannerSearch
-  }
+    bannersearch: BannerSearch,
+    corplist: CorpList
+  };
 }
 </script>

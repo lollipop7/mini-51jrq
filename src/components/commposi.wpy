@@ -99,8 +99,8 @@
 </template>
 
 <script>
-    import wpy from 'wpy';
-    export default  class CommPosi extends wpy.component {
+    import wepy from 'wepy'; 
+    export default  class CommPosi extends wepy.component {  
     
     }
 </script>

@@ -1,0 +1,182 @@
+<style lang='scss'>
+    .corp-view {
+        .head {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            image {
+                height: 100rpx;
+                width: 100rpx;
+                margin-top: 40rpx;
+            }
+            .corp-name {
+                color: #5E5E5E;
+                font-size: 34rpx;
+                font-weight: bold;
+                margin-top: 20rpx;
+            }
+            .corp-type {
+                font-size: 26rpx;
+                color: #A0A0A0;
+                margin: 8rpx auto 40rpx auto;
+            }
+        }
+        .gray-blank {
+            height: 20rpx;
+            width: 100%;
+            background-color: #F0F1F2;
+        }
+        .gray-line {
+            height: 1rpx;
+            width: 100%;
+            margin: 20rpx auto;
+            background: #F1F1F1;
+        }
+        .title {
+                font-size: 28rpx;
+                color: #353535;
+            }
+        .corp-intro {
+            margin: 20rpx 30rpx;
+            .introduce {
+                font-size: 28rpx;
+                line-height: 40rpx;
+                color: #888888;
+            }
+        }
+        .corp-address {
+            margin: 20rpx 30rpx;
+            .gray-line {
+                height: 3rpx;
+                width: 100%;
+                margin: 20rpx auto;
+                background: #F1F1F1;
+            }
+            .address {
+                display: flex;
+                flex-direction: rows;
+                align-items: center;
+                image {
+                    width: 24rpx;
+                    height: 36rpx;
+                }
+                .addr-info {
+                    color: #888888;
+                    font-size: 28rpx;
+                    margin-left: 12rpx;
+                }
+            }
+        }
+        .corp-jobs {
+            margin: 20rpx 30rpx;
+            .gray-line {
+                height: 3rpx;
+                width: 100%;
+                margin: 20rpx auto;
+                background: #F1F1F1;
+            }
+            .job-item {
+                .job-content {
+                    display: flex;
+                    flex-direction: rows;
+                    justify-content: space-between;
+                    .left {
+                        .position {
+                            color: #353535;
+                            font-size: 28rpx;
+                            margin: 12rpx auto;
+                            font-weight: bold;
+                        }
+                        .corp-name {
+                            color: #888888;
+                            font-size: 26rpx;
+                        }
+                        .corp-type {
+                            color: #b2b2b2;
+                            font-size: 22rpx;
+                            margin-top: 8rpx;
+                        }
+                    }
+                    .right {
+                        .salary {
+                            color: #FF9E00;
+                            font-size: 28rpx;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+        }
+    }
+</style>
+
+<template>  
+  <view class="corp-view">
+    <view class="head">
+        <image src="{{corpDetails.corpInfo.logo}}" ></image>
+        <view class="corp-name">{{corpDetails.corpInfo?corpDetails.corpInfo.corpname:'暂无'}}</view>
+        <view class="corp-type">{{corpDetails.corpInfo.city}} | {{corpDetails.corpInfo.scope}} | {{corpDetails.corpInfo.industry}}</view>
+    </view>
+    <view class="gray-blank"></view>
+    <view class="corp-intro">
+        <view class="title">公司简介</view>
+        <view class="gray-line"></view>
+        <view is="wxParse" class="introduce">{{corpDetails.corpInfo.description}}</view>
+    </view>
+    <view class="gray-blank"></view>
+    <view class="corp-address">
+        <view class="title">公司简介</view>
+        <view class="gray-line"></view>
+        <view class="address">
+            <image src="../../images/icons/location_blue.png"></image>
+            <view class="addr-info">{{corpDetails.corpInfo.address}}</view>
+        </view>
+    </view>
+    <view class="gray-blank"></view>
+    <view class="corp-jobs">
+        <view class="title">该公司发布的所有职位</view>
+        <view class="gray-line"></view>
+        <repeat for="{{corpDetails.relatedJobs}}" key="index" index="index" item="item">
+            <view class="job-item">
+                <view class="job-content">
+                    <view class="left">
+                        <view class="position">{{item.jobname}}</view>
+                        <view class="corp-name">{{item.corpname}}</view>
+                        <view class="corp-type">{{item.jobcity}} | 暂无 | {{item.workyears}} | {{item.ebid}}</view>
+                    </view>
+                    <view class="right">
+                        <view class="salary">{{item.salary}}</view>
+                    </view>
+                </view>
+                <view class="gray-line"></view>
+            </view>
+        </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+
+import wepy from 'wepy'
+
+// 获取公司详情数据
+const corpData = require('../../data/corp-details.js');
+
+export default class CorpDatailsView extends wepy.page {
+  data = {
+    corpDetails: {}
+  }
+
+  components = {
+  };
+
+  onLoad(){
+    // 设置页面抬头
+    wx.setNavigationBarTitle({  title: '公司详情'})
+
+    // 设置公司列表数据
+    this.corpDetails = corpData.corpDetails;
+  }
+}
+
+</script>

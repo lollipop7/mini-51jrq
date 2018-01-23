@@ -1,0 +1,98 @@
+<style lang='scss'>
+  .corp-container {
+    display: flex;
+    flex-direction: row;
+    height: 180rpx;
+    align-items: center;
+    margin: 0 32rpx;
+    border-bottom: 1px solid #F1F1F1;
+    image {
+      height: 80rpx;
+      width: 80rpx;
+    }
+    .corp-intro{
+      margin-left: 40rpx;
+      .corp-name {
+        font-weight: bold;
+        font-size: 34rpx;
+        color: #353535;
+        line-height: 50rpx;
+      }
+      .corp-type {
+        font-size: 26rpx;
+        color: #B2B2B2;
+        line-height: 46rpx;
+      }
+      .job-count {
+        font-size: 32rpx;
+        color: #B2B2B2;
+        line-height: 42srpx;
+      }
+      .count-color {
+        color: #FD8C09;
+      }
+    }
+  }
+</style>
+
+<template>
+  <repeat for="{{corpList}}" key="index" index="index" item="item">
+    <view class="corp-container" bindtap="goCorpView">
+      <image src="{{item.headimg}}"/>
+      <view class="corp-intro">
+          <view class="corp-name">{{item.corpname}}</view>
+          <view class="corp-type">{{item.scope}} | {{item.industry}} | {{item.jobcity}}</view>
+          <view class="job-count">现有职位数：<text class="count-color">{{item.activeflag}}</text></view>
+      </view>
+    </view>
+  </repeat>
+</template>
+
+<script>
+    import wepy from 'wepy'; 
+
+    // 获取公司列表数据
+    const corpData = require('../data/corps-data.js');
+
+    export default class CorpList extends wepy.component  {  
+      data = {
+        corpList: []
+      }
+
+      methods = {
+        // 跳转公司详情
+        goCorpView () {
+          wx.navigateTo({
+            url: '../corpview/corpview'
+          })
+        }
+      };
+
+      onLoad(){
+        // 设置公司列表数据
+        this.corpList = corpData.corpList;
+        
+        // var _this = this;
+        // wx.request({
+        //   url: 'http://192.168.1.251:8089/mobile/api/companyjob',
+        //   data: {
+        //     "head": {
+        //       "transcode": "Q0002",
+        //       "type": "h"
+        //     },
+        //     "data": {
+        //       "token": "59A88E02602AEE2F5707D96019C4D8BB3422FD7C444C883D48984DF1868B0423367F60D49642B5D4FF139FE3E441AF97D045FE1ACFE385B61DEB572B9346FEC2B8947FBB71397C9874F22274215C84EF77848721D21426CE",
+        //       "tokenKey": "5F1BCE1231A78D5C0746209F880DA25588108401CFBA3AF2E50DDFF100C625595ADFBF476980D29140DFD2E3058E649CB1FEC4749574B5D5",
+        //       "corpid": "25",
+        //       "jobid": "860001"
+        //     }
+        //   },
+        //   method: "POST", 
+        //   success: function (res) {
+        //     console.log(res.data)
+        //   }
+        // })
+      }
+
+    }
+</script>
