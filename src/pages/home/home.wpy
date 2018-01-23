@@ -27,9 +27,9 @@
         <text>推荐职位</text>
       </view>
       <view class="hot-posis-container">
-        <repeat for="{{posiList}}" key="index" index="index" item="item"> 
-          <view catchtap="onCommPosiTap">
-            <commposi :data.sync="item"></commposi>
+        <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
+          <view> 
+            <commposi :data="item"></commposi>
           </view>
         </repeat>
       </view>
@@ -39,42 +39,32 @@
 
 <script>
 import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
 import BannerSearch from '../../components/bannersearch'; 
 import CommPosi from '../../components/commposi';
 
-const postData = require('../../data/posis-data.js');
+const postData = require('../../data/hunterjobs-data.js');
 
 export default class HomePage extends wepy.page {
-  
+  config = {
+    navigationBarTitleText: '51金融圈',
+  }
+
   components = {
     bannersearch: BannerSearch,
     commposi: CommPosi 
   }
 
   data ={
-    posiList: []
+    hunterjobList: [],
+    pageNo: "1"
   }
 
-  async onLoad (options) { 
-    this.posiList = postData.posiList;
-    // const that = this;
-    // wepy.request({
-    //     url: 'http://192.168.1.251:8089/mobile/api/hunterjob',
-    //     method: 'POST',
-    //     data: {
-    //         "head": {
-    //             "transcode": "L0001",
-    //             "type": "h"
-    //         },
-    //         "data": {
-    //         }
-    //     },
-    //     success:function(res){
-    //       that.setData({
-    //         posiList: res.data
-    //       })
-    //     }
-    // })  
+  onLoad (options) { 
+    // this.hunterjobList = postData.hunterjobList;
+    let that = this;
+    that.getHunterjob()
   }
 
   onShow(){
@@ -82,27 +72,30 @@ export default class HomePage extends wepy.page {
   }
 
   methods = {
-    // onCommPosiTap: function (event) {
-    //   wepy.request({
-    //     url: 'http://192.168.1.251:8089/mobile/api/hunterjob',
-    //     method: 'POST',
-    //     data: {
-    //         "head": {
-    //             "transcode": "L0001",
-    //             "type": "h"
-    //         },
-    //         "data": {
-    //         }
-    //     },
-    //     success:function(res){
-    //       this.setData({
-    //         posiList: res.data
-    //       })
-    //       console.log(res.data)          
-    //     }
-    //   })
-      
+    
+  }
+
+  async getHunterjob(currentPage) {
+    let that = this;
+    const json = await api.getHunterjob({
+      query: {
+        head: {
+          "transcode": "L0001",
+          "type": "h"
+        },
+        data: {
+          pageNo: currentPage || "1"
+        }
+      }
+    });
+    console.log(json)
+    // if (json.returnCode == "AAAAAAA") {
+    //   that.hunterjobList = [...that.hunterjobList,...json.data];
+    //   that.$apply();
+    // } else {
+    //   tip.error(json.returnMsg);
     // }
+    
   }
 }
 </script>

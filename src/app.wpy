@@ -1,12 +1,5 @@
-<style lang="less">
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
+<style >
+  @import "./styles/weui.wxss";
 </style>
 
 <script>
@@ -16,9 +9,10 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/corporation/corporation',
+      'pages/home/home',      
+      'pages/home/homedetail',      
       'pages/corpview/corpview',
-      'pages/home/home',
+      'pages/corporation/corporation',      
       'pages/personal/personal',
       'pages/login/login'
     ],
@@ -29,6 +23,9 @@ export default class extends wepy.app {
       navigationBarTextStyle: 'black'
     },
     tabBar: {
+      "color": "#a0a0a0",
+      "selectedColor": "#FFA315",
+      "backgroundColor": "#ffffff",
       list: [{ 
         'pagePath': 'pages/home/home',
         'text': '主页',
@@ -57,21 +54,22 @@ export default class extends wepy.app {
     this.use('requestfix')
   }
 
-  onLaunch() {
-    this.testAsync();
+  //当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
+  async onLaunch() {
+    // this.testAsync();
   }
 
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
+  // sleep (s) {
+  //   return new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve('promise resolved')
+  //     }, s * 1000)
+  //   })
+  // }
 
-  async testAsync () {
-    const data = await this.sleep(3)
-  }
+  // async testAsync () {
+  //   const data = await this.sleep(3)
+  // }
 
   getUserInfo(cb) {
     const that = this

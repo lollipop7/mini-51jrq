@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <view class="posi-detail-container">
+  <view class="homedetail-container">
 
   </view>
 </template>
@@ -11,6 +11,6 @@
 <script>
     import wepy from 'wepy';
 
-    export default class PosiDetail extends wepy.page {}
+    export default class HomeDetail extends wepy.page {}
 </script>
 

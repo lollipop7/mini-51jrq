@@ -11,6 +11,8 @@
   "author": "lollipop7",
   "license": "MIT",
   "dependencies": {
+    "moment": "^2.20.1",
+    "promise-polyfill": "^7.0.0",
     "wepy": "^1.6.0",
     "wepy-async-function": "^1.4.4",
     "wepy-com-toast": "^1.0.2"
@@ -33,6 +35,8 @@
     "wepy-compiler-less": "^1.3.10",
     "wepy-compiler-sass": "^1.3.7",
     "wepy-eslint": "^1.5.3",
-    "wepy-plugin-autoprefixer": "^1.5.9"
+    "wepy-plugin-autoprefixer": "^1.5.9",
+    "wepy-plugin-replace": "^1.5.9",
+    "weui-wxss": "^1.1.1"
   }
 }

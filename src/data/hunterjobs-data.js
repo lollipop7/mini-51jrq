@@ -282,5 +282,5 @@ const local_database = [
 ]
 
 module.exports = {
-    posiList: local_database
+    hunterjobList: local_database
 }
