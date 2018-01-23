@@ -49,18 +49,18 @@
 
 <template>
   <view class="posi-corp-container">
-      <posinameduty data={...item}></posinameduty>
+      <posinameduty></posinameduty>
       <view class="corp-brief">
           <view class="logo">
               <image src="/images/home/logo1.png"></image>
           </view>
           <view class="corp-info">
-              <text class="corp-name">{{data.corpname}}</text>
+              <text class="corp-name">{{data.showname}}</text>
               <view class="corp-size-type">
                   <view class="corp-size">
-                    <text>{{data.industry ? data.industry : ''}}</text> 
+                    <text></text> 
                   </view>
-                  <text class="up-date">{{data.refreshdate}}</text> 
+                  <text class="up-date"></text> 
               </view>
           </view>
       </view>
@@ -70,6 +70,8 @@
 <script>
     import wepy from 'wepy';
     import PosiNameDuty from './posinameduty';
+
+
     export default  class CommPosi extends wepy.component {
         components = {
             posinameduty: PosiNameDuty

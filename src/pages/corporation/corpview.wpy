@@ -160,9 +160,13 @@
 import wepy from 'wepy'
 
 // 获取公司详情数据
-const corpData = require('../../data/corp-details.js');
+const corpData = require('../../data/corps-detail.js');
 
 export default class CorpDatailsView extends wepy.page {
+  config = {
+      navigationBarTitleText: '公司详情',
+  }
+
   data = {
     corpDetails: {}
   }
@@ -171,9 +175,6 @@ export default class CorpDatailsView extends wepy.page {
   };
 
   onLoad(){
-    // 设置页面抬头
-    wx.setNavigationBarTitle({  title: '公司详情'})
-
     // 设置公司列表数据
     this.corpDetails = corpData.corpDetails;
   }
