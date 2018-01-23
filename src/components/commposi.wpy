@@ -1,5 +1,5 @@
 <style lang="scss">
-    .posi-container {
+    .posi-corp-container {
         display: flex;
         flex-direction: column;
         padding-top: 20rpx;
@@ -8,28 +8,11 @@
         .ver {
             margin: 0 12rpx;
         }
-        .posi-name-sal {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            font-size: 28rpx;
-            .posi-name {
-                font-weight: bold;
-                color: #353535;
-            }
-            .posi-sal {
-                color: #FF9E00;
-            }
-        }
-        .posi-duty {
-            padding-top: 4rpx;
-            font-size: 22rpx;
-            color: #B2B2B2;
-        }
         .corp-brief {
             padding-top: 22rpx;
             display: flex;
             flex-direction: row;
+            align-items: center;
             .logo {
                 margin-right: 16rpx;
                 width: 60rpx;
@@ -65,33 +48,19 @@
 </style>
 
 <template>
-  <view class="posi-container">
-      <view class="posi-name-sal">
-          <text class="posi-name">BD Manager/业务拓展经理</text>
-          <text class="posi-sal">10-15k</text>
-      </view>
-      <view class="posi-duty">
-          <text>上海</text>
-          <text class="ver">|</text>
-          <text>浦东新区</text>
-          <text class="ver">|</text>
-          <text>3年以上</text>
-          <text class="ver">|</text>
-          <text>本科</text>
-      </view>
+  <view class="posi-corp-container">
+      <posinameduty data={...item}></posinameduty>
       <view class="corp-brief">
           <view class="logo">
-              <image src=""></image>
+              <image src="/images/home/logo1.png"></image>
           </view>
           <view class="corp-info">
-              <text class="corp-name">海擎金融信息服务（上海）有限公司</text>
+              <text class="corp-name">{{data.corpname}}</text>
               <view class="corp-size-type">
                   <view class="corp-size">
-                    <text>1000-5000人</text>
-                    <text class="ver">|</text>
-                    <text>信托</text>
+                    <text>{{data.industry ? data.industry : ''}}</text> 
                   </view>
-                  <text class="up-date">2018/01/05</text>
+                  <text class="up-date">{{data.refreshdate}}</text> 
               </view>
           </view>
       </view>
@@ -99,8 +68,25 @@
 </template>
 
 <script>
+<<<<<<< HEAD
     import wepy from 'wepy'; 
     export default  class CommPosi extends wepy.component {  
     
+=======
+    import wepy from 'wepy';
+    import PosiNameDuty from './posinameduty';
+    export default  class CommPosi extends wepy.component {
+        components = {
+            posinameduty: PosiNameDuty
+        }
+
+        props = {
+            data: Object
+        }
+
+        onLoad(options){
+            // console.log(this.porps)
+        }
+>>>>>>> 1be202015dd3ea17db73c2461fa764136961ba54
     }
 </script>
