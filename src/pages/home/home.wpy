@@ -42,7 +42,7 @@ import tip from '../../utils/tip';
 import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
 
-const postData = require('../../data/hunterjobs-data.js');
+// const postData = require('../../data/hunterjobs-data.js');
 
 export default class HomePage extends wepy.page {
   
@@ -58,12 +58,17 @@ export default class HomePage extends wepy.page {
   }
 
   onLoad (options) { 
+<<<<<<< HEAD
     this.hunterjobList = postData.hunterjobList;
     // this.getHunterjob();
+=======
+    // this.hunterjobList = postData.hunterjobList;
+    this.getHunterjob()
+>>>>>>> a56ffee5cf3e5cb548466f8a26cafd6c4b58d17e
   }
 
   async getHunterjob(currentPage) {
-    let that = this;
+    const that = this;
     const json = await api.getHunterjob({
       query: {
         head: {
@@ -74,6 +79,7 @@ export default class HomePage extends wepy.page {
           pageNo: currentPage || "1"
         }
       }
+<<<<<<< HEAD
     });
     console.log(json) 
     // if (json.returnCode == "AAAAAAA") {
@@ -81,8 +87,38 @@ export default class HomePage extends wepy.page {
     //   that.$apply();
     // } else {
     //   tip.error(json.returnMsg);
+=======
+    })
+    console.log(json);
+    if (json.data.returnCode == "AAAAAAA") {
+      that.hunterjobList = [...that.hunterjobList, ...json.data.data];
+      that.$apply();
+    } else {
+      tip.error(json.returnMsg);
+    }
+  }  
+  
+    // getHunterjob(currentPage){
+    //   let that = this;
+    //   return (async () => {
+    //     const requestObj = {
+    //       query: {
+    //         head: {
+    //           "transcode": "L0001",
+    //           "type": "h"
+    //         },
+    //         data: {
+    //           pageNo: currentPage || "1"
+    //         }
+    //       }
+    //     }
+    //     const response = await api.getHunterjob(requestObj);
+    //     const _data = await response.json();
+    //     return new Promise((resolve, reject) => {
+    //       console.log(_data)
+    //     });
+    //   })();
+>>>>>>> a56ffee5cf3e5cb548466f8a26cafd6c4b58d17e
     // }
-    
   }
-}
 </script>
