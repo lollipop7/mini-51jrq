@@ -1,20 +1,23 @@
 import wepy from 'wepy';
 import tip from './tip'
 
-
-const wxRequest = async(params = {}, url) => {
-    tip.loading();
-    let data = params.query || {};
-    let res = await wepy.request({
-        url: url,
-        method: params.method || 'POST',
-        data: data,
-        header: { 'Content-Type': 'application/json' },
+const wxRequest = (params = {}, url) => {
+    return new Promise(function (resolve, reject) {
+        let data = params.query || {};
+        wepy.request({
+            url: url,
+            method: params.method || 'POST',
+            data: data,
+            header: { 'Content-Type': 'application/json' },
+            success: function(res) {
+                resolve (res)
+            },
+            fail: function(err){
+                console.log(err);
+            }
+        });
     });
-    tip.loaded();
-    return res;
-};
-
+}
 
 module.exports = {
     wxRequest

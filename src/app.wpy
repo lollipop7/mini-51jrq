@@ -9,11 +9,11 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/home/home',      
+      'pages/home/home',
+      'pages/personal/personal', 
       'pages/home/homedetail', 
       'pages/corporation/corporation',   
       'pages/corporation/corpview', 
-      'pages/personal/personal', 
       'pages/login/login' 
     ],
     window: {

@@ -1,9 +1,145 @@
-<style>
-
+<style lang='scss'>
+    page {  
+        background-color: #F0F1F2;  
+        .personal-container {
+            .personal-info {
+                background: white;
+                margin: 20rpx auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                image {
+                    width: 80rpx;
+                    height: 80rpx;
+                    margin: 30rpx 20rpx;
+                }
+                .name-intro {
+                    margin: 30rpx 0rpx;
+                    .name {
+                        font-size: 34rpx;
+                        color: #333333;
+                        font-weight: bold;
+                    }
+                    .intro {
+                        font-size: 24rpx;
+                        color: #888888;
+                    }
+                }
+            }
+            .fun-line {
+                width: 100%;
+                background: white;
+                .my-function {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1rpx solid #F1F1F1;
+                    margin: auto 30rpx;
+                    .img-title {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        image {
+                            width: 36rpx;
+                            height: 36rpx;
+                            margin: auto 30rpx;
+                        }
+                    }
+                    .percent-arrow {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        margin: 30rpx 30rpx;
+                        .percentage {
+                            width: 100rpx;
+                            height: 40rpx;
+                            border-radius: 20rpx;
+                            border: 1rpx solid #EC6955;
+                            color: #EC6955;
+                            font-size: 28rpx;
+                            text-align: center;
+                            line-height: 40rpx;
+                            margin: 40rpx 30rpx;
+                        }
+                        view {
+                            width: 100rpx;
+                            height: 40rpx;
+                            font-size: 28rpx;
+                            text-align: center;
+                            line-height: 40rpx;
+                            margin: 40rpx 30rpx;
+                        }
+                        image {
+                            width: 10rpx;
+                            height: 16rpx;
+                        }
+                    }
+                }
+            }
+            .exit {
+                color: #353535;
+                font-size: 28rpx;
+                line-height: 80rpx;
+                background: white;
+                text-align: center;
+                line-height: 80rpx;
+                margin-top: 20rpx;
+            }
+        }
+    }  
+    
 </style>
 
 <template>
-  
+  <view class="personal-container">
+      <view class="personal-info">
+          <image src="../../../images/corporation/bitmap.png"></image>
+          <view class="name-intro">
+              <view class="name">吴彦祖</view>
+              <view class="intro">上海腾龙资本有限公司 | 高级理财顾问</view>
+          </view>
+      </view>
+      <view class="fun-line">
+          <view class="my-function">
+            <view class="img-title">
+                <image src="../../../images/icons/resume.png"></image>
+                <view>我的简历</view>
+            </view>
+            <view class="percent-arrow">
+                <view class="percentage">30%</view>
+                <image src="../../../images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+      </view>
+      <view class="fun-line">
+        <view class="my-function">
+            <view class="img-title">
+                <image src="../../../images/icons/delivery.png"></image>
+                <view>投递状态</view>
+            </view>
+            <view class="percent-arrow">
+                <view></view>
+                <image src="../../../images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+      </view>
+      <view class="fun-line">
+        <view class="my-function">
+            <view class="img-title">
+                <image src="../../../images/icons/collection.png"></image>
+                <view>我的收藏</view>
+            </view>
+            <view class="percent-arrow">
+                <view></view>
+                <image src="../../../images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+      </view>
+      <view class="exit">
+          退出登录
+      </view>
+  </view>
 </template>
 
 <script>
