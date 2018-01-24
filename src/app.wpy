@@ -11,10 +11,10 @@ export default class extends wepy.app {
     pages: [
       'pages/home/home',      
       'pages/home/homedetail', 
-      'pages/corporation/corporation',  
-      'pages/corporation/corpview',
-      'pages/personal/personal',
-      'pages/login/login'
+      'pages/corporation/corporation',   
+      'pages/corporation/corpview', 
+      'pages/personal/personal', 
+      'pages/login/login' 
     ],
     window: {
       backgroundTextStyle: 'light',
