@@ -49,7 +49,7 @@
 
 <template>
   <view class="posi-corp-container">
-      <posinameduty></posinameduty>
+      <posinameduty :twoWayDuty="data" :syncDuty.sync="data"></posinameduty>
       <view class="corp-brief">
           <view class="logo">
               <image src="/images/home/logo1.png"></image>
@@ -82,7 +82,8 @@
         }
 
         onLoad(options){
-            // console.log(this.porps)
+            this.$apply();
+            // console.log(this.props.data)
         }
     }
 </script>

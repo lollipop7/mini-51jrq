@@ -121,7 +121,9 @@
     <view class="corp-intro">
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
-        <view is="wxParse" class="introduce">{{corpDetails.corpInfo.description}}</view>
+        <view class="introduce">
+            <htmlparser :parserContent.sync="description"></htmlparser>
+        </view>
     </view>
     <view class="gray-blank"></view>
     <view class="corp-address">
@@ -157,7 +159,8 @@
 
 <script>
 
-import wepy from 'wepy'
+import wepy from 'wepy';
+import HtmlParser from '../../components/plugins/htmlParser'; 
 
 // 获取公司详情数据
 const corpData = require('../../data/corps-detail.js');
@@ -168,15 +171,22 @@ export default class CorpDatailsView extends wepy.page {
   }
 
   data = {
-    corpDetails: {}
+    corpDetails: {},
+    description: '<text></text>'
   }
 
   components = {
+      htmlparser: HtmlParser 
   };
 
   onLoad(){
     // 设置公司列表数据
     this.corpDetails = corpData.corpDetails;
+    this.description = this.corpDetails.corpInfo.description;
+    //更新description,手动调用$apply()方法更新数据
+    this.$apply();
+    //调用通知接口通知组件更新数据
+    this.$invoke('htmlparser', 'htmlParserNotice')
   }
 }
 

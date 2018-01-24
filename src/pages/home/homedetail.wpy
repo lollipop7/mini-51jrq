@@ -11,6 +11,10 @@
 <script>
     import wepy from 'wepy';
 
-    export default class HomeDetail extends wepy.page {}
+    export default class HomeDetail extends wepy.page {
+      config = {
+        navigationBarTitleText: '职位详情',
+      }
+    }
 </script>
 

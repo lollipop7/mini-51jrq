@@ -45,9 +45,6 @@ import CommPosi from '../../components/commposi';
 const postData = require('../../data/hunterjobs-data.js');
 
 export default class HomePage extends wepy.page {
-  config = {
-    navigationBarTitleText: '51金融圈',
-  }
   
   components = {
     bannersearch: BannerSearch,
@@ -62,8 +59,7 @@ export default class HomePage extends wepy.page {
 
   onLoad (options) { 
     this.hunterjobList = postData.hunterjobList;
-    // let that = this;
-    // that.getHunterjob();
+    // this.getHunterjob();
   }
 
   async getHunterjob(currentPage) {
@@ -71,7 +67,7 @@ export default class HomePage extends wepy.page {
     const json = await api.getHunterjob({
       query: {
         head: {
-          "transcode": "L0001",
+          "transcode": "L0001", 
           "type": "h"
         },
         data: {
@@ -79,7 +75,7 @@ export default class HomePage extends wepy.page {
         }
       }
     });
-    console.log(json)
+    console.log(json) 
     // if (json.returnCode == "AAAAAAA") {
     //   that.hunterjobList = [...that.hunterjobList,...json.data];
     //   that.$apply();
