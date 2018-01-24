@@ -13,7 +13,6 @@ export default class extends wepy.app {
       'pages/home/homedetail', 
       'pages/corporation/corporation',  
       'pages/corporation/corpview',
-      'pages/home/home',
       'pages/personal/personal',
       'pages/login/login'
     ],

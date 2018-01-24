@@ -28,9 +28,7 @@
       </view>
       <view class="hot-posis-container">
         <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
-          <view> 
-            <commposi :data="item"></commposi>
-          </view>
+          <commposi :data="item"></commposi> 
         </repeat>
       </view>
     </view>
@@ -41,7 +39,7 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
-import BannerSearch from '../../components/bannersearch'; 
+import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
 
 const postData = require('../../data/hunterjobs-data.js');
@@ -50,29 +48,22 @@ export default class HomePage extends wepy.page {
   config = {
     navigationBarTitleText: '51金融圈',
   }
-
+  
   components = {
     bannersearch: BannerSearch,
     commposi: CommPosi 
   }
 
   data ={
+    posiList: [],
     hunterjobList: [],
     pageNo: "1"
   }
 
   onLoad (options) { 
-    // this.hunterjobList = postData.hunterjobList;
-    let that = this;
-    that.getHunterjob()
-  }
-
-  onShow(){
-        
-  }
-
-  methods = {
-    
+    this.hunterjobList = postData.hunterjobList;
+    // let that = this;
+    // that.getHunterjob();
   }
 
   async getHunterjob(currentPage) {
