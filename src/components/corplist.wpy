@@ -1,0 +1,77 @@
+<style lang='scss'>
+  .corp-container {
+    display: flex;
+    flex-direction: row;
+    height: 180rpx;
+    align-items: center;
+    margin: 0 32rpx;
+    border-bottom: 1px solid #F1F1F1;
+    image {
+      height: 80rpx;
+      width: 80rpx;
+    }
+    .corp-intro{
+      margin-left: 40rpx;
+      .corp-name {
+        font-weight: bold;
+        font-size: 34rpx;
+        color: #353535;
+        line-height: 50rpx;
+      }
+      .corp-type {
+        font-size: 26rpx;
+        color: #B2B2B2;
+        line-height: 46rpx;
+      }
+      .job-count {
+        font-size: 32rpx;
+        color: #B2B2B2;
+        line-height: 42srpx;
+      }
+      .count-color {
+        color: #FD8C09;
+      }
+    }
+  }
+</style>
+
+<template>
+  <repeat for="{{corpList}}" key="index" index="index" item="item">
+    <view class="corp-container" bindtap="goCorpView">
+      <image src="{{item.headimg}}"/>
+      <view class="corp-intro">
+          <view class="corp-name">{{item.corpname}}</view>
+          <view class="corp-type">{{item.scope}} | {{item.industry}} | {{item.jobcity}}</view>
+          <view class="job-count">现有职位数：<text class="count-color">{{item.activeflag}}</text></view>
+      </view>
+    </view>
+  </repeat>
+</template>
+
+<script>
+    import wepy from 'wepy'; 
+
+    // 获取公司列表数据
+    const corpData = require('../data/corps-data.js');
+
+    export default class CorpList extends wepy.component  {  
+      data = {
+        corpList: []
+      }
+
+      methods = {
+        // 跳转公司详情
+        goCorpView () {
+          wx.navigateTo({
+            url: '../corporation/corpview/corpview'
+          })
+        }
+      };
+
+      onLoad(){
+        // 设置公司列表数据
+        this.corpList = corpData.corpList;
+      }
+
+    }
+</script>

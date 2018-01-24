@@ -1,0 +1,101 @@
+<style lang='scss'>
+.comm-posis-container {
+  padding: 0 32rpx;
+  .header-container {
+    margin: 20rpx 0 30rpx 0; 
+    image {
+      margin-right: 12rpx;
+      width: 28rpx;
+      height: 28rpx;
+      vertical-align: middle;
+    }
+    text {
+      vertical-align: middle;
+      font-size: 28rpx;
+      color: #353535;
+    }
+  }
+}
+</style>
+
+<template>
+  <view>
+    <bannersearch></bannersearch>
+    <view class="comm-posis-container">
+      <view class="header-container">
+        <image src="/images/home/comm-posi.png"></image>
+        <text>推荐职位</text>
+      </view>
+      <view class="hot-posis-container">
+        <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
+          <view> 
+            <commposi :data="item"></commposi>
+          </view>
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import BannerSearch from '../../components/bannersearch'; 
+import CommPosi from '../../components/commposi';
+
+const postData = require('../../data/hunterjobs-data.js');
+
+export default class HomePage extends wepy.page {
+  config = {
+    navigationBarTitleText: '51金融圈',
+  }
+
+  components = {
+    bannersearch: BannerSearch,
+    commposi: CommPosi 
+  }
+
+  data ={
+    hunterjobList: [],
+    pageNo: "1"
+  }
+
+  onLoad (options) { 
+    // this.hunterjobList = postData.hunterjobList;
+    let that = this;
+    that.getHunterjob()
+  }
+
+  onShow(){
+        
+  }
+
+  methods = {
+    
+  }
+
+  async getHunterjob(currentPage) {
+    let that = this;
+    const json = await api.getHunterjob({
+      query: {
+        head: {
+          "transcode": "L0001",
+          "type": "h"
+        },
+        data: {
+          pageNo: currentPage || "1"
+        }
+      }
+    });
+    console.log(json)
+    // if (json.returnCode == "AAAAAAA") {
+    //   that.hunterjobList = [...that.hunterjobList,...json.data];
+    //   that.$apply();
+    // } else {
+    //   tip.error(json.returnMsg);
+    // }
+    
+  }
+}
+</script>

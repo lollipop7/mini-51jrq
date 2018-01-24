@@ -1,0 +1,16 @@
+<style lang="scss">
+
+</style>
+
+<template>
+  <view class="homedetail-container">
+
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class HomeDetail extends wepy.page {}
+</script>
+

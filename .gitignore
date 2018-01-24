@@ -1,0 +1,6 @@
+node_modules
+dist
+.DB_store
+*.wpy___jb_tmp___
+.idea
+node_modules/wepy-compiler-babel/package.json
