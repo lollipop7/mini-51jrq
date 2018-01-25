@@ -2,14 +2,14 @@
     .posi-corp-container {
         display: flex;
         flex-direction: column;
-        padding-top: 20rpx;
-        padding-bottom: 24rpx;
+        padding-top: 10rpx;
+        padding-bottom: 12rpx;
         border-top: 1rpx solid #F1F1F1;
         .ver {
             margin: 0 12rpx;
         }
         .corp-brief {
-            padding-top: 22rpx;
+            padding-top: 11rpx;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -31,7 +31,6 @@
                     color: #888;
                 }
                 .corp-size-type {
-                    padding-top: 8rpx;
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
@@ -44,23 +43,63 @@
                 }
             }
         }
+        .posi-container {
+            display: flex;
+            flex-direction: column;
+            .ver {
+                margin: 0 12rpx;
+            }
+            .posi-name-sal {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                font-size: 28rpx;
+                .posi-name {
+                    font-weight: bold;
+                    color: #353535;
+                }
+                .posi-sal {
+                    color: #FF9E00;
+                }
+            }
+            .posi-duty {
+                font-size: 22rpx;
+                color: #B2B2B2;
+            }
+        }
     }
 </style>
 
 <template>
-  <view class="posi-corp-container">
-      <posinameduty :twoWayDuty="data" :syncDuty.sync="data"></posinameduty>
+  <view class="posi-corp-container"
+        @tap="goToHomeView({{syncPosidata.corpid}}, {{syncPosidata.id}})" 
+  >
+    <view class="posi-container">
+        <view class="posi-name-sal">
+            <text class="posi-name">{{syncPosidata.jobname}}</text>
+            <text class="posi-sal">{{syncPosidata.salary}}</text>
+        </view>
+        <view class="posi-duty">
+            <text>{{syncPosidata.jobcity}}</text>
+            <!-- <text class="ver">|</text>
+            <text>{{}}</text> -->
+            <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text>
+            <text>{{syncPosidata.workyears}}</text>
+            <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
+            <text>{{syncPosidata.ebid}}</text>
+        </view>
+    </view>
       <view class="corp-brief">
           <view class="logo">
               <image src="/images/home/logo1.png"></image>
           </view>
           <view class="corp-info">
-              <text class="corp-name">{{data.showname}}</text>
+              <text class="corp-name">{{syncPosidata.showname}}</text>
               <view class="corp-size-type">
-                  <!-- <view class="corp-size">
-                    <text></text> 
-                  </view> -->
-                  <text class="up-date"></text> 
+                  <view class="corp-size">
+                    <text>{{syncPosidata.industry}}</text> 
+                  </view>
+                  <text class="up-date">{{syncPosidata.refreshdate}}</text> 
               </view>
           </view>
       </view>
@@ -69,21 +108,32 @@
 
 <script>
     import wepy from 'wepy';
-    import PosiNameDuty from './posinameduty';
-
 
     export default  class CommPosi extends wepy.component {
         components = {
-            posinameduty: PosiNameDuty
+            
         }
 
         props = {
-            data: Object
+            syncPosidata: {
+                type: Object,
+                default: null
+            }
         }
 
         onLoad(options){
-            this.$apply();
-            // console.log(this.props.data)
+        }
+
+        methods = {
+            goToHomeView(corpid, jobid) {
+                console.log("jobid===" + jobid + "corpid===" + corpid);
+                if (jobid.length && corpid.length == 0) {
+                    return;
+                }
+                wepy.navigateTo({
+                    url: `homeview?corpid=${corpid}&jobid=${jobid}`    
+                })
+            }
         }
     }
 </script>

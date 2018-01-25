@@ -1,0 +1,11 @@
+.gray-line {
+    height: 2rpx;
+    width: 100%;
+    margin: 12rpx auto;
+    background-color: #F1F1F1;
+}
+.gray-blank {
+    height: 10rpx;
+    width: 100%;
+    background-color: #F0F1F2;
+}

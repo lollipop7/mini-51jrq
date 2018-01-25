@@ -2,7 +2,7 @@
 .comm-posis-container {
   padding: 0 32rpx;
   .header-container {
-    margin: 20rpx 0 30rpx 0; 
+    padding: 10rpx 0 15rpx 0; 
     image {
       margin-right: 12rpx;
       width: 28rpx;
@@ -26,11 +26,9 @@
         <image src="/images/home/comm-posi.png"></image>
         <text>推荐职位</text>
       </view>
-      <view class="hot-posis-container">
-        <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
-          <commposi :data="item"></commposi> 
-        </repeat>
-      </view>
+      <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
+        <commposi :syncPosidata.sync="item"></commposi> 
+      </repeat>
     </view>
   </view>
 </template>
@@ -42,6 +40,7 @@ import tip from '../../utils/tip';
 import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
 
+//绑定数据记得去掉，这里做调试
 // const postData = require('../../data/hunterjobs-data.js');
 
 export default class HomePage extends wepy.page {
@@ -53,18 +52,13 @@ export default class HomePage extends wepy.page {
 
   data ={
     posiList: [],
-    hunterjobList: [],
-    pageNo: "1"
+    hunterjobList: []
   }
 
   onLoad (options) { 
-<<<<<<< HEAD
-    this.hunterjobList = postData.hunterjobList;
-    // this.getHunterjob();
-=======
+    //绑定数据记得去掉，这里做调试
     // this.hunterjobList = postData.hunterjobList;
     this.getHunterjob()
->>>>>>> a56ffee5cf3e5cb548466f8a26cafd6c4b58d17e
   }
 
   async getHunterjob(currentPage) {
@@ -79,17 +73,7 @@ export default class HomePage extends wepy.page {
           pageNo: currentPage || "1"
         }
       }
-<<<<<<< HEAD
-    });
-    console.log(json) 
-    // if (json.returnCode == "AAAAAAA") {
-    //   that.hunterjobList = [...that.hunterjobList,...json.data];
-    //   that.$apply();
-    // } else {
-    //   tip.error(json.returnMsg);
-=======
     })
-    console.log(json);
     if (json.data.returnCode == "AAAAAAA") {
       that.hunterjobList = [...that.hunterjobList, ...json.data.data];
       that.$apply();
@@ -118,7 +102,6 @@ export default class HomePage extends wepy.page {
     //       console.log(_data)
     //     });
     //   })();
->>>>>>> a56ffee5cf3e5cb548466f8a26cafd6c4b58d17e
     // }
   }
 </script>

@@ -26,16 +26,10 @@
             width: 100%;
             background-color: #F0F1F2;
         }
-        .gray-line {
-            height: 1rpx;
-            width: 100%;
-            margin: 20rpx auto;
-            background: #F1F1F1;
-        }
         .title {
-                font-size: 28rpx;
-                color: #353535;
-            }
+            font-size: 28rpx;
+            color: #353535;
+        }
         .corp-intro {
             margin: 20rpx 30rpx;
             .introduce {
@@ -48,13 +42,10 @@
             margin: 20rpx 30rpx;
             .gray-line {
                 height: 3rpx;
-                width: 100%;
-                margin: 20rpx auto;
-                background: #F1F1F1;
             }
             .address {
                 display: flex;
-                flex-direction: rows;
+                flex-direction: row;
                 align-items: center;
                 image {
                     width: 24rpx;
@@ -71,14 +62,11 @@
             margin: 20rpx 30rpx;
             .gray-line {
                 height: 3rpx;
-                width: 100%;
-                margin: 20rpx auto;
-                background: #F1F1F1;
             }
             .job-item {
                 .job-content {
                     display: flex;
-                    flex-direction: rows;
+                    flex-direction: row;
                     justify-content: space-between;
                     .left {
                         .position {
@@ -130,7 +118,7 @@
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
         <view class="address">
-            <image src="../../../images/icons/location_blue.png"></image>
+            <image src="/images/icons/location_blue.png"></image>
             <view class="addr-info">{{corpDetails.corpInfo.address}}</view>
         </view>
     </view>

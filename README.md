@@ -16,4 +16,5 @@ export default class HomePage extends wepy.page {
 
 `
 5. 上传代码时备注名为tab名-模块名（-功能名）
+6. 在调试数据处注释：绑定数据记得去掉，这里做调试
 
