@@ -1,5 +1,6 @@
 <style >
   @import "./styles/weui.wxss";
+  @import "./styles/common.wxss";
 </style>
 
 <script>
@@ -11,7 +12,7 @@ export default class extends wepy.app {
     pages: [
       'pages/home/home',
       'pages/personal/personal', 
-      'pages/home/homedetail', 
+      'pages/home/homeview', 
       'pages/corporation/corporation',   
       'pages/corporation/corpview', 
       'pages/login/login' 

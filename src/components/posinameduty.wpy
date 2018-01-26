@@ -29,44 +29,34 @@
 <template>
   <view class="posi-container">
       <view class="posi-name-sal">
-          <text class="posi-name">{{jobname}}</text>
-          <text class="posi-sal">{{salary}}</text>
+          <text class="posi-name">{{syncJobInfo.jobname}}</text>
+          <text class="posi-sal">{{syncJobInfo.salary}}</text>
       </view>
       <view class="posi-duty">
-          <text>{{jobcity}}</text>
+          <text>{{syncJobInfo.jobcity}}</text>
           <!-- <text class="ver">|</text>
           <text>{{}}</text> -->
-          <text class="ver">|</text>
-          <text>{{workyears}}</text>
-          <text class="ver">|</text>
-          <text>{{ebid}}</text>
+          <text class="ver" wx:if="{{syncJobInfo.workyears}}">|</text>
+          <text>{{syncJobInfo.workyears}}</text>
+          <text class="ver" wx:if="{{syncJobInfo.ebid}}">|</text>
+          <text>{{syncJobInfo.ebid}}</text>
       </view>
   </view>
 </template>
 
 <script>
     import wepy from 'wepy';
-    import _ from 'lodash';
-
 
     export default class PosiNameDuty extends wepy.component {
-        data = {
-            duty: {}
-        }
 
         props = {
-            twoWayDuty: {
-                default: 'nothing',
-                twoWay: true
-            },
-            syncDuty: {
-                default: 'null'
+            syncJobInfo: {
+                type: Object,
+                default: null
             }
         }
 
-        onReady(){
-            console.log(this.syncDuty.data);
-            this.$apply();
+        onLoad(){
         }
     }
 </script>

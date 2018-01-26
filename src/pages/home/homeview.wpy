@@ -1,0 +1,210 @@
+<style lang="scss">
+  .homeview-container {
+    .jobbrief-container {
+      padding: 16rpx 28rpx;
+      background-color: #fff; 
+    }
+    .weal-container {
+      display: flex;
+      flex-flow: row wrap;
+      text {
+        margin-right: 10rpx;
+        margin-bottom: 5rpx;
+        padding: 3rpx 14rpx;
+        border: 1rpx solid #ff9e00;
+        border-radius: 18rpx;
+        font-size: 24rpx;
+        color: #ff9e00;
+      }
+    }
+    .corp-brief {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 4rpx;
+        .corp-content {
+          display: flex;
+          flex-direction: row;
+          align-items: center; 
+        }
+        .logo {
+            margin-right: 16rpx;
+            width: 60rpx;
+            height: 60rpx;
+        }
+        .corp-info {
+            display: flex;
+            flex-direction: column;
+            .corp-name {
+                font-size: 26rpx;
+                color: #888;
+            }
+            .corp-size-type {
+                display: flex;
+                flex-direction: row;
+                font-size: 22rpx;
+                color: #b2b2b2;
+            }
+        }
+        .arrow-right {
+          color: #ccc;
+          font-size: 28rpx;
+        }
+    }
+    .jobdec-container {
+      padding: 11rpx 28rpx;
+      display: flex;
+      flex-direction: column;
+      .dec-title {
+        color: rgba(53, 53, 53, 1);
+        font-size: 28rpx;
+      }
+      .dec-content {
+        line-height: 40rpx;
+        color: rgba(136, 136, 136, 1);
+        font-size: 28rpx;
+      } 
+    }
+    .corp-address {
+      margin: 12rpx 28rpx;
+      .title {
+        font-size: 28rpx;
+        font-weight: 600;
+        color: #353535;
+      }
+      .address {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        image {
+            width: 24rpx;
+            height: 36rpx;
+        }
+        .addr-info {
+            color: #888888;
+            font-size: 28rpx;
+            margin-left: 12rpx;
+        }
+      }
+    }
+    .relatedjob-container {
+      padding: 11rpx 28rpx;
+      .rel-title {
+        font-size: 28rpx;
+        color: #353535;
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="homeview-container">
+      <view class="jobbrief-container">
+        <posinameduty :syncJobInfo.sync="jobInfo"></posinameduty>
+        <view class="weal-container">
+          <repeat for="{{jobInfo.weal}}" item="weal">
+            <text>{{weal}}</text>
+          </repeat>
+        </view>
+        <view class="gray-line"></view>
+        <view class="corp-brief">
+          <view class="corp-content">
+            <image class="logo" src="/images/home/logo1.png"></image>
+            <view class="corp-info">
+                <text class="corp-name">{{homeDetailInfo.corpInfo.showname}}</text>
+                <view class="corp-size-type">
+                    <view class="corp-size">
+                      <text>{{homeDetailInfo.corpInfo.industry}}</text> 
+                    </view>
+                </view>
+            </view>
+          </view>
+          <view class="arrow-right">&gt;</view>  
+        </view> 
+      </view>
+      <view class="gray-blank"></view>
+      <view class="jobdec-container">
+          <text class="dec-title">职位描述：</text>
+          <view class="gray-line"></view>
+          <text class="dec-content" wx:if="{{jobInfo.jobdescription}}">{{jobInfo.jobdescription}}</text>
+      </view>
+      <view class="gray-blank"></view>
+      <view class="corp-address">
+        <view class="title">工作地址</view>
+        <view class="gray-line"></view>
+        <view class="address">
+            <image src="/images/icons/location_pink.png"></image>
+            <text class="addr-info">上海市浦东新区东方路999号9楼909</text>
+        </view>
+      </view>
+      <view class="gray-blank"></view>
+      <view class="relatedjob-container">
+        <text class="rel-title">相关职位推荐</text>
+        <repeat for="{{relatedJobs}}" item="item">
+          <relatedjob :syncRelatedJob="item"></relatedjob>
+        </repeat>
+      </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
+    import utils from '../../utils/utils';
+    import PosiNameDuty from '../../components/posinameduty';
+    import RelatedJob from '../../components/relatedjob';
+
+    export default class HomeView extends wepy.page {
+      config = {
+        navigationBarTitleText: '职位详情'
+      }
+
+      components = {
+        posinameduty: PosiNameDuty,
+        relatedjob: RelatedJob
+      }
+
+      data = {
+        jobId: '',
+        corpId: '',
+        homeDetailInfo: {},
+        jobInfo: {},
+        relatedJobs: []
+      }
+
+      onLoad(options){
+        this.jobId = options.jobid;
+        this.corpId = options.corpid;
+        this.viewHunterjob();
+      }
+
+      async viewHunterjob(){
+        const that = this;
+        const json = await api.viewHunterjob({
+          query: {
+            head: {
+              "transcode": "L0002",
+              "type": "h"
+            },
+            data: {
+                "token": utils.token,
+                "tokenKey": utils.tokenKey,
+                "corpid": this.jobId,
+                "jobid": this.corpId
+            }
+          }
+        });
+        if (json.data.returnCode == "AAAAAAA") {
+          that.homeDetailInfo = { ...that.jobInfo, ...json.data.data };
+          that.jobInfo = { ...that.jobInfo, ...json.data.data.jobInfo };
+          that.relatedJobs = { ...that.relatedJobs, ...json.data.data.relatedJobs};
+          that.$apply();
+        } else {
+          tip.error(json.returnMsg);
+        }
+      }
+    }
+</script>
+
