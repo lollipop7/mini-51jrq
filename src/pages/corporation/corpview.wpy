@@ -148,10 +148,12 @@
 <script>
 
 import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
 import HtmlParser from '../../components/plugins/htmlParser'; 
 
-// 获取公司详情数据
-const corpData = require('../../data/corps-detail.js');
+// 绑定数据记得去掉，这里做调试
+// const corpData = require('../../data/corps-detail.js');
 
 export default class CorpDatailsView extends wepy.page {
   config = {
@@ -167,15 +169,48 @@ export default class CorpDatailsView extends wepy.page {
       htmlparser: HtmlParser 
   };
 
-  onLoad(){
-    // 设置公司列表数据
-    this.corpDetails = corpData.corpDetails;
-    this.description = this.corpDetails.corpInfo.description;
+  onLoad(options){
+    // 绑定数据记得去掉，这里做调试
+    // this.corpDetails = corpData.corpDetails;
+    // this.description = this.corpDetails.corpInfo.description;
+
+    // 获取公司详情数据
+    this.getCorpView(options.corpid, options.jobid)
+
     //更新description,手动调用$apply()方法更新数据
     this.$apply();
+
     //调用通知接口通知组件更新数据
-    this.$invoke('htmlparser', 'htmlParserNotice')
+    // this.$invoke('htmlparser', 'htmlParserNotice')
   }
+
+//获取公司详情数据
+  async getCorpView(corpid,jobid) {
+    const that = this;
+    console.log(this)
+    const json = await api.getCorpListView({
+      query: {
+        head: {
+            "transcode": "Q0002",
+            "type": "h"
+        },
+        data: {
+            "token": "59A88E02602AEE2F5707D96019C4D8BB3422FD7C444C883D48984DF1868B0423367F60D49642B5D4FF139FE3E441AF97D045FE1ACFE385B61DEB572B9346FEC2B8947FBB71397C9874F22274215C84EF77848721D21426CE",
+            "tokenKey": "5F1BCE1231A78D5C0746209F880DA25588108401CFBA3AF2E50DDFF100C625595ADFBF476980D29140DFD2E3058E649CB1FEC4749574B5D5",
+            "corpid": corpid,
+            "jobid": jobid
+        }
+      }
+    })
+    
+    if (json.data.returnCode == "AAAAAAA") {
+      that.corpDetails = json.data.data
+      that.$apply();
+    } else {
+      tip.error(json.returnMsg);
+    }
+  }  
+
 }
 
 </script>
