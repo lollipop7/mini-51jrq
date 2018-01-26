@@ -4,12 +4,16 @@
 <template>  
   <view>
     <bannersearch></bannersearch>
-    <corplist></corplist>
+    <repeat for="{{corplist}}" key="index" index="index" item="item">
+      <corplist :syncCorpdata.sync="item"></corplist>
+    </repeat>
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
 import BannerSearch from '../../components/bannersearch';
 import CorpList from '../../components/corplist';
 
@@ -17,6 +21,36 @@ export default class CorpPage extends wepy.page {
   components = {
     bannersearch: BannerSearch,
     corplist: CorpList
-  };
+  }
+
+  data = {
+    corplist: []
+  }
+
+  onLoad (options) { 
+    //获取公司列表数据
+    this.getCorpList()
+  }
+
+  async getCorpList(currentPage) {
+    const that = this;
+    const json = await api.getCorpListView({
+      query: {
+        head: {
+          "transcode": "Q0001",
+          "type": "h"
+        },
+        data: {
+          pageNo: currentPage || "1"
+        }
+      }
+    })
+    if (json.data.returnCode == "AAAAAAA") {
+      that.corplist = [...that.corplist, ...json.data.data.list];
+      that.$apply();
+    } else {
+      tip.error(json.returnMsg);
+    }
+  }  
 }
 </script>

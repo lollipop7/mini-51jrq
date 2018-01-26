@@ -10,10 +10,9 @@ const wxRequest = (params = {}, url) => {
             data: data,
             header: { 'Content-Type': 'application/json' },
             success: function(res) {
-                resolve (res)
+                resolve(res)
             },
             fail: function(err){
-                console.log(err);
             }
         });
     });

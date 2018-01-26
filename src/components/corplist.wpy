@@ -2,7 +2,7 @@
   .corp-container {
     display: flex;
     flex-direction: row;
-    height: 180rpx;
+    height: 150rpx;
     align-items: center;
     margin: 0 32rpx;
     border-bottom: 1px solid #F1F1F1;
@@ -11,22 +11,27 @@
       width: 80rpx;
     }
     .corp-intro{
-      margin-left: 40rpx;
+      margin-left: 30rpx;
       .corp-name {
         font-weight: bold;
-        font-size: 34rpx;
+        font-size: 28rpx;
         color: #353535;
-        line-height: 50rpx;
+        line-height: 40rpx;
       }
       .corp-type {
-        font-size: 26rpx;
+        font-size: 20rpx;
         color: #B2B2B2;
-        line-height: 46rpx;
+        line-height: 36rpx;
+        display: flex;
+        flex-direction: row;
+        .s-line{
+          margin: auto 10rpx;
+        }
       }
       .job-count {
-        font-size: 32rpx;
+        font-size: 26rpx;
         color: #B2B2B2;
-        line-height: 42srpx;
+        line-height: 36srpx;
       }
       .count-color {
         color: #FD8C09;
@@ -36,42 +41,38 @@
 </style>
 
 <template>
-  <repeat for="{{corpList}}" key="index" index="index" item="item">
-    <view class="corp-container" bindtap="goCorpView">
-      <image src="{{item.headimg}}"/>
-      <view class="corp-intro">
-          <view class="corp-name">{{item.corpname}}</view>
-          <view class="corp-type">{{item.scope}} | {{item.industry}} | {{item.jobcity}}</view>
-          <view class="job-count">现有职位数：<text class="count-color">{{item.activeflag}}</text></view>
-      </view>
+  <view class="corp-container" bindtap="goCorpView({{syncCorpdata.corpid}}, {{syncCorpdata.id}})">
+    <image src="{{syncCorpdata.headimg}}"/>
+    <view class="corp-intro">
+        <view class="corp-name">{{syncCorpdata.corpname}}</view>
+        <view class="corp-type">
+          {{syncCorpdata.scope}}
+          <view class="s-line" wx:if="{{syncCorpdata.scope}}">|</view>
+          {{syncCorpdata.industry}}
+          <view class="s-line" wx:if="{{syncCorpdata.industry}}">|</view>
+          {{syncCorpdata.jobcity}}
+        </view>
+        <view class="job-count">现有职位数：<text class="count-color">{{syncCorpdata.activeflag}}</text></view>
     </view>
-  </repeat>
+  </view>
 </template>
 
 <script>
     import wepy from 'wepy'; 
 
     // 获取公司列表数据
-    const corpData = require('../data/corps-data.js');
+    // const corpData = require('../data/corps-data.js');
 
-    export default class CorpList extends wepy.component  {  
-      data = {
-        corpList: []
-      }
+    export default class CorpList extends wepy.component  { 
 
       methods = {
         // 跳转公司详情
-        goCorpView () {
+        goCorpView (corpid,jobid) {
           wx.navigateTo({
-            url: '../corporation/corpview'
+            url: `corpview?corpid=${corpid}&jobid=${jobid}`
           })
         }
       };
-
-      onLoad(){
-        // 设置公司列表数据
-        this.corpList = corpData.corpList;
-      }
 
     }
 </script>

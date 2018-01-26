@@ -110,7 +110,7 @@
         <view class="gray-line"></view>
         <view class="corp-brief">
           <view class="corp-content">
-            <image class="logo" src="/images/home/logo1.png"></image>
+            <image class="logo" src="{{homeDetailInfo.corpInfo.mlogo}}"></image>
             <view class="corp-info">
                 <text class="corp-name">{{homeDetailInfo.corpInfo.showname}}</text>
                 <view class="corp-size-type">
@@ -177,22 +177,22 @@
       onLoad(options){
         this.jobId = options.jobid;
         this.corpId = options.corpid;
-        this.viewHunterjob();
+        this.viewCompanyjob();
       }
 
-      async viewHunterjob(){
+      async viewCompanyjob(){
         const that = this;
-        const json = await api.viewHunterjob({
+        const json = await api.viewCompanyjob({
           query: {
-            head: {
-              "transcode": "L0002",
-              "type": "h"
+            "head": {
+                "transcode": "Q0002",
+                "type": "h"
             },
-            data: {
+            "data": {
                 "token": utils.token,
                 "tokenKey": utils.tokenKey,
-                "corpid": this.jobId,
-                "jobid": this.corpId
+                "corpid": this.corpId + '',
+                "jobid": this.jobId + ''
             }
           }
         });
