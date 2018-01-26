@@ -58,13 +58,8 @@ export default class HomePage extends wepy.page {
   }
 
   onLoad (options) { 
-<<<<<<< HEAD
-    this.hunterjobList = postData.hunterjobList;
-    // this.getHunterjob();
-=======
     // this.hunterjobList = postData.hunterjobList;
     this.getHunterjob()
->>>>>>> a56ffee5cf3e5cb548466f8a26cafd6c4b58d17e
   }
 
   async getHunterjob(currentPage) {
@@ -79,15 +74,6 @@ export default class HomePage extends wepy.page {
           pageNo: currentPage || "1"
         }
       }
-<<<<<<< HEAD
-    });
-    console.log(json) 
-    // if (json.returnCode == "AAAAAAA") {
-    //   that.hunterjobList = [...that.hunterjobList,...json.data];
-    //   that.$apply();
-    // } else {
-    //   tip.error(json.returnMsg);
-=======
     })
     console.log(json);
     if (json.data.returnCode == "AAAAAAA") {
@@ -118,7 +104,6 @@ export default class HomePage extends wepy.page {
     //       console.log(_data)
     //     });
     //   })();
->>>>>>> a56ffee5cf3e5cb548466f8a26cafd6c4b58d17e
     // }
   }
 </script>

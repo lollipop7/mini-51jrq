@@ -64,9 +64,8 @@
             }
         }
 
-        onLoad(){
-            console.log(this.twoWayDuty);
-            console.log(this.syncDuty);
+        onReady(){
+            console.log(this.syncDuty.data);
             this.$apply();
         }
     }

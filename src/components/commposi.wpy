@@ -81,9 +81,9 @@
             data: Object
         }
 
-        onLoad(options){
+        onReady(options){
             this.$apply();
-            // console.log(this.props.data)
+            console.log(this.props.data)
         }
     }
 </script>

@@ -14,17 +14,17 @@
       margin-left: 40rpx;
       .corp-name {
         font-weight: bold;
-        font-size: 34rpx;
+        font-size: 30rpx;
         color: #353535;
-        line-height: 50rpx;
-      }
-      .corp-type {
-        font-size: 26rpx;
-        color: #B2B2B2;
         line-height: 46rpx;
       }
+      .corp-type {
+        font-size: 22rpx;
+        color: #B2B2B2;
+        line-height: 42rpx;
+      }
       .job-count {
-        font-size: 32rpx;
+        font-size: 28rpx;
         color: #B2B2B2;
         line-height: 42srpx;
       }
