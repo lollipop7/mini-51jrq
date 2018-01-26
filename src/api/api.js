@@ -5,14 +5,14 @@ import {
 const apimall = 'http://192.168.1.251:8089/';
 
 //首页获取猎头职位
- const  getHunterjob = (params) => wxRequest(params, apimall + 'mobile/api/hunterjob');
+ const  getCompanyjob = (params) => wxRequest(params, apimall + 'mobile/api/companyjob');
 
  //查看职位详细
- const viewHunterjob = (params) => wxRequest(params, apimall + 'mobile/api/hunterjob');
+ const viewCompanyjob = (params) => wxRequest(params, apimall + 'mobile/api/companyjob');
 
 
 module.exports = {
-    getHunterjob, 
-    viewHunterjob
+    getCompanyjob, 
+    viewCompanyjob
 }
   

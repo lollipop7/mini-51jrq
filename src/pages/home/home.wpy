@@ -41,7 +41,7 @@ import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
 
 //绑定数据记得去掉，这里做调试
-// const postData = require('../../data/hunterjobs-data.js');
+// const postData = require('../../data/companyjobs-detail.js');
 
 export default class HomePage extends wepy.page {
   
@@ -52,30 +52,30 @@ export default class HomePage extends wepy.page {
 
   data ={
     posiList: [],
-    hunterjobList: []
+    hunterjobList: {}
   }
 
   onLoad (options) { 
     //绑定数据记得去掉，这里做调试
-    // this.hunterjobList = postData.hunterjobList;
-    this.getHunterjob()
+    // this.hunterjobList = postData.hunterjobList.list;
+    this.getCompanyjob()
   }
 
-  async getHunterjob(currentPage) {
+  async getCompanyjob(currentPage) {
     const that = this;
-    const json = await api.getHunterjob({
+    const json = await api.getCompanyjob({
       query: {
-        head: {
-          "transcode": "L0001", 
-          "type": "h"
+        "head": {
+            "transcode": "Q0001", 
+            "type": "h"
         },
-        data: {
-          pageNo: currentPage || "1"
+        "data": {
+            pageNo: currentPage || "0"
         }
       }
     })
     if (json.data.returnCode == "AAAAAAA") {
-      that.hunterjobList = [...that.hunterjobList, ...json.data.data];
+      that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
       that.$apply();
     } else {
       tip.error(json.returnMsg);
