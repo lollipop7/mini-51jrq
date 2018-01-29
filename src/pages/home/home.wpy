@@ -65,12 +65,12 @@ export default class HomePage extends wepy.page {
     const that = this;
     const json = await api.getCompanyjob({
       query: {
-        "head": {
+        head: {
             "transcode": "Q0001", 
             "type": "h"
         },
-        "data": {
-            pageNo: currentPage || "0"
+        data: {
+            pageNo: currentPage || "1"  
         }
       }
     })

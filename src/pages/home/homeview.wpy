@@ -182,7 +182,7 @@
 
       async viewCompanyjob(){
         const that = this;
-        const json = await api.viewCompanyjob({
+        const json = await api.getCompanyjob({
           query: {
             "head": {
                 "transcode": "Q0002",
@@ -191,8 +191,8 @@
             "data": {
                 "token": utils.token,
                 "tokenKey": utils.tokenKey,
-                "corpid": this.corpId + '',
-                "jobid": this.jobId + ''
+                "corpid": this.corpId,
+                "jobid": this.jobId
             }
           }
         });

@@ -1,0 +1,36 @@
+<style lang="scss">
+.search-page-container {
+    padding: 10rpx 20rpx;
+}
+</style>
+
+<template>
+    <view class="search-page-container">
+        <search @searchFn.user="handleSearchFn"></search>
+    </view>
+</template>
+ 
+<script>
+import wepy from 'wepy';
+import Search from '../../components/search';
+
+export default class SearchPage extends wepy.page {
+
+    config={
+        navigationBarTitleText: '搜索',
+    }
+
+    components = {
+        search: Search
+    }
+
+    methods={
+        handleSearchFn(val) {
+            console.log(val)
+        }
+    }
+
+}
+</script>
+
+
