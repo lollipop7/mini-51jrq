@@ -111,11 +111,7 @@
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
         <view class="introduce">
-<<<<<<< HEAD
             {{description}}
-=======
-            <template is="wxParse" data="{{wxParseData: description.nodes}}"></template>
->>>>>>> c8d3d31e1d2d0fdbbd4eb6af2e7daf58a1d209cf
         </view>
     </view>
     <view class="gray-blank"></view>
@@ -156,12 +152,8 @@ import wepy from 'wepy';
 const Towxml = require('towxml');
 import api from '../../api/api';
 import tip from '../../utils/tip';
-<<<<<<< HEAD
 
 const towxml = new Towxml();
-=======
-import WxParse from "../../wxParse/wxParse.js";
->>>>>>> c8d3d31e1d2d0fdbbd4eb6af2e7daf58a1d209cf
 
 // 绑定数据记得去掉，这里做调试
 // const corpData = require('../../data/corps-detail.js');
@@ -172,19 +164,12 @@ export default class CorpDatailsView extends wepy.page {
   }
 
   data = {
-<<<<<<< HEAD
     corpDetails: {},
     description: ''
   }
 
   components = {
     //   towxml: Towxml 
-=======
-    corpDetails: {}
-  }
-
-  components = {
->>>>>>> c8d3d31e1d2d0fdbbd4eb6af2e7daf58a1d209cf
   };
 
   onLoad(options){
@@ -199,10 +184,6 @@ export default class CorpDatailsView extends wepy.page {
 //获取公司详情数据
   async getCorpView(corpid,jobid) {
     const that = this;
-<<<<<<< HEAD
-    console.log(this)
-=======
->>>>>>> c8d3d31e1d2d0fdbbd4eb6af2e7daf58a1d209cf
     const json = await api.getCompanyjob({
       query: {
         head: {
@@ -221,22 +202,9 @@ export default class CorpDatailsView extends wepy.page {
     if (json.data.returnCode == "AAAAAAA") {
       that.corpDetails = json.data.data;
       that.description = json.data.data.corpInfo.description;
-<<<<<<< HEAD
     //   that.description = towxml.html2wxml(json.data.data.corpInfo.description);
       console.log(that)
       that.$apply();
-=======
-      /**
-        * WxParse.wxParse(bindName , type, data, target, imagePadding)
-        * 1.bindName绑定的数据名(必填)
-        * 2.type可以为html或者md(必填)
-        * 3.data为传入的具体数据(必填)
-        * 4.target为Page对象,一般为this(必填)
-        * 5.imagePadding为当图片自适应是左右的单一padding(默认为0,可选)
-        */
-      WxParse.wxParse('description', 'html', that.description, this); 
-      this.$apply()
->>>>>>> c8d3d31e1d2d0fdbbd4eb6af2e7daf58a1d209cf
     } else {
       tip.error(json.returnMsg);
     }
