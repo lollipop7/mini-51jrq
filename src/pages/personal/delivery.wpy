@@ -23,7 +23,7 @@
             align-items: center;
             image {
                 width: 176rpx;
-                height: 168rpx;
+                height: 220rpx;
             }
             view {
                 color: #A0A0A0;

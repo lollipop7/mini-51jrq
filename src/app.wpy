@@ -11,16 +11,12 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/home/home',      
-<<<<<<< HEAD
       'pages/personal/delivery', 
       'pages/personal/collection',
-=======
       'pages/search/search',
       'pages/search/searchJob',
       'pages/search/searchCorp',
->>>>>>> f1e386b45c6e4a12e03c0c1175e2286f421acb38
       'pages/personal/personal', 
-      'pages/search/search',
       'pages/home/homeview', 
       'pages/corporation/corporation',   
       'pages/corporation/corpview', 
