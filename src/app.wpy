@@ -18,7 +18,8 @@ export default class extends wepy.app {
       'pages/home/homeview', 
       'pages/corporation/corporation',   
       'pages/corporation/corpview', 
-      'pages/login/login' 
+      'pages/login/login', 
+      'pages/personal/collection',
     ],
     window: {
       backgroundTextStyle: 'light',
