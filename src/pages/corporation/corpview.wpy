@@ -110,7 +110,7 @@
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
         <view class="introduce">
-            <htmlparser :parserContent.sync="description"></htmlparser>
+            {{description}}
         </view>
     </view>
     <view class="gray-blank"></view>
@@ -148,9 +148,11 @@
 <script>
 
 import wepy from 'wepy';
+const Towxml = require('towxml');
 import api from '../../api/api';
 import tip from '../../utils/tip';
-import HtmlParser from '../../components/plugins/htmlParser'; 
+
+const towxml = new Towxml();
 
 // 绑定数据记得去掉，这里做调试
 // const corpData = require('../../data/corps-detail.js');
@@ -162,11 +164,11 @@ export default class CorpDatailsView extends wepy.page {
 
   data = {
     corpDetails: {},
-    description: '<text></text>'
+    description: ''
   }
 
   components = {
-      htmlparser: HtmlParser 
+    //   towxml: Towxml 
   };
 
   onLoad(options){
@@ -188,7 +190,7 @@ export default class CorpDatailsView extends wepy.page {
   async getCorpView(corpid,jobid) {
     const that = this;
     console.log(this)
-    const json = await api.getCorpListView({
+    const json = await api.getCompanyjob({
       query: {
         head: {
             "transcode": "Q0002",
@@ -204,7 +206,10 @@ export default class CorpDatailsView extends wepy.page {
     })
     
     if (json.data.returnCode == "AAAAAAA") {
-      that.corpDetails = json.data.data
+      that.corpDetails = json.data.data;
+      that.description = json.data.data.corpInfo.description;
+    //   that.description = towxml.html2wxml(json.data.data.corpInfo.description);
+      console.log(that)
       that.$apply();
     } else {
       tip.error(json.returnMsg);

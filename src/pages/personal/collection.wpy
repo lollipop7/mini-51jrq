@@ -1,0 +1,19 @@
+<style lang='scss'>
+    
+</style>
+
+<template>
+  <commposi></commposi>
+</template>
+
+<script>
+
+import wepy from 'wepy';
+import CommPosi from '../../components/commposi';
+
+export default class CollectionPage extends wepy.page {
+    config = {
+        navigationBarTitleText: '我的收藏',
+    }
+}
+</script>

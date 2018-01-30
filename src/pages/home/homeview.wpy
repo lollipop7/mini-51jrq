@@ -182,7 +182,7 @@
 
       async viewCompanyjob(){
         const that = this;
-        const json = await api.viewCompanyjob({
+        const json = await api.getCompanyjob({
           query: {
             "head": {
                 "transcode": "Q0002",
