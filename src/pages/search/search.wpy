@@ -1,17 +1,139 @@
 <style lang="scss">
-.search-page-container {
-    padding: 10rpx 20rpx;
-}
+    $themeColor: #FF9E00;
+    .jrq-cell {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        height: 100rpx;
+        line-height: 100rpx;  
+        &:after {
+            content: " ";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 1px;
+            border-bottom: 1px solid #e5e5e5;
+            color: #e5e5e5;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scaleY(0.5);
+            transform: scaleY(0.5);
+            z-index: 2;
+        }   
+        text {
+            color: #353535;
+            font-size: 28rpx;
+        }  
+        .cancel-img {
+            width: 16rpx;
+            height: 16rpx;
+        }
+        .arrow-img {
+            width: 10rpx;
+            height: 16rpx;
+        }
+    }
+    .search-bd {
+        padding-left: 32rpx;
+        padding-right: 32rpx;
+    }
+    .wx-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 30rpx;
+        text {
+            margin-left: 10rpx; 
+            color: #b2b2b2; 
+            font-size: 24rpx;
+        }
+    }
+    .badges-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-top: 15rpx;       
+        .weui-badge {
+            margin-bottom: 10rpx;    
+            margin-left: 10rpx;            
+            background-color: #FFF;
+            border: 1px solid $themeColor; 
+            color: $themeColor; 
+        }
+    }
+    .his-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 5rpx;
+    }
+    .radio-search {
+        display: flex;
+        flex-direction: column;
+    }
 </style>
 
 <template>
     <view class="search-page-container">
-        <search @searchFn.user="handleSearchFn"></search>
+        <search @searchFn.user="parentSearchFn"></search>
+        <view class="search-bd">
+            <view class="peo-search" wx:if="{{!isUnderSearch}}">
+                <view class="wx-title">
+                    <icon type="search" color="#a0a0a0" size="12"></icon>
+                    <text>大家都在搜</text>
+                </view>
+                <view class="badges-container">
+                    <text class="weui-badge">财务顾问</text>
+                    <text class="weui-badge">投资经理</text>
+                    <text class="weui-badge">产品经理</text>
+                    <text class="weui-badge">web前端</text>
+                    <text class="weui-badge">项目经理</text>
+                    <text class="weui-badge">高级投资总监</text>
+                    <text class="weui-badge">JAVA</text>
+                    <text class="weui-badge">合规</text>
+                </view>
+            </view>
+            <view class="his-search" wx:if="{{!isUnderSearch}}">
+                <view class="wx-title">
+                    <icon type="waiting" color="#a0a0a0" size="12"></icon>
+                    <text>搜索历史</text>
+                </view>
+                <view class="his-container">
+                    <repeat for="{{keywordhisList}}" key="item" index="index">
+                        <view class="jrq-cell">
+                            <view class="jrq-bd">
+                                <text  @tap.stop="selHisKeyWord" data-id="{{item.index}}">{{item}}</text>
+                            </view>
+                            <image @tap="delHisCellFn()" class='cancel-img' src="/images/icons/cancel.png"></image>
+                        </view>
+                    </repeat>
+                </view>
+            </view>
+            <view class="radio-search" wx:if="{{isUnderSearch}}">
+                <navigator class="jrq-cell" url="/pages/search/searchJob">
+                    <view class="jrq-bd">
+                        <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位</text>
+                    </view>
+                    <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
+                </navigator>
+                <navigator class="jrq-cell" url="/pages/search/searchCorp">
+                    <view class="jrq-bd">
+                        <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关企业</text>
+                    </view>
+                    <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
+                </navigator>
+            </view>
+        </view>
+        
     </view>
 </template>
  
 <script>
 import wepy from 'wepy';
+import api from '../../api/api';
+import {USER_OPERATE_INFO} from '../../utils/constants';
 import Search from '../../components/search';
 
 export default class SearchPage extends wepy.page {
@@ -20,15 +142,63 @@ export default class SearchPage extends wepy.page {
         navigationBarTitleText: '搜索',
     }
 
+    data={
+        isUnderSearch: false,       //是否在搜索状态
+        keyword: '',    //输入字段
+        list: [],       //服务器返回
+        totalNum: 0,    //服务器返回num
+        keywordhisList: ['金融理财师', '销售主管', '高级产品经理']
+    }
+
     components = {
         search: Search
     }
 
+    onLoad(option){
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        console.log(userSpecialInfo)
+    }
+
     methods={
-        handleSearchFn(val) {
-            console.log(val)
+        parentSearchFn(val) {
+            this.isUnderSearch = true;
+            this.keyword = val;
+            this.conveySearch(val);
+        },
+        delHisCellFn(){
+
+        },
+        selHisKeyWord(e){
+            console.log(e)
         }
     }
+
+    async conveySearch(keyword, currentPage) {
+        const that = this;
+        console.log(that.keyword)
+        const json = await api.getCompanyjob({
+        query: {
+            head: {
+                "transcode": "Q0001", 
+                "type": "h"
+            },
+            data: {
+                pageNo: currentPage || "1",
+                keyword: that.keyword
+            }
+        }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+            that.list = [...that.list, ...json.data.data.list];
+            that.total = json.data.data.num;
+            if (json.data.data.num == 0) {
+                console.log('搜索结果为空')
+            }
+            that.$apply();
+        } else {
+            tip.error(json.returnMsg);
+        }
+    }  
 
 }
 </script>
