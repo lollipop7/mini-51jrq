@@ -191,8 +191,8 @@
             "data": {
                 "token": utils.token,
                 "tokenKey": utils.tokenKey,
-                "corpid": this.corpId + '',
-                "jobid": this.jobId + ''
+                "corpid": this.corpId,
+                "jobid": this.jobId
             }
           }
         });
