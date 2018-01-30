@@ -1,0 +1,127 @@
+<style lang='scss'>
+    .collection-container {
+        padding: 0 32rpx;
+        .operate-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            .operate-btn {
+                font-size:28rpx;
+                padding: 30rpx;
+            }
+            .operate-btn-active {
+                border-bottom: 6rpx solid #FF9E00;
+                color: #FF9E00;
+            }
+        }
+        .no-collect-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 800rpx;
+            align-items: center;
+            image {
+                width: 176rpx;
+                height: 168rpx;
+            }
+            view {
+                color: #A0A0A0;
+                font-size: 28rpx;
+                margin-top: 30rpx;
+            }
+        }
+    }
+</style>
+
+<template>
+    <view class="collection-container">
+        <view class="operate-container">
+            <view data-num="1" class="operate-btn {{_num==1?'operate-btn-active':''}}"  bindtap="menuClick">已投递</view>
+            <view data-num="2" data-status="0" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">待确认</view>
+            <view data-num="3" data-status="1" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">待面试</view>
+            <view data-num="4" data-status="2" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">已结束</view>
+        </view>
+        <repeat for="{{collectData}}" key="index" index="index" item="item" wx:if="AAAAAAA"> 
+            <commposi :syncPosidata.sync="item"></commposi> 
+        </repeat>
+        <view class="no-collect-container" wx:if="no_collect">
+            <image src="/images/icons/no_delivery.png"></image>
+            <view>{{warningWord}}</view>
+        </view>
+    </view>
+</template>
+
+<script>
+
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import CommPosi from '../../components/commposi';
+
+// 绑定数据记得去掉，这里做调试
+// const collectData = require('../../data/collect-data.js');
+
+export default class DeliveryPage extends wepy.page {
+    config = {
+        navigationBarTitleText: '投递状态',
+    }
+    data = {
+        _num: "1",
+        collectData: {},
+        warningWord:""
+    }
+
+    components = {
+        commposi: CommPosi 
+    };
+    onLoad() { 
+        // 绑定数据记得去掉，这里做调试
+        // this.collectData = JSON.parse(collectData.collectData.data);
+
+        // 获取已投递职位
+        this.getCollectJob()
+    }
+
+    methods = {
+
+       // 点击切换投递状态
+        menuClick (e) {
+            const _status = e.target.dataset.status;
+            this._num = e.target.dataset.num;
+            this.getCollectJob(_status);
+        }
+
+    };
+
+    async getCollectJob(status, currentPage) {
+        const that = this;
+        const json = await api.getCollectJob({
+            query: {
+                head: {
+                    "transcode": "P0004",
+                    "type": "h"
+                },
+                data: {
+                    "token": "75479A1313EE3993AB3118EB37D687C00253B916F7F1D3A9D9F4B9A4F02A312C918EC8023123CD4167D546896EB1FDD2EEBDCFD91FB4E32B8C54E4CE73A4B64F98703B43DF9BA874",
+                    "tokenKey": "523E6BD0669F873499478B8EF9E106665A6A225462F94FF15AE6309E6773CD1EC4552732EE4B29E5A1C07FC60CD8B12B083A137C8831A207",
+                    "status": status,
+                    "pageNo": currentPage || "1"
+                }
+            }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+            that.collectStatus = "AAAAAAA";
+            that.collectData = [...that.collectData, ...json.data.data];
+            that.$apply();
+        } else if (json.data.returnCode == "1000009") {
+            that.collectStatus = "no_collect";
+            that.warningWord = json.data.returnMsg;
+            that.$apply();
+        } else {
+            that.collectStatus = "no_collect";
+            that.warningWord = "暂未查到更多信息";
+            that.$apply();
+        }
+    }
+}
+</script>

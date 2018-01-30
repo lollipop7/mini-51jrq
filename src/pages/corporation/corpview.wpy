@@ -149,10 +149,10 @@
 <script>
 
 import wepy from 'wepy';
-const Towxml = require('towxml');
 import api from '../../api/api';
 import tip from '../../utils/tip';
 
+const Towxml = require('towxml');
 const towxml = new Towxml();
 
 // 绑定数据记得去掉，这里做调试

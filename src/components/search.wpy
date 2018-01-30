@@ -53,7 +53,7 @@
 </style>
 
 <template>
-    <view class="search-container">
+    <!-- <view class="search-container">
         <view class="search-content">
             <view class="city-cascade">
                 <picker mode="region" bindchange="onRegionChangeFn" value="{{region}}" custom-item="{{customItem}}">
@@ -75,46 +75,46 @@
         </view>
         <text class="btn btn-cancel" @tap="goBackFn()" wx:if="{{search_input_value==''}}">取消</text>
         <text class="btn btn-confirm" @tap="searchFn()" wx:else>搜索</text>
-    </view>
+    </view> -->
 </template>
 
 <script>
 import wepy from 'wepy';
-import regions from "../utils/regions";
+// import regions from "../utils/regions";
 
 export default class Search extends wepy.component {
-    data={
-        region: ['上海'],
-        customItem: regions,
-        search_input_value: ''
-    };
+    // data={
+    //     region: ['上海'],
+    //     customItem: regions,
+    //     search_input_value: ''
+    // };
 
-    methods={
-        onSearchInputFn: function (even) {
-            this.search_input_value = even.detail.value;
-            this.$apply();
-        },
-        onRegionChangeFn: function (e) {
-            console.log('picker发送选择改变，携带值为', e.detail.value)
-            this.setData({
-                region: e.detail.value
-            })
-        },
-        delTextFn: function (even) {
-            this.search_input_value = '';
-            this.$apply();
-        },
-        goBackFn: function (even) {
-            console.log('hui')
-            wepy.navigateBack({
-              delta: 1
-            })
-        }, 
-        searchFn: function (even) {
-            const that = this;
-            this.$emit('searchFn', that.search_input_value);
-        }
-    }
+    // methods={
+    //     onSearchInputFn: function (even) {
+    //         this.search_input_value = even.detail.value;
+    //         this.$apply();
+    //     },
+    //     onRegionChangeFn: function (e) {
+    //         console.log('picker发送选择改变，携带值为', e.detail.value)
+    //         this.setData({
+    //             region: e.detail.value
+    //         })
+    //     },
+    //     delTextFn: function (even) {
+    //         this.search_input_value = '';
+    //         this.$apply();
+    //     },
+    //     goBackFn: function (even) {
+    //         console.log('hui')
+    //         wepy.navigateBack({
+    //           delta: 1
+    //         })
+    //     }, 
+    //     searchFn: function (even) {
+    //         const that = this;
+    //         this.$emit('searchFn', that.search_input_value);
+    //     }
+    // }
 }
 </script>
 
