@@ -12,8 +12,12 @@ const  getCompanyjob = (params) => wxRequest(params, apimall + 'mobile/api/compa
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
 
+//  获取我的收藏及投递记录
+const  getCollectJob = (params) => wxRequest(params, apimall + 'mobile/api/persoanl');
+
 module.exports = {
     getCompanyjob,
-    getCityName
+    getCityName,
+    getCollectJob 
 }
   
