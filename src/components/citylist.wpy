@@ -1,0 +1,16 @@
+<style lang="scss">
+    
+</style>
+
+<template>
+  
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class CityList extends wepy.component {
+    
+}
+</script>
+

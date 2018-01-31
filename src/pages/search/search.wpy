@@ -147,16 +147,17 @@ export default class SearchPage extends wepy.page {
         keyword: '',    //输入字段
         list: [],       //服务器返回
         totalNum: 0,    //服务器返回num
-        keywordhisList: ['金融理财师', '销售主管', '高级产品经理']
+        keywordhisList: ['金融理财师', '销售主管', '高级产品经理'],
     }
 
     components = {
         search: Search
     }
 
-    onLoad(option){
+    onLoad (options) {
+        const that = this;
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
-        console.log(userSpecialInfo)
+        
     }
 
     methods={
@@ -164,9 +165,6 @@ export default class SearchPage extends wepy.page {
             this.isUnderSearch = true;
             this.keyword = val;
             this.conveySearch(val);
-        },
-        delHisCellFn(){
-
         },
         selHisKeyWord(e){
             console.log(e)
