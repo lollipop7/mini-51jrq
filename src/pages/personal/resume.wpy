@@ -1,0 +1,283 @@
+<style lang='scss'>
+    page {
+      background: #F0F1F2;
+      .resume-container {
+        .head {
+          background: white;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          border-top: #f1f1f1 2rpx solid;
+          image {
+            width: 140rpx;
+            height: 140rpx;
+            margin-top: 20rpx;
+          }
+          view {
+            color: #b2b2b2;
+            font-size: 24rpx;
+            margin-top: 10rpx;
+            margin-bottom: 20rpx;
+          }
+        }
+        .resume-gray-line {
+          height: 1px;
+          background: #f1f1f1;
+          margin:auto 28rpx;
+        }
+        .add-btn {
+          width: 236rpx;
+          position: relative;
+          margin: 10rpx auto;
+          image {
+            width: 236rpx;
+            height: 68rpx;
+            color: black;
+            font-size: 24rpx;
+          }
+          .btn-word {
+            position: absolute;
+            color: white;
+            font-size: 24rpx;
+            top: 10rpx;
+            left: 30rpx;
+          }
+        }
+        .info-container {
+          margin-top: 15rpx;
+          background: white;
+          .title-container {
+            padding: 12rpx 28rpx;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 28rpx;
+            .title {
+              color: #353535;
+            }
+            .edit {
+              color: #FF9E00;
+            }
+          }
+          .name-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 12rpx 28rpx;
+            .name {
+              font-size: 34rpx;
+              color: #282828;
+            }
+            image {
+              width: 28rpx;
+              height: 28rpx;
+              margin-left: 16rpx;
+            }
+          }
+          .small-info {
+            margin: auto 28rpx;
+            font-size: 22rpx;
+            color: #888888;
+            padding-bottom: 12rpx;
+          }
+          .intro-container {
+            padding: 12rpx 28rpx;
+            font-size: 26rpx;
+            color: #888888;
+            display: flex;
+            flex-direction: row;
+            .hukou {
+              display: flex;
+              flex-direction: row;
+              width: 50%;
+              .result {
+                color: #353535;
+              }
+            }
+            .color-word {
+              color: #353535;
+            }
+            .time {
+              font-size: 24rpx;
+              color: #b2b2b2;
+            }
+          }
+          .yellow-title {
+            color: #FF9E00;
+            font-size: 28rpx;
+            margin: auto 28rpx;
+          }
+        }
+      }
+    }
+</style>
+
+<template>
+  <view class="resume-container">
+      <view class="head">
+        <image src="/images/icons/upload_head.png"></image>
+        <view>点击上传头像</view>
+      </view>
+      <!-- 基本信息 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">基本信息 | 必填</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="name-container">
+          <view class="name">张天爱</view>
+          <image src="/images/icons/female.png"></image>
+        </view>
+        <view class="small-info">25岁 | 上海 | 三年以上 | 本科</view>
+        <view class="intro-container">
+          <view class="hukou"><view>户口：</view><view class="result">北京</view></view>
+          <view class="hukou"><view>婚姻状况：</view><view class="result">已婚</view></view>
+        </view>
+        <view class="intro-container">
+          <view>手机：</view>
+          <view class="color-word">18717907315</view>
+        </view>
+        <view class="intro-container">
+          <view>邮箱：</view>
+          <view class="color-word">jay712@163.com</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="intro-container">
+          <view>工作状态：</view>
+          <view class="color-word">离职，正在找工作</view>
+        </view>
+      </view>
+      <!-- 求职意向 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">求职意向 | 必填</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="intro-container">
+          <view class="color-word">个人理财顾问 | 银行保险</view>
+        </view>
+        <view class="small-info">25岁 | 上海 | 三年以上 | 本科</view>
+      </view>
+      <!-- 自我评价 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">自我评价 | 必填</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="intro-container">
+          <view>
+            本人性格热情开朗，待人友好，为人诚实谦虚。工作勤奋，认真负责，能吃苦耐劳，尽职尽责，有耐心。
+            具有亲和力，平易近人，善于与人沟通。学习刻苦认真，成绩优秀，名列前茅。品学兼优，连续三年获得学院奖学金。 
+          </view>
+        </view>
+      </view>
+      <!-- 工作经历 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">工作经历 | 必填</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="job-container">
+          <view class="intro-container">
+            <view class="time"> 2016/02 - 2017/06 </view>
+          </view>
+          <view class="yellow-title"> 汇添富基金管理股份有限公司 </view>
+          <view class="small-info">高级理财顾问</view>
+          <view class="intro-container">
+            <view>
+              1、有效整合公司互联网端线上资源，并通过各类渠道，接触、发展、开拓并筛选、转化有效客户；
+              2、通过对高端私人客户的的综合理财需求分析，有效把握客户实际需求，有效协调相应资源，配合产品或咨询专家，
+              帮助客户制订全方位资产配置方案，并向客户提供高端理财产品，使资产保值、增值。
+            </view>
+          </view>
+          <view class="resume-gray-line"></view>
+        </view>
+        <view class="add-btn">
+          <image src="/images/icons/long_btn.png"></image>
+          <view class="btn-word">+ 添加工作经历</view>
+        </view>
+      </view>
+      <!-- 教育经历 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">教育经历 | 必填</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="job-container">
+          <view class="intro-container">
+            <view class="time"> 2016/02 - 2017/06 </view>
+          </view>
+          <view class="yellow-title"> 汇添富基金管理股份有限公司 </view>
+          <view class="intro-container">
+            <view>市场营销 | 本科</view>
+          </view>
+          <view class="resume-gray-line"></view>
+        </view>
+        <view class="add-btn">
+          <image src="/images/icons/long_btn.png"></image>
+          <view class="btn-word">+ 添加教育经历</view>
+        </view>
+      </view>
+      <!-- 项目经验 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">项目经验</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="job-container">
+          <view class="yellow-title" style="margin-top:12rpx;"> 新增大客户维护 </view>
+          <view class="intro-container">
+            <view class="time"> 2016/02 - 2017/06 </view>
+          </view>
+          <view class="intro-container">
+            <view>
+              1、有效整合公司互联网端线上资源，并通过各类渠道，接触、发展、开拓并筛选、转化有效客户；
+              2、通过对高端私人客户的的综合理财需求分析，有效把握客户实际需求，有效协调相应资源，
+              配合产品或咨询专家，帮助客户制订全方位资产配置方案，并向客户提供高端理财产品，使资产保值、增值。
+            </view>
+          </view>
+          <view class="resume-gray-line"></view>
+        </view>
+        <view class="add-btn">
+          <image src="/images/icons/long_btn.png"></image>
+          <view class="btn-word">+ 添加项目经验</view>
+        </view>
+      </view>
+      <!-- 证书 -->
+      <view class="info-container">
+        <view class="title-container">
+          <view class="title">证书</view>
+          <view class="edit">编辑</view>
+        </view>
+        <view class="resume-gray-line"></view>
+        <view class="job-container">
+          <view class="yellow-title" style="margin-top:12rpx;"> 基金从业资格证书 </view>
+          <view class="intro-container">
+            <view class="time">2016/02 颁发</view>
+          </view>
+          <view class="intro-container">
+            <view> 颁发机构：基金从业协会</view>
+          </view>
+          <view class="resume-gray-line"></view>
+        </view>
+        <view class="add-btn">
+          <image src="/images/icons/long_btn.png"></image>
+          <view class="btn-word">+ 添加资格证书</view>
+        </view>
+      </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class resumePage extends wepy.page {
+    
+}
+</script>

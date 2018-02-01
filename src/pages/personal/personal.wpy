@@ -109,13 +109,13 @@
           </view>
       </view>
       <view class="my-function">
-          <view class="fun-line">
+          <view class="fun-line" bindtap="goResumePage">
             <view class="img-title">
                 <image src="/images/icons/resume.png"></image>
                 <text>我的简历</text>
             </view>
             <view class="percent-arrow">
-                <view class="percentage">30%</view>
+                <view class="percentage">{{percentage}}</view>
                 <image src="/images/icons/arrow_right.png"></image>
             </view>
         </view>
@@ -148,10 +148,35 @@
 
 <script>
 import wepy from 'wepy';
-export default class PersPage extends wepy.page {
-   methods = {
 
-       // 跳转投递状态
+// 绑定数据记得去掉，这里做调试
+const resumePer = require('../../data/resume-percent.js');
+
+export default class PersPage extends wepy.page {
+    data = {
+        // 简历完成百分比
+        percentage: '0%'
+    }
+    onLoad() {
+        // 绑定数据记得去掉，这里做调试
+        let result =  resumePer.resumePer.data[0];
+        delete result.resumeid;
+        let addResult = 0;
+        for (var key in result){
+            addResult += result[key]
+        }
+        this.percentage = addResult + '%';
+    }
+    methods = {
+
+        // 跳转我的简历
+        goResumePage () {
+            wx.navigateTo({
+                url: `resume`
+            })
+        },
+
+        // 跳转投递状态
         goDeliveryPage () {
             wx.navigateTo({
                 url: `delivery`
