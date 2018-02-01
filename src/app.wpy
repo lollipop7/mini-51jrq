@@ -15,6 +15,7 @@ export default class extends wepy.app {
       'pages/personal/delivery', 
       'pages/personal/collection',
       'pages/personal/personal', 
+      'pages/personal/resume',
       'pages/home/homeview', 
       'pages/corporation/corporation',   
       'pages/corporation/corpview', 

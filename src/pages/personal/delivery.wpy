@@ -103,8 +103,8 @@ export default class DeliveryPage extends wepy.page {
                     "type": "h"
                 },
                 data: {
-                    "token": "75479A1313EE3993AB3118EB37D687C00253B916F7F1D3A9D9F4B9A4F02A312C918EC8023123CD4167D546896EB1FDD2EEBDCFD91FB4E32B8C54E4CE73A4B64F98703B43DF9BA874",
-                    "tokenKey": "523E6BD0669F873499478B8EF9E106665A6A225462F94FF15AE6309E6773CD1EC4552732EE4B29E5A1C07FC60CD8B12B083A137C8831A207",
+                    "token": "F810981118EAB740A04A9ED49C4EF73076FB3D2153123601190636362D867760019208E5CD5B9357BA70458AE83E1142AB0DE1AEB0256E8269505BB836FFBDDDBCAE02DC1E6183C861472DFE365670A6A53A0DBC0A7F8AD0",
+                    "tokenKey": "BC8597AB9503F51C3FE3A8FA20A5B566DECE2F05AEF15A160CF6A4C15C1CB73A00C6BBF77D8F78831139BAE34EEA70E8D1059D802011DE6F",
                     "status": status,
                     "pageNo": currentPage || "1"
                 }
@@ -112,15 +112,15 @@ export default class DeliveryPage extends wepy.page {
         })
         if (json.data.returnCode == "AAAAAAA") {
             that.collectStatus = "AAAAAAA";
-            that.collectData = [...that.collectData, ...json.data.data];
-            that.$apply();
-        } else if (json.data.returnCode == "1000009") {
-            that.collectStatus = "no_collect";
-            that.warningWord = json.data.returnMsg;
+            that.collectData = JSON.parse(json.data.data);
+            if(that.collectData.length==0){
+                that.collectStatus = "no_collect";
+                that.warningWord = "暂未查到更多信息";
+            }
             that.$apply();
         } else {
             that.collectStatus = "no_collect";
-            that.warningWord = "暂未查到更多信息";
+            that.warningWord = json.data.returnMsg;
             that.$apply();
         }
     }
