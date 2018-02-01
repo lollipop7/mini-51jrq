@@ -36,6 +36,9 @@
             height: 16rpx;
         }
     }
+    .jrq-bd {
+        flex: 1;
+    }
     .search-bd {
         padding-left: 32rpx;
         padding-right: 32rpx;
@@ -76,58 +79,66 @@
 </style>
 
 <template>
-    <view class="search-page-container">
-        <search @searchFn.user="parentSearchFn"></search>
-        <view class="search-bd">
-            <view class="peo-search" wx:if="{{!isUnderSearch}}">
-                <view class="wx-title">
-                    <icon type="search" color="#a0a0a0" size="12"></icon>
-                    <text>大家都在搜</text>
+    <view>
+        <view wx:if="{{!isShowCity}}" class="search-page-container">
+            <search @searchFn.user="parentSearchFn" 
+                    @trShowCityFn.user="parentTrShowCityFn"></search>
+            <view class="search-bd">
+                <view class="peo-search" wx:if="{{!isUnderSearch}}">
+                    <view class="wx-title">
+                        <icon type="search" color="#a0a0a0" size="12"></icon>
+                        <text>大家都在搜</text>
+                    </view>
+                    <view class="badges-container">
+                        <block wx:for="{{peoSearch}}" wx:for-index="index" wx:for-item="item">
+                            <text class="weui-badge"
+                                  data-peo-badge="{{item}}"
+                                  @tap="selPeoBadgeFn"
+                            >{{item}}</text>
+                        </block>
+                    </view>
                 </view>
-                <view class="badges-container">
-                    <text class="weui-badge">财务顾问</text>
-                    <text class="weui-badge">投资经理</text>
-                    <text class="weui-badge">产品经理</text>
-                    <text class="weui-badge">web前端</text>
-                    <text class="weui-badge">项目经理</text>
-                    <text class="weui-badge">高级投资总监</text>
-                    <text class="weui-badge">JAVA</text>
-                    <text class="weui-badge">合规</text>
-                </view>
-            </view>
-            <view class="his-search" wx:if="{{!isUnderSearch}}">
-                <view class="wx-title">
-                    <icon type="waiting" color="#a0a0a0" size="12"></icon>
-                    <text>搜索历史</text>
-                </view>
-                <view class="his-container">
-                    <repeat for="{{keywordhisList}}" key="item" index="index">
-                        <view class="jrq-cell">
-                            <view class="jrq-bd">
-                                <text  @tap.stop="selHisKeyWord" data-id="{{item.index}}">{{item}}</text>
+                <view class="his-search" wx:if="{{!isUnderSearch}}">
+                    <view class="wx-title">
+                        <icon type="waiting" color="#a0a0a0" size="12"></icon>
+                        <text>搜索历史</text>
+                    </view>
+                    <view class="his-container">
+                        <repeat for="{{keywordhisList}}" key="item" index="index">
+                            <view class="jrq-cell">
+                                <view @tap="selHisKeyWordFn" data-his="{{item}}" class="jrq-bd">
+                                    <text>{{item}}</text>
+                                </view>
+                                <image @tap="delHisCellFn" data-del="{{item}}" class='cancel-img' src="/images/icons/cancel.png"></image>
                             </view>
-                            <image @tap="delHisCellFn()" class='cancel-img' src="/images/icons/cancel.png"></image>
+                        </repeat>
+                    </view>
+                </view>
+                <view class="radio-search" wx:if="{{isUnderSearch}}">
+                    <view class="jrq-cell">
+                        <view class="jrq-bd">
+                            <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位</text>
                         </view>
-                    </repeat>
+                        <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
+                    </view>
+                    <view class="jrq-cell">
+                        <view class="jrq-bd">
+                            <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关企业</text>
+                        </view>
+                        <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
+                    </view>
                 </view>
             </view>
-            <view class="radio-search" wx:if="{{isUnderSearch}}">
-                <navigator class="jrq-cell" url="/pages/search/searchJob">
-                    <view class="jrq-bd">
-                        <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位</text>
-                    </view>
-                    <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
-                </navigator>
-                <navigator class="jrq-cell" url="/pages/search/searchCorp">
-                    <view class="jrq-bd">
-                        <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关企业</text>
-                    </view>
-                    <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
-                </navigator>
+            <view class="search-corp">
+
             </view>
         </view>
-        
+        <citylist wx:if="{{isShowCity}}"
+                  @cityNameFn.user="parentCityNameFn"
+                  :citySelected.sync="city"
+        ></citylist>
     </view>
+    
 </template>
  
 <script>
@@ -135,6 +146,8 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import {USER_OPERATE_INFO} from '../../utils/constants';
 import Search from '../../components/search';
+import CityList from '../../components/citylist';
+const peoSearch = require('../../data/peosearch-data.js');
 
 export default class SearchPage extends wepy.page {
 
@@ -143,21 +156,27 @@ export default class SearchPage extends wepy.page {
     }
 
     data={
+        isShowCity: false,
         isUnderSearch: false,       //是否在搜索状态
         keyword: '',    //输入字段
         list: [],       //服务器返回
         totalNum: 0,    //服务器返回num
+        peoSearch: peoSearch,
+        city: '',
         keywordhisList: ['金融理财师', '销售主管', '高级产品经理'],
     }
 
     components = {
-        search: Search
+        search: Search,
+        citylist: CityList
     }
 
     onLoad (options) {
         const that = this;
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
-        
+        if (userSpecialInfo.city) {
+            this.city = userSpecialInfo.city;
+        }
     }
 
     methods={
@@ -166,14 +185,31 @@ export default class SearchPage extends wepy.page {
             this.keyword = val;
             this.conveySearch(val);
         },
-        selHisKeyWord(e){
-            console.log(e)
+        parentTrShowCityFn(val) {
+            this.isShowCity = val;
+        },
+        parentCityNameFn(val){
+            if(val.length > 3) {
+                val = val.substring(0, 3) + "...";
+            }
+            this.$invoke('search', 'setCityFn', val);
+            this.isShowCity = false;
+            this.city = val;
+        },
+        selHisKeyWordFn(event){
+            this.$invoke('search', 'setSearchInputFn', event.currentTarget.dataset.his);
+        },
+        delHisCellFn(event){
+            console.log(event.currentTarget.dataset.del);
+        },
+        selPeoBadgeFn(event){
+            this.$invoke('search', 'setSearchInputFn', event.target.dataset.peoBadge);
         }
     }
 
+    
     async conveySearch(keyword, currentPage) {
         const that = this;
-        console.log(that.keyword)
         const json = await api.getCompanyjob({
         query: {
             head: {
@@ -191,6 +227,8 @@ export default class SearchPage extends wepy.page {
             that.total = json.data.data.num;
             if (json.data.data.num == 0) {
                 console.log('搜索结果为空')
+            } else {
+                console.log(keyword);
             }
             that.$apply();
         } else {

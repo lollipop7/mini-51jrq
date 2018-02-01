@@ -68,7 +68,7 @@
 <template>
     <view class="search-container">
         <view class="search-content">
-            <view class="city-cascade">
+            <view @tap="trShowCityFn" class="city-cascade">
                 <text>{{city}}</text>
                 <image class="arrow-img" src="/images/icons/arrow-down.png"></image>
             </view>
@@ -83,59 +83,77 @@
                 bindinput="onSearchInputFn" 
                 value="{{search_input_value}}"
             >
-            <icon class='cancel-img' @tap="delTextFn()" wx:if="{{search_input_value!=''}}" type="clear" color="#888" size="14"></icon>
+            <icon class='cancel-img' @tap="delTextFn" wx:if="{{search_input_value!=''}}" type="clear" color="#888" size="14"></icon>
         </view>
-        <text class="btn btn-cancel" @tap="goBackFn()" wx:if="{{search_input_value==''}}">取消</text>
-        <text class="btn btn-confirm" @tap="searchFn()" wx:else>完成</text>
+        <text class="btn btn-cancel" @tap="goBackFn" wx:if="{{search_input_value==''}}">取消</text>
+        <text class="btn btn-confirm" @tap="searchFn" wx:else>完成</text>
     </view>
 </template>
 
 <script>
 import wepy from 'wepy';
 import regions from "../utils/regions";
-import {TECENT_MAP_KEY} from "../utils/constants";
+import {USER_OPERATE_INFO, TECENT_MAP_KEY} from "../utils/constants";
 import api from "../api/api";
+
 
 export default class Search extends wepy.component {
     data={
-        showCity: false,
+        isShowCity: false,
         city: '全国',
         cities: [],
         search_input_value: ''
     };
 
+    component={
+        
+    }
+
     onLoad(options) {
         const that = this;
-        wx.getLocation({
-            type: 'wgs84',
-            success: function(res) {
-                that.getCityName(res.latitude, res.longitude);
-            }
-        })
+        // this.getLocation();
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        console.log(userSpecialInfo.city)
+        if (userSpecialInfo.city){
+            console.log("从缓存读取城市=====", userSpecialInfo);
+            this.city = userSpecialInfo.city;
+        }
     }
 
     methods={
+        trShowCityFn: function(even){ 
+            const that = this;
+            that.isShowCity = true;
+            that.$emit('trShowCityFn', that.isShowCity);
+        },
         onSearchInputFn: function (even) {
             this.search_input_value = even.detail.value;
-            this.$apply();
         },
         delTextFn: function (even) {
             this.search_input_value = '';
-            this.$apply();
         },
         goBackFn: function (even) {
-            console.log('hui')
-            wepy.navigateBack({
-              delta: 1
+            wepy.navigateTo({
+              url: "search"
             })
         }, 
         searchFn: function (even) {
             const that = this;
-            this.$emit('searchFn', that.search_input_value);
+            this.$emit('searchFn', that.search_input_value); 
         }
     }
 
-    async getCityName(latitude, longitude){
+    async getLocation(){
+        const that = this;
+        await wx.getLocation({
+            type: 'wgs84',
+            success: function(res) {
+                that.getCityName(res.latitude, res.longitude);
+            }
+        });
+    }
+
+    async getCityName(latitude, longitude){//逆地址解析
         const that = this;
         let json = await api.getCityName({
             query: {
@@ -154,6 +172,21 @@ export default class Search extends wepy.component {
             tip.error(json.data.message);
         }
     }
+
+    setCityFn(params) {//设置城市名称
+        this.city = params;
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        userSpecialInfo.city = params;
+        wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
+        this.$apply();        
+    }
+
+    setSearchInputFn(params) {//设置输入值
+        this.search_input_value = params;
+        this.$apply()
+    }
+
+
 
 }
 </script>
