@@ -39,6 +39,18 @@
         }
         .city-cascade {
             width: 156rpx;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            text {
+                font-size: 24rpx;
+                color: #888;
+            }
+            .arrow-img {
+                width: 16rpx;
+                height: 10rpx;
+            }
         } 
         .picker{
             text-align: center;
@@ -57,9 +69,8 @@
     <view class="search-container">
         <view class="search-content">
             <view class="city-cascade">
-                <picker mode="region" bindchange="onRegionChangeFn" value="{{region}}" custom-item="{{customItem}}">
-                    <view class="picker">{{region[0]}}</view>
-                </picker>
+                <text>{{city}}</text>
+                <image class="arrow-img" src="/images/icons/arrow-down.png"></image>
             </view>
             <view class='ver'></view>
             <input type="text" 
@@ -75,31 +86,38 @@
             <icon class='cancel-img' @tap="delTextFn()" wx:if="{{search_input_value!=''}}" type="clear" color="#888" size="14"></icon>
         </view>
         <text class="btn btn-cancel" @tap="goBackFn()" wx:if="{{search_input_value==''}}">取消</text>
-        <text class="btn btn-confirm" @tap="searchFn()" wx:else>搜索</text>
+        <text class="btn btn-confirm" @tap="searchFn()" wx:else>完成</text>
     </view>
 </template>
 
 <script>
 import wepy from 'wepy';
 import regions from "../utils/regions";
+import {TECENT_MAP_KEY} from "../utils/constants";
+import api from "../api/api";
 
 export default class Search extends wepy.component {
     data={
-        region: ['上海'],
-        customItem: regions,
+        showCity: false,
+        city: '全国',
+        cities: [],
         search_input_value: ''
     };
+
+    onLoad(options) {
+        const that = this;
+        wx.getLocation({
+            type: 'wgs84',
+            success: function(res) {
+                that.getCityName(res.latitude, res.longitude);
+            }
+        })
+    }
 
     methods={
         onSearchInputFn: function (even) {
             this.search_input_value = even.detail.value;
             this.$apply();
-        },
-        onRegionChangeFn: function (e) {
-            console.log('picker发送选择改变，携带值为', e.detail.value)
-            this.setData({
-                region: e.detail.value
-            })
         },
         delTextFn: function (even) {
             this.search_input_value = '';
@@ -116,6 +134,27 @@ export default class Search extends wepy.component {
             this.$emit('searchFn', that.search_input_value);
         }
     }
+
+    async getCityName(latitude, longitude){
+        const that = this;
+        let json = await api.getCityName({
+            query: {
+                location: latitude + ',' + longitude,
+                key: TECENT_MAP_KEY
+            }
+        })
+        if(json.data.message = "query ok") {
+            let city = json.data.result.address_component.city;
+            if(city.length > 3) {
+                city = city.substring(0, 3) + "...";
+            }
+            that.city = city;
+            that.$apply();
+        } else {
+            tip.error(json.data.message);
+        }
+    }
+
 }
 </script>
 
