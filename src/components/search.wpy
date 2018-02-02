@@ -113,7 +113,6 @@ export default class Search extends wepy.component {
         const that = this;
         // this.getLocation();
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
-        console.log(userSpecialInfo.city)
         if (userSpecialInfo.city){
             console.log("从缓存读取城市=====", userSpecialInfo);
             this.city = userSpecialInfo.city;
@@ -131,6 +130,7 @@ export default class Search extends wepy.component {
         },
         delTextFn: function (even) {
             this.search_input_value = '';
+            this.$emit('trUnderSearchFn', false);
         },
         goBackFn: function (even) {
             wepy.navigateTo({

@@ -150,7 +150,8 @@
 import wepy from 'wepy';
 
 // 绑定数据记得去掉，这里做调试
-const resumePer = require('../../data/resume-percent.js');
+const resumePer = require('../../data/resume-percent.js'); 
+console.log(resumePer)
 
 export default class PersPage extends wepy.page {
     data = {

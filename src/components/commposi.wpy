@@ -4,6 +4,7 @@
         flex-direction: column;
         padding-top: 10rpx;
         padding-bottom: 12rpx;
+        margin: 0 32rpx;
         border-top: 1rpx solid #F1F1F1;
         .ver {
             margin: 0 12rpx;

@@ -76,13 +76,18 @@
         display: flex;
         flex-direction: column;
     }
+    .search-job {
+      
+    }
 </style>
 
 <template>
     <view>
         <view wx:if="{{!isShowCity}}" class="search-page-container">
             <search @searchFn.user="parentSearchFn" 
-                    @trShowCityFn.user="parentTrShowCityFn"></search>
+                    @trShowCityFn.user="parentTrShowCityFn"
+                    @trUnderSearchFn.user="parentUnderSearchFn"
+            ></search>
             <view class="search-bd">
                 <view class="peo-search" wx:if="{{!isUnderSearch}}">
                     <view class="wx-title">
@@ -114,7 +119,8 @@
                         </repeat>
                     </view>
                 </view>
-                <view class="radio-search" wx:if="{{isUnderSearch}}">
+                <view wx:if="{{isUnderSearch}}" 
+                      class="radio-search" >
                     <view class="jrq-cell">
                         <view class="jrq-bd">
                             <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位</text>
@@ -129,9 +135,16 @@
                     </view>
                 </view>
             </view>
-            <view class="search-corp">
-
+            <!-- <view class="search-job" wx:if="{{isShowHunterjobList}}">
+                <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
+                    <commposi :syncPosidata.sync="item"></commposi> 
+                </repeat>
             </view>
+            <view class="search-corp" wx:if="{{isShowCorplist}}">
+                <repeat for="{{corplist}}" key="index" index="index" item="item">
+                    <corplist :syncCorpdata.sync="item"></corplist>
+                </repeat>
+            </view> -->
         </view>
         <citylist wx:if="{{isShowCity}}"
                   @cityNameFn.user="parentCityNameFn"
@@ -147,7 +160,11 @@ import api from '../../api/api';
 import {USER_OPERATE_INFO} from '../../utils/constants';
 import Search from '../../components/search';
 import CityList from '../../components/citylist';
+import CommPosi from '../../components/commposi';
+import CorpList from '../../components/corplist';
+import {uniq, filter} from 'lodash';
 const peoSearch = require('../../data/peosearch-data.js');
+
 
 export default class SearchPage extends wepy.page {
 
@@ -158,17 +175,20 @@ export default class SearchPage extends wepy.page {
     data={
         isShowCity: false,
         isUnderSearch: false,       //是否在搜索状态
+        isShowHunterjobList: false,
+        isShowCorplist: false,
         keyword: '',    //输入字段
-        list: [],       //服务器返回
+        hunterjobList: [],       //服务器返回
+        corplist: [],
         totalNum: 0,    //服务器返回num
         peoSearch: peoSearch,
         city: '',
-        keywordhisList: ['金融理财师', '销售主管', '高级产品经理'],
+        keywordhisList: [],
     }
 
     components = {
         search: Search,
-        citylist: CityList
+        citylist: CityList,
     }
 
     onLoad (options) {
@@ -176,6 +196,9 @@ export default class SearchPage extends wepy.page {
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
         if (userSpecialInfo.city) {
             this.city = userSpecialInfo.city;
+        }
+        if(userSpecialInfo.keywordhisList) {
+            this.keywordhisList = userSpecialInfo.keywordhisList;
         }
     }
 
@@ -196,15 +219,32 @@ export default class SearchPage extends wepy.page {
             this.isShowCity = false;
             this.city = val;
         },
+        parentUnderSearchFn(val){
+            this.isUnderSearch = val;
+        },
         selHisKeyWordFn(event){
             this.$invoke('search', 'setSearchInputFn', event.currentTarget.dataset.his);
         },
         delHisCellFn(event){
-            console.log(event.currentTarget.dataset.del);
+            let del = event.currentTarget.dataset.del;
+            let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+            this.keywordhisList = filter(userSpecialInfo.keywordhisList, (item, index) => {
+                return item != del;
+            });
+            userSpecialInfo.keywordhisList = this.keywordhisList;
+            wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
         },
         selPeoBadgeFn(event){
             this.$invoke('search', 'setSearchInputFn', event.target.dataset.peoBadge);
-        }
+        },
+        // showHunterjobListFn(event){
+        //     this.isShowHunterjobList = true;
+        //     this.isShowCorplist = false;
+        // },
+        // showCorplistFn(event){
+        //     this.isShowCorplist = true;
+        //     this.isShowHunterjobList = false;
+        // }
     }
 
     
@@ -223,18 +263,27 @@ export default class SearchPage extends wepy.page {
         }
         })
         if (json.data.returnCode == "AAAAAAA") {
-            that.list = [...that.list, ...json.data.data.list];
-            that.total = json.data.data.num;
             if (json.data.data.num == 0) {
-                console.log('搜索结果为空')
+                tip.toast('搜索结果为空');
             } else {
-                console.log(keyword);
+                let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+                if(that.keywordhisList.indexOf(keyword) == -1) {
+                    that.keywordhisList.push(keyword);
+                    userSpecialInfo.keywordhisList =  that.keywordhisList;
+                    wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
+                }
+                that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
+                that.corplist = [...that.corplist, ...json.data.data.list];
+                that.total = json.data.data.num;
+                this.$apply();  
             }
             that.$apply();
         } else {
             tip.error(json.returnMsg);
         }
     }  
+
+    
 
 }
 </script>
