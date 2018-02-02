@@ -1,8 +1,7 @@
 <style lang='scss'>
 .comm-posis-container {
-  padding: 0 32rpx;
   .header-container {
-    padding: 10rpx 0 15rpx 0; 
+    padding: 10rpx 32rpx 15rpx 32rpx; 
     image {
       margin-right: 12rpx;
       width: 28rpx;
