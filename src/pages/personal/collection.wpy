@@ -22,12 +22,12 @@
 
 <template>
     <view>
-        <view class="collection-container" wx:if="AAAAAAA">
+        <view class="collection-container" wx:if="{{collectStatus}}">
             <repeat for="{{collectData}}" key="index" index="index" item="item"> 
                 <commposi :syncPosidata.sync="item"></commposi> 
             </repeat>
         </view>
-        <view class="no-collect-container" wx:if="no_collect">
+        <view class="no-collect-container" wx:else="{{collectStatus}}">
             <image src="/images/icons/no_collection.png"></image>
             <view>{{warningWord}}</view>
         </view>
@@ -49,7 +49,7 @@ export default class CollectionPage extends wepy.page {
         navigationBarTitleText: '我的收藏',
     }
     data = {
-        collectStatus: "",
+        collectStatus: false,
         warningWord: "",
         collectData: [],
     }
@@ -74,22 +74,23 @@ export default class CollectionPage extends wepy.page {
                     "type": "h"
                 },
                 data: {
-                    "token": "F810981118EAB740A04A9ED49C4EF73076FB3D2153123601190636362D867760019208E5CD5B9357BA70458AE83E1142AB0DE1AEB0256E8269505BB836FFBDDDBCAE02DC1E6183C861472DFE365670A6A53A0DBC0A7F8AD0",
-                    "tokenKey": "BC8597AB9503F51C3FE3A8FA20A5B566DECE2F05AEF15A160CF6A4C15C1CB73A00C6BBF77D8F78831139BAE34EEA70E8D1059D802011DE6F",
+                    "token": "81EEAEF84457BB3B4C054210016DB7173C896F9C0754D1F6B0500FF111E915E26507F982EB9AD54BB6455BE5B88CE363CF6C72686C682C738AA7A8C8714777AC528BE5A4E5AF3C6338FD51C4D93ACB1B7A76670096500916",
+                    "tokenKey": "17A84534D6AC38ABBB52DC54DAB9ADAA4B42D142FC068AB995A5EDCC4910D0C55D30774FB4AFDCF5E719EA14DD11CBBE30B075EC463D1F8E",
                     "pageNo": currentPage || "1"
                 }
             }
         })
         if (json.data.returnCode == "AAAAAAA") {
-            that.collectStatus = "AAAAAAA";
+            that.collectStatus = true;
             that.collectData = JSON.parse(json.data.data);
             if(that.collectData.length==0){
-                that.collectStatus = "no_collect";
+                that.collectStatus = false;
                 that.warningWord = "还没有收藏过职位哦";
             }
+            console.log(that.collectData)
             that.$apply();
         } else {
-            that.collectStatus = "no_collect";
+            that.collectStatus = false;
             that.warningWord = json.data.returnMsg;
             that.$apply();
         } 

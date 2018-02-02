@@ -15,9 +15,13 @@ const getCityName = (params) => wxRequest(params, apiGps);
 //  获取我的收藏及投递记录
 const  getCollectJob = (params) => wxRequest(params, apimall + 'mobile/api/persoanl');
 
+// 获取简历信息
+const  getResumeInfo = (params) => wxRequest(params, apimall + 'mobile/api/my');
+
 module.exports = {
     getCompanyjob,
     getCityName,
-    getCollectJob 
+    getCollectJob,
+    getResumeInfo 
 }
   

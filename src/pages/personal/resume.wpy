@@ -126,26 +126,27 @@
         </view>
         <view class="resume-gray-line"></view>
         <view class="name-container">
-          <view class="name">张天爱</view>
-          <image src="/images/icons/female.png"></image>
+          <view class="name">{{baseInfo.username}}</view>
+          <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
+          <image src="/images/icons/female.png" wx:else="{{sex}}"></image>
         </view>
-        <view class="small-info">25岁 | 上海 | 三年以上 | 本科</view>
+        <view class="small-info">25岁 | {{baseInfo.livecityid}} | {{baseInfo.workyears}} | 本科</view>
         <view class="intro-container">
-          <view class="hukou"><view>户口：</view><view class="result">北京</view></view>
-          <view class="hukou"><view>婚姻状况：</view><view class="result">已婚</view></view>
+          <view class="hukou"><view>户口：</view><view class="result">{{baseInfo.address}}</view></view>
+          <view class="hukou"><view>婚姻状况：</view><view class="result">{{baseInfo.marital}}</view></view>
         </view>
         <view class="intro-container">
           <view>手机：</view>
-          <view class="color-word">18717907315</view>
+          <view class="color-word">{{baseInfo.telephone}}</view>
         </view>
         <view class="intro-container">
           <view>邮箱：</view>
-          <view class="color-word">jay712@163.com</view>
+          <view class="color-word">{{baseInfo.email}}</view>
         </view>
         <view class="resume-gray-line"></view>
         <view class="intro-container">
           <view>工作状态：</view>
-          <view class="color-word">离职，正在找工作</view>
+          <view class="color-word">{{baseInfo.jobstatus}}</view>
         </view>
       </view>
       <!-- 求职意向 -->
@@ -276,8 +277,77 @@
 
 <script>
 import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
 
 export default class resumePage extends wepy.page {
-    
+
+  data = {
+    baseInfo: {},
+    sex: true
+  }
+
+  onLoad() { 
+    // 绑定数据记得去掉，这里做调试
+    // this.collectData = JSON.parse(collectData.collectData.data);
+
+    // 获取简历信息
+    const arr = ["M0003","M0004"]
+    const that = this;
+    arr.forEach((item,index) => {
+      switch (item)
+      {
+      case "M0003":
+        this.getBaseInfo(item).then(json => {
+          if (json.data.returnCode == "AAAAAAA") {
+            that.baseInfo = JSON.parse(json.data.data);
+            that.sex = (that.baseInfo.sex == "男");
+            console.log(5555, that.baseInfo)
+            that.$apply();
+          } else {
+            tip.error(json.returnMsg);
+          }
+        })
+        break;
+      case "M0004":
+        x="Today it's Monday";
+        break;
+      case 2:
+        x="Today it's Tuesday";
+        break;
+      case 3:
+        x="Today it's Wednesday";
+        break;
+      case 4:
+        x="Today it's Thursday";
+        break;
+      case 5:
+        x="Today it's Friday";
+        break;
+      case 6:
+        x="Today it's Saturday";
+        break;
+      }
+      
+    });
+  }
+  
+    //获取公司详情数据
+  async getBaseInfo() {
+    const json = await api.getResumeInfo({
+      query: {
+        head: {
+          "transcode": "M0003",
+          "type": "h"
+        },
+        data: {
+          "token": "81EEAEF84457BB3B4C054210016DB7173C896F9C0754D1F6B0500FF111E915E26507F982EB9AD54BB6455BE5B88CE363CF6C72686C682C738AA7A8C8714777AC528BE5A4E5AF3C6338FD51C4D93ACB1B7A76670096500916",
+          "tokenKey": "17A84534D6AC38ABBB52DC54DAB9ADAA4B42D142FC068AB995A5EDCC4910D0C55D30774FB4AFDCF5E719EA14DD11CBBE30B075EC463D1F8E",
+          "resumeid": "2513998501"
+        }
+      }
+    })
+    return json;
+  }
 }
 </script>
