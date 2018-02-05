@@ -290,5 +290,5 @@ const local_database = {
 }
 
 module.exports = {
-    hunterjobList: local_database
+    hunterjobList: local_database 
 }

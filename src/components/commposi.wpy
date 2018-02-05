@@ -132,7 +132,7 @@
                     return;
                 }
                 wepy.navigateTo({
-                    url: `homeview?corpid=${corpid}&jobid=${jobid}`    
+                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
                 })
             }
         }

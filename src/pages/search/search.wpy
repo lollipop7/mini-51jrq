@@ -120,19 +120,19 @@
                     </view>
                 </view>
                 <view wx:if="{{isUnderSearch}}" 
-                      class="radio-search" >
-                    <view class="jrq-cell">
+                      class="radio-search">
+                     <navigator class="jrq-cell" url='/pages/search/searchJob'>
                         <view class="jrq-bd">
                             <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位</text>
                         </view>
                         <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
-                    </view>
-                    <view class="jrq-cell">
+                    </navigator>
+                    <navigator class="jrq-cell" url='/pages/search/searchCorp'>
                         <view class="jrq-bd">
                             <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关企业</text>
                         </view>
                         <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
-                    </view>
+                    </navigator>
                 </view>
             </view>
             <!-- <view class="search-job" wx:if="{{isShowHunterjobList}}">
@@ -192,7 +192,6 @@ export default class SearchPage extends wepy.page {
     }
 
     onLoad (options) {
-        const that = this;
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
         if (userSpecialInfo.city) {
             this.city = userSpecialInfo.city;
@@ -203,13 +202,16 @@ export default class SearchPage extends wepy.page {
     }
 
     methods={
-        parentSearchFn(val) {
+        parentSearchFn(val) { //搜索关键字
             this.isUnderSearch = true;
             this.keyword = val;
             this.conveySearch(val);
         },
         parentTrShowCityFn(val) {
             this.isShowCity = val;
+        },
+        parentUnderSearchFn(val){
+            this.isUnderSearch = val;
         },
         parentCityNameFn(val){
             if(val.length > 3) {
@@ -218,9 +220,6 @@ export default class SearchPage extends wepy.page {
             this.$invoke('search', 'setCityFn', val);
             this.isShowCity = false;
             this.city = val;
-        },
-        parentUnderSearchFn(val){
-            this.isUnderSearch = val;
         },
         selHisKeyWordFn(event){
             this.$invoke('search', 'setSearchInputFn', event.currentTarget.dataset.his);
@@ -282,9 +281,6 @@ export default class SearchPage extends wepy.page {
             tip.error(json.returnMsg);
         }
     }  
-
-    
-
 }
 </script>
 

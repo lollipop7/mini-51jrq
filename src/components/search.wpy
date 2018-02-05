@@ -137,7 +137,7 @@ export default class Search extends wepy.component {
               url: "search"
             })
         }, 
-        searchFn: function (even) {
+        searchFn: function (even) { //完成“搜索”
             const that = this;
             this.$emit('searchFn', that.search_input_value); 
         }

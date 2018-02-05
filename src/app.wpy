@@ -12,7 +12,9 @@ export default class extends wepy.app {
     pages: [
       'pages/home/home',      
       'pages/personal/resume',
-      'pages/search/search',        
+      'pages/search/search',   
+      'pages/search/searchJob',
+      'pages/search/searchCorp',     
       'pages/personal/delivery', 
       'pages/personal/collection',
       'pages/personal/personal', 
