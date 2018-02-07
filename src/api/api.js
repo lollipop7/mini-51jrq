@@ -18,10 +18,14 @@ const  getCollectJob = (params) => wxRequest(params, apimall + 'mobile/api/perso
 // 获取简历信息
 const  getResumeInfo = (params) => wxRequest(params, apimall + 'mobile/api/my');
 
+// 获取数据字典数据
+const  getDictData = (params) => wxRequest(params, apimall + 'mobile/api/dictionary');
+
 module.exports = {
     getCompanyjob,
     getCityName,
     getCollectJob,
-    getResumeInfo 
+    getResumeInfo,
+    getDictData 
 }
   

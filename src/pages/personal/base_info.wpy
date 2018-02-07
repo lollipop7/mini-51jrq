@@ -1,0 +1,387 @@
+<style lang="less">
+  page {
+    background: #F0F1F2;
+    .biggest {
+        background: #fff;
+        border-top: #f1f1f1 solid 1rpx;
+        .block {
+            margin: auto 40rpx;
+            .list_item {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                font-size: 28rpx;
+                color: #888888;
+                height: 80rpx;
+                justify-content: space-between;
+                border-bottom: #f1f1f1 solid 2rpx;
+                .title {
+                    color: #353535;
+                }
+                .input {
+                    input {
+                        text-align: right;
+                        color: #888888;
+                        width: 100%;
+                    }
+                    .phcolor {
+                        color: #888888;
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+    .btn-box {
+        margin-top: 70rpx;
+        .save-btn{
+            width: 600rpx;
+            height: 64rpx;
+            background: #ff9e00;
+            color: white;
+            text-align: center;
+            line-height: 60rpx;
+            font-size: 36rpx;
+            border-radius: 10rpx;
+        }
+    }
+  }
+</style>
+<template>
+  <form bindsubmit="formSubmit">
+    <view class="biggest">
+        <view class="block">
+            <view class="list_item">
+                <view class="title">姓名</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="username" value="{{username}}" placeholder="请填写" >
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">年龄</view>
+                <picker name="borndate" mode="date" value="{{borndate}}" bindchange="bindDateChange">
+                    <view class="picker">
+                        {{borndate?borndate:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">所在城市</view>
+                <picker name="city" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
+                    <view class="picker" wx:if="{{workcitystatus}}">
+                        {{workcity}}
+                    </view>
+                    <view class="picker" wx:else="{{workcitystatus}}">
+                        {{city[index4]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">工作年限</view>
+                <picker name="workyears" bindchange="bindPickerChange" value="{{workyears[index]}}" range="{{workyears}}">
+                    <view class="picker" wx:if="{{workyearsstatus}}">
+                        {{a_workyears}}
+                    </view>
+                    <view class="picker" wx:else="{{workyearsstatus}}">
+                        {{workyears[index]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">手机</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="telephone" value="{{telephone}}" placeholder="请填写" >
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">邮箱</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="email" value="{{email}}" placeholder="请填写" >
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">工作状态</view>
+                <picker name="jobstatus" bindchange="bindPickerChange2" value="{{jobstatus[index2]}}" range="{{jobstatus}}">
+                    <view class="picker" wx:if="{{jobstatusstatus}}">
+                        {{a_jobstatus}}
+                    </view>
+                    <view class="picker" wx:else="{{jobstatusstatus}}">
+                       {{jobstatus[index2]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">户口所在地</view>
+                <picker name="address" bindchange="bindPickerChange5" value="{{city[index5]}}" range="{{city}}">
+                    <view class="picker" wx:if="{{livecitystatus}}">
+                        {{livecity}}
+                    </view>
+                    <view class="picker" wx:else="{{livecitystatus}}">
+                        {{city[index5]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">婚姻状况</view>
+                <picker name="marital" bindchange="bindPickerChange3" value="{{marital[index3]}}" range="{{marital}}">
+                    <view class="picker" wx:if="{{maritalstatus}}">
+                        {{a_marital}}
+                    </view>
+                    <view class="picker" wx:else="{{maritalstatus}}">
+                        {{marital[index3]}}
+                    </view>
+                </picker>
+            </view>
+        </view>
+    </view>
+    <view class="btn-box">
+      <button class="save-btn" formType="submit">保存</button>
+    </view>
+  </form>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api';
+  import tip from '../../utils/tip';
+
+  export default class BaseInfo extends wepy.page {
+
+      config = {
+        navigationBarTitleText: '基本信息',
+      }
+
+      components = {
+      }
+      
+     data = {
+        username: '',
+        workyears:[],
+        borndate: '',
+        telephone:'',
+        index: '',
+        index2: '',
+        index3: '',
+        index4: '',
+        index5: '',
+        email: "",
+        jobstatus: [],
+        marital:[],
+        city: [],
+        baseInfo:{},
+        // ============
+        workcity:'',
+        workcitystatus:true,
+        a_workyears:'',
+        workyearsstatus:true,
+        a_jobstatus:'',
+        jobstatusstatus:true,
+        livecity:'',
+        livecitystatus:true,
+        a_marital:'',
+        maritalstatus:true
+    }
+
+      onLoad() { 
+            const arr = ["DICT_COMP_CITY","DICT_RESUME_WORKYEAR","DICT_RESUME_JOBSTATU","DICT_RESUME_WEDDING"]
+            const that = this;
+          //获取简历基本信息
+            this.getResumeInfo().then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var baseInfo = JSON.parse(json.data.data);
+                    that.baseInfo = {
+                        "username": baseInfo.username,
+                        "borndate": baseInfo.borndate,
+                        "address": baseInfo.address,
+                        "workyears": baseInfo.workyears,
+                        "jobstatus": baseInfo.jobstatus,
+                        "livecityid": baseInfo.livecityid,
+                        "marital": baseInfo.marital,
+                        "telephone": baseInfo.telephone,
+                        "email": baseInfo.email
+                    }
+                    that.username = baseInfo.username;
+                    that.borndate = baseInfo.borndate;
+                    that.workcity = baseInfo.address;
+                    that.a_workyears = baseInfo.workyears;
+                    that.a_jobstatus = baseInfo.jobstatus;
+                    that.livecity = baseInfo.livecityid;
+                    that.a_marital = baseInfo.marital;
+                    that.telephone = baseInfo.telephone;
+                    that.email = baseInfo.email;
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+            })
+
+          // 获取数据字典
+            arr.forEach((item,index) => {
+            switch (item)
+            {
+            case "DICT_COMP_CITY":// 城市
+                this.getDict(item).then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var arr = []
+                    json.data.data.forEach((item,index)=>{
+                        arr.push(item.label)
+                    })
+                    that.city = arr;
+                    console.log(arr)
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+                })
+                break;
+            case "DICT_RESUME_WORKYEAR":// 工作年限
+                this.getDict(item).then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var arr = []
+                    json.data.data.forEach((item,index)=>{
+                        arr.push(item.label)
+                    })
+                    that.workyears = arr;
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+                })
+                break;
+            case "DICT_RESUME_JOBSTATU":// 工作状况
+                this.getDict(item).then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var arr = []
+                    json.data.data.forEach((item,index)=>{
+                        arr.push(item.label)
+                    })
+                    that.jobstatus = arr;
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+                })
+                break;
+            case "DICT_RESUME_WEDDING":// 婚姻状况
+                this.getDict(item).then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var arr = []
+                    json.data.data.forEach((item,index)=>{
+                        arr.push(item.label)
+                    })
+                    that.marital = arr;
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+                })
+                break;
+            }
+        });
+      }
+      methods = {
+        // 提交表单--基本信息编辑新增
+        formSubmit: function(e) {
+            console.log('form发生了submit事件，携带数据为：', e.detail.value)
+            this.changeBaseInfo(e.detail.value).then(data=>{
+                if(data.data && data.data.returnCode == "AAAAAAA") {
+                    wx.navigateTo({
+                        url: `resume`
+                    })
+                }else{
+                    console.log(data)
+                }
+            })
+        },
+        bindDateChange: function(e) {
+            this.borndate = e.detail.value;
+            this.$apply();
+        },
+        bindPickerChange: function(e) {
+            this.workyearsstatus = false ;
+            this.index = e.detail.value;
+            this.$apply();
+        },
+        bindPickerChange2: function(e) {
+            this.jobstatusstatus = false;
+            this.index2 = e.detail.value;
+            this.$apply();
+        },
+        bindPickerChange3: function(e) {
+            this.maritalstatus = false;
+            this.index3 = e.detail.value;
+            this.$apply();
+        },
+        bindPickerChange4: function(e) {
+            this.workcitystatus = false ;
+            this.index4 = e.detail.value;
+            this.$apply();
+        },
+        bindPickerChange5: function(e) {
+            this.livecitystatus = false;
+            this.index5 = e.detail.value;
+            this.$apply();
+        }
+        
+    };
+    
+    //获取数据字典
+    async getDict(code) {
+        const json = await api.getDictData({
+        query: {
+                head: {
+                    "transcode": "DC001",
+                    "type": "h"
+                },
+                data: {
+                    "groupcode": code,
+                    "selAll": "true"
+                }
+            }
+        })
+        return json;
+    }
+
+    //获取简历基本信息
+    async getResumeInfo(code) {
+        const json = await api.getResumeInfo({
+        query: {
+                head: {
+                    "transcode": "M0003",
+                    "type": "h"
+                },
+                data: {
+                    "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
+                    "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
+                    "resumeid": "2513998501"
+                }
+            }
+        })
+        return json;
+    }
+    //修改表单数据
+    async changeBaseInfo(obj) {
+        var data = {
+            "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
+            "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
+            "resumeid": "2513998501"
+        }
+        for (var Key in obj){
+            if(!obj[Key]){
+                delete obj[Key]
+            }
+        }
+        let resultObj = Object.assign(data, this.baseInfo, obj);
+        const json = await api.getResumeInfo({
+        query: {
+                head: {
+                    "transcode": "M0013",
+                    "type": "h"
+                },
+                data: resultObj
+            }
+        })
+        return json;
+    }
+
+  }
+</script>

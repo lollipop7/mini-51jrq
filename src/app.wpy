@@ -10,8 +10,14 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/home/home',      
       'pages/personal/resume',
+      'pages/personal/certificate',
+      'pages/personal/edu_exper',
+      'pages/personal/project_exper', 
+      'pages/personal/work_exper', 
+      'pages/personal/job_want', 
+      'pages/personal/base_info', 
+      'pages/home/home',      
       'pages/search/search',        
       'pages/personal/delivery', 
       'pages/personal/collection',
