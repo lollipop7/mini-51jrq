@@ -1,0 +1,27 @@
+<style lang="scss">
+
+</style>
+
+<template>
+    <view>
+        <search></search>
+        <view>
+            搜索公司
+        </view>
+    </view>
+</template>
+    
+<script>
+import wepy from 'wepy';
+import Search from '../../components/search';
+export default class SearchCorpPage extends wepy.page {
+
+    config = {
+        navigationBarTitleText: '搜索'
+    }
+
+    components = {
+        search: Search
+    }
+}
+</script>

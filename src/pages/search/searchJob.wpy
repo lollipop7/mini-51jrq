@@ -1,0 +1,77 @@
+<style lang="scss">
+
+</style>
+
+<template>
+    <view>
+        <view wx:if="{{!isShowCity}}">
+            <search @searchFn.user="parentSearchFn" 
+                    @trShowCityFn.user="parentTrShowCityFn"
+            ></search>
+            <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
+                <commposi :syncPosidata.sync="item"></commposi> 
+            </repeat>
+        </view>
+        <citylist wx:if="{{isShowCity}}"
+                  @cityNameFn.user="parentCityNameFn"
+                  :citySelected.sync="city"
+        ></citylist>
+    </view>
+</template>
+    
+<script>
+import wepy from 'wepy';
+import {USER_OPERATE_INFO} from '../../utils/constants';
+import Search from '../../components/search';
+import CommPosi from '../../components/commposi';
+import CityList from '../../components/citylist';
+//绑定数据记得去掉，这里做调试
+const postData = require('../../data/companyjobs-data.js'); 
+
+
+export default class SearchCorpPage extends wepy.page {
+
+    config = {
+        navigationBarTitleText: '搜索'
+    }
+
+    data={
+        isShowCity: false,
+        hunterjobList: {},
+        city: ''
+    }
+
+    components = {
+        search: Search,
+        commposi: CommPosi,
+        citylist: CityList, 
+    }
+
+    onLoad(options){
+        //绑定数据记得去掉，这里做调试
+        this.hunterjobList = postData.hunterjobList.list; 
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        if (userSpecialInfo.city) {
+            this.city = userSpecialInfo.city;
+        } 
+    }
+
+    methods={
+        parentSearchFn(val) { //搜索关键字
+            this.keyword = val;
+        },
+        parentTrShowCityFn(val) {
+            console.log(val);
+            this.isShowCity = val;
+        },
+        parentCityNameFn(val){
+            if(val.length > 3) {
+                val = val.substring(0, 3) + "...";
+            }
+            this.$invoke('search', 'setCityFn', val);
+            this.isShowCity = false;
+            this.city = val;
+        },
+    }
+}
+</script>
