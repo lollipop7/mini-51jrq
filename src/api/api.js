@@ -21,11 +21,19 @@ const  getResumeInfo = (params) => wxRequest(params, apimall + 'mobile/api/my');
 // 获取数据字典数据
 const  getDictData = (params) => wxRequest(params, apimall + 'mobile/api/dictionary');
 
+// 用户登录
+const  loginIn = (params) => wxRequest(params, apimall + 'mobile/api/login');
+
+// 个人用户注册获取短信验证码
+const  getVerifyCode = (params) => wxRequest(params, apimall + 'mobile/api/regphone');
+
 module.exports = {
     getCompanyjob,
     getCityName,
     getCollectJob,
     getResumeInfo,
-    getDictData 
+    getDictData,
+    loginIn,
+    getVerifyCode 
 }
   

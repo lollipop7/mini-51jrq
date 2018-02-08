@@ -148,11 +148,11 @@
         poststime: [],
         functions: "",
         selfremark:"",
-        a_jobnature: "离开就离开",
-        a_postids: "梵蒂冈",
-        a_sitecity: "分隔符",
-        a_expectsalarycode: "的双方各",
-        a_poststime: "发给",
+        a_jobnature: "",
+        a_postids: "",
+        a_sitecity: "",
+        a_expectsalarycode: "",
+        a_poststime: "",
         jobnaturestatus: true,
         postidsstatus: true,
         sitecitystatus: true,
@@ -277,8 +277,8 @@
     methods = {
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
-            console.log('form发生了submit事件，携带数据为：', e.detail.value)
             this.changeBaseInfo(e.detail.value).then(data=>{
+                console.log(data.data.returnCode)
                 if(data.data && data.data.returnCode == "AAAAAAA") {
                     wx.navigateTo({
                         url: `resume`
@@ -362,7 +362,8 @@
             }
         }
         let resultObj = Object.assign(data, this.jobApply, obj);
-        console.log(JSON.stringify(resultObj))
+        resultObj.jobintentcode = '';
+        console.log(resultObj)
         const json = await api.getResumeInfo({
         query: {
                 head: {

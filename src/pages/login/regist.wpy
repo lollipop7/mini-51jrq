@@ -58,6 +58,7 @@
                 border-radius: 10rpx;
                 line-height: 50rpx;
                 text-align: center;
+                z-index: 999;
             }
         }
         .enter {
@@ -75,16 +76,10 @@
         }
     }
     .regist {
-        color: #888;
-        font-size: 24rpx;
-        text-align: center;
-        margin-top: 30rpx;
-    }
-    .warnword {
         color: red;
         font-size: 24rpx;
         text-align: center;
-        margin-top: 30rpx;
+        margin-top: 15rpx;
     }
     
 </style>
@@ -103,40 +98,89 @@
     </view>
     <form bindsubmit="formSubmit">
         <view class="telephone">
-            <input placeholder-class="phcolor" type="text" name="username" placeholder="请输入手机号" >
+            <input bindinput ="userNameInput" placeholder-class="phcolor" type="text" name="phone" placeholder="请输入手机号" >
         </view>
         <view class="verifycode">
-            <input placeholder-class="phcolor" type="password" name="passwd" placeholder="请输入密码" >
+            <input placeholder-class="phcolor" type="password" name="password" placeholder="请设置密码" >
+        </view>
+        <view class="verifycode">
+            <input placeholder-class="phcolor" type="text" name="verifycode" placeholder="请输入验证码" >
+            <view class="send-code" bindtap="sendCode" wx:if="{{codeObj.status}}">{{codeObj.value}}</view>
+            <view class="send-code" wx:else="{{codeObj.status}}" >{{codeObj.value}}</view>
         </view>
         <view class="enter">
             <button class="save-btn" formType="submit">进入小程序</button>
         </view>
     </form>
     <view class="regist" bindtap="goRegistPage">
-        新用户注册 >>
-    </view>
-    <view class="warnword">
-        {{warnword}}
+        {{warnword}}{{obj.value}}
     </view>
 </template>
 
 <script>
-
 import wepy from 'wepy';
 import api from '../../api/api';
-import tip from '../../utils/tip';
 
 // md5加密
 const code = require('../../utils/md5.js');
 
-export default class LoginPage extends wepy.page {
-
+export default class RegistPage extends wepy.page {
     data = {
+        phone: '',
+        warnword: '',
         nickname:'',
         headimg:'',
-        warnword:''
+        codeObj: {
+            status: true,
+            value:'发送验证码'
+        }
     }
 
+    methods = {
+        // 提交表单
+        formSubmit (e) {
+            const that = this;
+            let data = {
+                "phone": e.detail.value.phone,
+                "verifycode": e.detail.value.verifycode,
+                "password": code.hex_md5(e.detail.value.password)
+            }
+            this.getCode(data,"R0001").then(data=>{
+                if(data.data.returnCode == "AAAAAAA") {
+                    // 跳转到登录页
+                    wx.navigateTo({
+                        url: 'login'
+                    });
+                }else{
+                    that.warnword = data.data.returnMsg;
+                    that.$apply();
+                }
+            })
+        },
+        // 设置密码
+        setPassword () {
+            wx.navigateTo({
+                url: `set_password`
+            })
+        },
+        // 发送验证码
+        sendCode () {
+            const that = this;
+            this.getCode({"phone":this.phone},"R0002").then(data=>{
+                that.warnword = '';
+                if(data.data.returnCode != "AAAAAAA" ){
+                    that.warnword = data.data.returnMsg;
+                }else{
+                    that.counttime(that.codeObj)
+                }
+                that.$apply();
+            })
+        },
+        // 获取输入框手机号
+        userNameInput (e) {
+            this.phone = e.detail.value
+        }
+    }
     onLoad () {
         const that = this;
         wx.getUserInfo({
@@ -148,56 +192,40 @@ export default class LoginPage extends wepy.page {
         })
     }
 
-    methods = {
-
-        // 提交表单
-        formSubmit (e) {
-            const that = this;
-            let data = {
-                "username": e.detail.value.username,
-                "passwd": code.hex_md5(e.detail.value.passwd)
-            }
-            this.login(data).then(data=>{
-                if(data.data.returnCode == "AAAAAAA") {
-
-                    // 存储信息到本地
-                    wx.setStorage({
-                        key:'loginData', 
-                        data:data.data
-                    });
-
-                    // 跳转到home页
-                    wx.switchTab({
-                        url: '../home/home'
-                    });
-
-                }else{
-                    that.warnword = data.data.returnMsg;
-                    that.$apply();
-                }
-            })
-        },
-
-        // 跳转注册页面
-        goRegistPage(){
-            wx.navigateTo({
-                url: 'regist'
-            });
-        }
-    }
-
-    //用户登录
-    async login(data) {
-        const json = await api.loginIn({
+    //新用户获取验证码及注册
+    async getCode(data,code) {
+        console.log(data)
+        const json = await api.getVerifyCode({
         query: {
-                head: {
-                    "transcode": "D0001",
+                "head": {
+                    "transcode": code,
                     "type": "h"
                 },
-                data: data
+                "data": data
             }
         })
         return json;
+    }
+    counttime(codeObj){
+        const that = this
+        var countdown = 60; 
+        (function settime() { 
+            if (countdown == 0) { 
+                that.codeObj.value = "发送验证码"; 
+                that.codeObj.status = true; 
+                countdown = 60; 
+                that.$apply();
+                return;
+            } else { 
+                that.codeObj.status = false; 
+                that.codeObj.value="重发(" + countdown + ")"; 
+                countdown--; 
+                that.$apply();
+            } 
+            setTimeout(function() { 
+                settime(codeObj) 
+            },1000) 
+        })()
     }
 }
 </script>
