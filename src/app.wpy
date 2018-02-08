@@ -10,16 +10,26 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/home/home',      
+      'pages/login/login',
+      'pages/login/regist',
+      'pages/login/set_password',
+      'pages/home/home', 
       'pages/personal/resume',
-      'pages/search/search',     
+      'pages/personal/certificate',
+      'pages/personal/edu_exper',
+      'pages/personal/project_exper', 
+      'pages/personal/work_exper', 
+      'pages/personal/job_want', 
+      'pages/personal/base_info', 
+      'pages/search/search',        
+      'pages/search/searchJob',
+      'pages/search/searchCorp',     
       'pages/personal/delivery', 
       'pages/personal/collection',
       'pages/personal/personal', 
       'pages/home/homeview', 
       'pages/corporation/corporation',   
       'pages/corporation/corpview', 
-      'pages/login/login'
     ],
     window: {
       backgroundTextStyle: 'light',
