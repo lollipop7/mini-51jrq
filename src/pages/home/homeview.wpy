@@ -1,5 +1,6 @@
 <style lang="scss">
   .homeview-container {
+    padding-bottom: 160rpx;
     .jobbrief-container {
       padding: 16rpx 28rpx;
       background-color: #fff; 
@@ -82,9 +83,10 @@
             height: 36rpx;
         }
         .addr-info {
+            margin-left: 12rpx;
+            width:100%;
             color: #888888;
             font-size: 28rpx;
-            margin-left: 12rpx;
         }
       }
     }
@@ -93,6 +95,46 @@
       .rel-title {
         font-size: 28rpx;
         color: #353535;
+      }
+    }
+    .fixed-foot-bar {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      height: 118rpx; 
+      border-top: 1px solid #E1E1E1;
+      background-color: #fcfcfc;
+      .tr-collect {
+        margin: 0 20rpx 0 40rpx;
+        width: 52rpx;
+        height: 50rpx;
+        image {
+          width: 52rpx;
+          height: 50rpx;
+        }
+      }
+      .tr-post {
+        width: 586rpx;
+        height: 80rpx;
+        .btn {
+          width: 586rpx;
+          height: 80rpx;
+          text-align: center;
+          font-size: 36rpx;
+          color: #fff;
+        }
+        .post-btn {
+          background-color: #ff9e00;
+        }
+        .posted-btn {
+          background-color: #d8d8d8;
+        }
+        
       }
     }
   }
@@ -135,7 +177,7 @@
         <view class="gray-line"></view>
         <view class="address">
             <image src="/images/icons/location_pink.png"></image>
-            <text class="addr-info">上海市浦东新区东方路999号9楼909</text>
+            <text class="addr-info">{{homeDetailInfo.corpInfo.address}}</text>
         </view>
       </view>
       <view class="gray-blank"></view>
@@ -144,6 +186,16 @@
         <repeat for="{{relatedJobs}}" item="item">
           <relatedjob :syncRelatedJob="item"></relatedjob>
         </repeat>
+      </view>
+      <view class="fixed-foot-bar">
+        <view class="tr-collect">
+          <image wx:if="{{isFav}}" @tap.stop="onCollectionFn" src='/images/icons/like_hl.png'></image>
+          <image wx:else @tap.stop="onCollectionFn" src='/images/icons/like.png'></image>
+        </view>
+        <view class="tr-post">
+          <button wx:if="{{isDelivery}}" @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
+          <button wx:else @tap.stop="onDeliverFn" class="btn posted-btn">已投递</button>
+        </view>
       </view>
   </view>
 </template>
@@ -171,7 +223,10 @@
         corpId: '',
         homeDetailInfo: {},
         jobInfo: {},
-        relatedJobs: []
+        relatedJobs: [],
+        isFav: false,   //未收藏
+        isDelivery: false,    //未投递
+        resumeId: ''
       }
 
       onLoad(options){
@@ -180,7 +235,18 @@
         this.viewCompanyjob();
       }
 
-      async viewCompanyjob(){
+      methods={
+        onCollectionFn(){
+          const that = this;
+          that.collectJob(that.jobId);
+        },
+        onDeliverFn(){
+          const that = this;
+          that.deliverJob(that.jobId, "9340016")
+        }
+      }
+
+      async viewCompanyjob(){//查看企业职位详细
         const that = this;
         const json = await api.getCompanyjob({
           query: {
@@ -200,11 +266,64 @@
           that.homeDetailInfo = { ...that.jobInfo, ...json.data.data };
           that.jobInfo = { ...that.jobInfo, ...json.data.data.jobInfo };
           that.relatedJobs = { ...that.relatedJobs, ...json.data.data.relatedJobs};
+          that.isFav = json.data.data.isFav;
+          that.isDelivery = json.data.data.isDelivery;
           that.$apply();
         } else {
-          tip.error(json.returnMsg);
+          tip.error(json.data.returnMsg);
         }
       }
+
+
+      async collectJob(jobid) {//企业职位收藏
+        const that = this;
+        const json = await api.getCompanyjob({
+          query: {
+            head: {
+                "transcode": "Q0004", 
+                "type": "h"
+            },
+            data: {
+                "token": utils.token,
+                "tokenKey": utils.tokenKey, 
+                "jobid": jobid
+            }
+          }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+          tip.success("职位收藏成功");
+          that.isFav = !that.isFav;
+          that.$apply();
+        } else {
+          tip.error(json.data.returnMsg);
+        }
+      }  
+
+      async deliverJob(jobid, resumeid) {//企业职位申请
+        const that = this;
+        const json = await api.getCompanyjob({
+          query: {
+            head: {
+                "transcode": "Q0003", 
+                "type": "h"
+            },
+            data: {
+                "token": utils.token,
+                "tokenKey": utils.tokenKey, 
+                "jobid": jobid,
+                "resumeid": resumeid
+            }
+          }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+          console.log("进入企业职位申请");
+          that.isDelivery = !that.isDelivery;
+          // tip.success();
+          that.$apply();
+        } else {
+          tip.error(json.data.returnMsg);
+        }
+      }  
     }
 </script>
 
