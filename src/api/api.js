@@ -30,6 +30,9 @@ const  loginIn = (params) => wxRequest(params, apimall + 'mobile/api/login');
 // 个人用户注册获取短信验证码
 const  getVerifyCode = (params) => wxRequest(params, apimall + 'mobile/api/regphone');
 
+// 修改头像
+const  changeHeadImg = (params) => wxRequest(params, apimall + 'mobile/api/pimg');
+
 module.exports = {
     getMobileHomeBanner,
     getCompanyjob,
@@ -38,6 +41,7 @@ module.exports = {
     getResumeInfo,
     getDictData,
     loginIn,
-    getVerifyCode 
+    getVerifyCode,
+    changeHeadImg 
 }
   

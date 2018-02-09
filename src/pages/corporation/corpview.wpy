@@ -102,7 +102,8 @@
   <view class="corp-view">
     <import src="../../wxParse/wxParse.wxml" />
     <view class="head">
-        <image src="{{corpDetails.corpInfo.logo}}" ></image>
+        <image src="{{corpDetails.corpInfo.logo}}" wx:if="{{corpDetails.corpInfo.logo != (''||undefined)}}" ></image>
+        <image src="/images/icons/upload_head.png" wx:else="{{corpDetails.corpInfo.logo != (''||undefined)}}" ></image>
         <view class="corp-name">{{corpDetails.corpInfo?corpDetails.corpInfo.corpname:'暂无'}}</view>
         <view class="corp-type">{{corpDetails.corpInfo.city}} | {{corpDetails.corpInfo.scope}} | {{corpDetails.corpInfo.industry}}</view>
     </view>
@@ -206,7 +207,7 @@ export default class CorpDatailsView extends wepy.page {
     if (json.data.returnCode == "AAAAAAA") {
       that.corpDetails = json.data.data;
       that.description = json.data.data.corpInfo.description;
-    //   that.description = towxml.html2wxml(json.data.data.corpInfo.description);
+      console.log(565656,json.data.data)
       console.log(that)
       that.$apply();
     } else {

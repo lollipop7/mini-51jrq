@@ -4,6 +4,7 @@
         .personal-container {
             display: flex;
             flex-direction: column;
+            position: relative;
             .personal-info {
                 background-color: white;
                 margin: 10rpx 0;
@@ -94,6 +95,50 @@
                 line-height: 80rpx;
                 margin-top: 20rpx;
             }
+            .alert-container {
+                position: fixed;
+                width: 100%;
+                height: 100vh;
+                background: black;
+                opacity: 0.5;
+            }
+            .alert-box{
+                width: 560rpx;
+                height: 290rpx;
+                background: white;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-left: -280rpx;
+                border-radius: 20rpx;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                .sure {
+                    width: 100%;
+                    height: 190rpx;
+                    font-size: 36rpx;
+                    line-height: 190rpx;
+                    border-bottom: 1rpx solid #e5e5e5;
+                    text-align: center;
+                }
+                .yesno {
+                    display: flex;
+                    flex-direction: row;
+                    text-align: center;
+                    line-height: 100rpx;
+                    .no {
+                        width: 280rpx;
+                        color: #b2b2b2;
+                        border-right: 1rpx solid #e5e5e5;
+                    }
+                    .yes {
+                        width: 280rpx;
+                        color: #ff9e00;
+                    }
+                }
+            }
         }
     }  
     
@@ -140,9 +185,17 @@
             </view>
         </view>
       </view>
-      <view class="exit">
+      <view class="exit" bindtap="logout">
           退出登录
       </view>
+    <view class="alert-container" wx:if = "{{showbox}}"></view>
+    <view class="alert-box" wx:if = "{{showbox}}">
+        <view class="sure">确认退出登录？</view>
+        <view class="yesno">
+            <view class="no" bindtap="cancel">取消</view>
+            <view class="yes" bindtap="yes">确定</view>
+        </view>
+    </view>
   </view>
 </template>
 
@@ -162,6 +215,7 @@ export default class PersPage extends wepy.page {
         tokenKey:'',
         have: true,
         resumeid: '',
+        showbox: false
     }
     onLoad() {
 
@@ -184,6 +238,11 @@ export default class PersPage extends wepy.page {
                 that.getResumeList().then(data=>{
                     if(data.data.returnCode == "AAAAAAA") {
                         that.resumeid = JSON.parse(data.data.data)[0].resumeid
+                        // 存储信息到本地
+                        wx.setStorage({
+                            key:'resumeid', 
+                            data:that.resumeid
+                        });
                         that.$apply();
                         that.getIntegrity(that.resumeid).then(data=>{
                             if(data.data.returnCode == "AAAAAAA") {
@@ -210,9 +269,9 @@ export default class PersPage extends wepy.page {
     methods = {
 
         // 跳转我的简历
-        goResumePage (resumeid) {
+        goResumePage () {
             wx.navigateTo({
-                url: `resume?resumeid=${resumeid}`
+                url: `resume`
             })
         },
 
@@ -228,9 +287,35 @@ export default class PersPage extends wepy.page {
             wx.navigateTo({
                 url: `collection`
             })
+        },
+
+        // 退出登录
+        logout () {
+            this.showbox = true;
+        },
+
+        // 取消
+        cancel () {
+            this.showbox = false;
+        },
+
+        // 确定
+        yes () {
+            // 清空本地信息
+            wx.setStorage({
+                key:'loginData', 
+                data:''
+            });
+            // 跳转登录页
+            wx.navigateTo({
+                url: `/pages/login/login`
+            })
         }
 
     };
+    onHide(){
+        this.showbox = false;
+    }
     //获取简历列表
     async getResumeList() {
         const json = await api.getCollectJob({

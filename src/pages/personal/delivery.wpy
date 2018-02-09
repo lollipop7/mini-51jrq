@@ -81,10 +81,7 @@ export default class DeliveryPage extends wepy.page {
         commposi: CommPosi 
     };
     onLoad() { 
-
-        // 获取已投递职位
-        this.getCollectJob()
-
+        
         // 获取登录信息
         const that = this;
         wx.getStorage({
@@ -93,9 +90,11 @@ export default class DeliveryPage extends wepy.page {
                 that.token = res.data.token;
                 that.tokenKey = res.data.tokenKey;
                 that.$apply();
+                // 获取已投递职位
                 that.getCollectJob(res.data.token,res.data.tokenKey)
             } 
         })
+
     }
 
     methods = {
@@ -120,7 +119,6 @@ export default class DeliveryPage extends wepy.page {
                 data: {
                     "token": token,
                     "tokenKey": tokenKey,
-                    "status": status,
                     "pageNo": currentPage || "1"
                 }
             }

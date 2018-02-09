@@ -139,6 +139,19 @@ export default class LoginPage extends wepy.page {
 
     onLoad () {
         const that = this;
+        // 获取登录信息
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                if(res.data.returnCode=="AAAAAAA"){
+                    // 跳转到home页
+                    wx.switchTab({
+                        url: '../home/home'
+                    });
+                }
+            }
+        })
+        // 获取用户信息
         wx.getUserInfo({
             success: function(res) {
                 that.nickname = res.userInfo.nickName;
