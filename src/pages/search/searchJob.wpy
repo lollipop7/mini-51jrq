@@ -26,7 +26,7 @@ import Search from '../../components/search';
 import CommPosi from '../../components/commposi';
 import CityList from '../../components/citylist';
 //绑定数据记得去掉，这里做调试
-const postData = require('../../data/companyjobs-data.js'); 
+// const postData = require('../../data/companyjobs-data.js'); 
 
 
 export default class SearchCorpPage extends wepy.page {
@@ -49,7 +49,7 @@ export default class SearchCorpPage extends wepy.page {
 
     onLoad(options){
         //绑定数据记得去掉，这里做调试
-        this.hunterjobList = postData.hunterjobList.list; 
+        // this.hunterjobList = postData.hunterjobList.list; 
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
         if (userSpecialInfo.city) {
             this.city = userSpecialInfo.city;

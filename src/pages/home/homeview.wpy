@@ -193,8 +193,8 @@
           <image wx:else @tap.stop="onCollectionFn" src='/images/icons/like.png'></image>
         </view>
         <view class="tr-post">
-          <button wx:if="{{isDelivery}}" @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
-          <button wx:else @tap.stop="onDeliverFn" class="btn posted-btn">已投递</button>
+          <button wx:if="{{isDelivery}}" @tap.stop="onDeliverFn" class="btn posted-btn">已投递</button>
+          <button wx:else @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
         </view>
       </view>
   </view>
@@ -205,6 +205,9 @@
     import api from '../../api/api';
     import tip from '../../utils/tip';
     import utils from '../../utils/utils';
+    import {
+      LOGIN_INFO
+    } from '../../utils/constants';
     import PosiNameDuty from '../../components/posinameduty';
     import RelatedJob from '../../components/relatedjob';
 
@@ -226,12 +229,14 @@
         relatedJobs: [],
         isFav: false,   //未收藏
         isDelivery: false,    //未投递
-        resumeId: ''
+        resumeId: '',
+        loginInfo: {}
       }
 
       onLoad(options){
         this.jobId = options.jobid;
         this.corpId = options.corpid;
+        this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
         this.viewCompanyjob();
       }
 
@@ -255,8 +260,8 @@
                 "type": "h"
             },
             "data": {
-                "token": utils.token,
-                "tokenKey": utils.tokenKey,
+                "token": that.loginInfo.token,
+                "tokenKey": that.loginInfo.tokenKey,
                 "corpid": this.corpId,
                 "jobid": this.jobId
             }
@@ -284,8 +289,8 @@
                 "type": "h"
             },
             data: {
-                "token": utils.token,
-                "tokenKey": utils.tokenKey, 
+                "token": that.loginInfo.token,
+                "tokenKey": that.loginInfo.tokenKey, 
                 "jobid": jobid
             }
           }
@@ -308,8 +313,8 @@
                 "type": "h"
             },
             data: {
-                "token": utils.token,
-                "tokenKey": utils.tokenKey, 
+                "token": that.loginInfo.token,
+                "tokenKey": that.loginInfo.tokenKey, 
                 "jobid": jobid,
                 "resumeid": resumeid
             }
