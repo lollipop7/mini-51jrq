@@ -38,9 +38,9 @@
     <view class="collection-container">
         <view class="operate-container">
             <view data-num="1" class="operate-btn {{_num==1?'operate-btn-active':''}}"  bindtap="menuClick">已投递</view>
-            <view data-num="2" data-status="0" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">待确认</view>
-            <view data-num="3" data-status="1" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">待面试</view>
-            <view data-num="4" data-status="2" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">已结束</view>
+            <view data-num="2" data-status="1" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">待确认</view>
+            <view data-num="3" data-status="2" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">待面试</view>
+            <view data-num="4" data-status="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">已结束</view>
         </view>
         <view wx:if="{{collectStatus}}">
             <repeat for="{{collectData}}" key="index" index="index" item="item"> 
@@ -70,7 +70,7 @@ export default class DeliveryPage extends wepy.page {
     }
     data = {
         _num: "1",
-        collectData: {},
+        collectData: [],
         warningWord:"",
         collectStatus: false,
         token:'',
@@ -125,17 +125,25 @@ export default class DeliveryPage extends wepy.page {
         })
         if (json.data.returnCode == "AAAAAAA") {
             that.collectStatus = true;
-            that.collectData = JSON.parse(json.data.data);
+            var collectData = JSON.parse(json.data.data);
+            if(status){
+                var result = collectData.find(element => element.status == status);
+                if(!result){
+                    result = [];
+                }
+                that.collectData = result;
+            }else if(status == undefined){
+                that.collectData = collectData;
+            }
             if(that.collectData.length==0){
                 that.collectStatus = false;
                 that.warningWord = "暂未查到更多信息";
             }
-            that.$apply();
         } else {
             that.collectStatus = false;
             that.warningWord = json.data.returnMsg;
-            that.$apply();
         }
+        that.$apply();
     }
 }
 </script>
