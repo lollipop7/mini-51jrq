@@ -102,7 +102,8 @@
   <view class="corp-view">
     <import src="../../wxParse/wxParse.wxml" />
     <view class="head">
-        <image src="{{corpDetails.corpInfo.logo}}" ></image>
+        <image src="{{corpDetails.corpInfo.logo}}" wx:if="{{corpDetails.corpInfo.logo != (''||undefined)}}" ></image>
+        <image src="/images/icons/upload_head.png" wx:else="{{corpDetails.corpInfo.logo != (''||undefined)}}" ></image>
         <view class="corp-name">{{corpDetails.corpInfo?corpDetails.corpInfo.corpname:'暂无'}}</view>
         <view class="corp-type">{{corpDetails.corpInfo.city}} | {{corpDetails.corpInfo.scope}} | {{corpDetails.corpInfo.industry}}</view>
     </view>
@@ -155,9 +156,6 @@ import tip from '../../utils/tip';
 const Towxml = require('towxml');
 const towxml = new Towxml();
 
-// 绑定数据记得去掉，这里做调试
-// const corpData = require('../../data/corps-detail.js');
-
 export default class CorpDatailsView extends wepy.page {
   config = {
       navigationBarTitleText: '公司详情',
@@ -173,16 +171,23 @@ export default class CorpDatailsView extends wepy.page {
   };
 
   onLoad(options){
-    // 绑定数据记得去掉，这里做调试
-    // this.corpDetails = corpData.corpDetails;
-    // this.description = this.corpDetails.corpInfo.description;
 
     // 获取公司详情数据
-    this.getCorpView(options.corpid, options.jobid)
+    // 获取登录信息
+    const that = this;
+    wx.getStorage({
+        key: 'loginData',
+        success: function(res) {
+            that.token = res.data.token;
+            that.tokenKey = res.data.tokenKey;
+            that.$apply();
+            that.getCorpView(res.data.token,res.data.tokenKey, options.corpid, options.jobid)
+        } 
+    })
   }
 
 //获取公司详情数据
-  async getCorpView(corpid,jobid) {
+  async getCorpView(token, tokenKey, corpid, jobid) {
     const that = this;
     const json = await api.getCompanyjob({
       query: {
@@ -191,8 +196,8 @@ export default class CorpDatailsView extends wepy.page {
             "type": "h"
         },
         data: {
-            "token": "59A88E02602AEE2F5707D96019C4D8BB3422FD7C444C883D48984DF1868B0423367F60D49642B5D4FF139FE3E441AF97D045FE1ACFE385B61DEB572B9346FEC2B8947FBB71397C9874F22274215C84EF77848721D21426CE",
-            "tokenKey": "5F1BCE1231A78D5C0746209F880DA25588108401CFBA3AF2E50DDFF100C625595ADFBF476980D29140DFD2E3058E649CB1FEC4749574B5D5",
+            "token": token,
+            "tokenKey": tokenKey,
             "corpid": corpid,
             "jobid": jobid
         }
@@ -202,7 +207,7 @@ export default class CorpDatailsView extends wepy.page {
     if (json.data.returnCode == "AAAAAAA") {
       that.corpDetails = json.data.data;
       that.description = json.data.data.corpInfo.description;
-    //   that.description = towxml.html2wxml(json.data.data.corpInfo.description);
+      console.log(565656,json.data.data)
       console.log(that)
       that.$apply();
     } else {

@@ -110,13 +110,14 @@
                 <view class="send-code" wx:else="{{codeObj.status}}" >{{codeObj.value}}</view>
             </view>
             <view class="enter">
-                <button class="save-btn" formType="submit">进入小程序</button>
+                <button class="save-btn" formType="submit">注册</button>
             </view>
         </form>
         <view class="regist" bindtap="goRegistPage">
             {{warnword}}{{obj.value}}
         </view>
     </view>
+    
 </template>
 
 <script>

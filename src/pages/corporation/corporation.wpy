@@ -24,12 +24,38 @@ export default class CorpPage extends wepy.page {
   }
 
   data = {
-    corplist: []
+    corplist: [],
+    showLoading: false,
+    isEmpty: false,
+    currentPage: 1,   //当前页面
+    totalPage: 0,    //总数
   }
 
   onLoad (options) { 
     //获取公司列表数据
     this.getCorpList()
+  }
+
+  /**
+ * 页面上拉触底事件的处理函数
+ */
+  onReachBottom(event) {
+    let that = this;
+    that.showLoading = true;
+    // console.log(that.totalPage + "===" + that.currentPage);
+      //判断总页数是否大于翻页数
+      if ((that.totalPage) > that.currentPage) {
+        //防止重复加载
+        if (that.preventRepeatReuqest) {
+          return true;
+        }
+        that.preventRepeatReuqest = true;
+        that.currentPage++;
+        that.getCorpList(that.currentPage);
+        that.preventRepeatReuqest = false;
+      } else {
+        that.showLoading = false;
+      }
   }
 
   async getCorpList(currentPage) {
@@ -47,10 +73,15 @@ export default class CorpPage extends wepy.page {
     })
     if (json.data.returnCode == "AAAAAAA") {
       that.corplist = [...that.corplist, ...json.data.data.list];
-      that.$apply();
+      that.totalPage =parseInt(json.data.data.num / 10);
+      if(json.data.data.num == 0) {
+        that.isEmpty = true;  //暂无数据
+      }
     } else {
       tip.error(json.returnMsg);
     }
+    that.$apply();
+    that.showLoading = false
   }  
 }
 </script>

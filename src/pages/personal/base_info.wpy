@@ -178,43 +178,55 @@
         livecity:'',
         livecitystatus:true,
         a_marital:'',
-        maritalstatus:true
+        maritalstatus:true,
+        token:'',
+        tokenKey:'',
+        resumeid: ''
     }
 
-      onLoad() { 
-            const arr = ["DICT_COMP_CITY","DICT_RESUME_WORKYEAR","DICT_RESUME_JOBSTATU","DICT_RESUME_WEDDING"]
-            const that = this;
-          //获取简历基本信息
-            this.getResumeInfo().then(json => {
-                if (json.data.returnCode == "AAAAAAA") {
-                    var baseInfo = JSON.parse(json.data.data);
-                    that.baseInfo = {
-                        "username": baseInfo.username,
-                        "borndate": baseInfo.borndate,
-                        "address": baseInfo.address,
-                        "workyears": baseInfo.workyears,
-                        "jobstatus": baseInfo.jobstatus,
-                        "livecityid": baseInfo.livecityid,
-                        "marital": baseInfo.marital,
-                        "telephone": baseInfo.telephone,
-                        "email": baseInfo.email
+      onLoad(options) { 
+        this.resumeid = options.resumeid; 
+        this.$apply();
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                //获取简历基本信息
+                that.getResumeInfo(options.resumeid,res.data.token,res.data.tokenKey).then(json => {
+                    if (json.data.returnCode == "AAAAAAA") {
+                        var baseInfo = JSON.parse(json.data.data);
+                        that.baseInfo = {
+                            "username": baseInfo.username,
+                            "borndate": baseInfo.borndate,
+                            "address": baseInfo.address,
+                            "workyears": baseInfo.workyears,
+                            "jobstatus": baseInfo.jobstatus,
+                            "livecityid": baseInfo.livecityid,
+                            "marital": baseInfo.marital,
+                            "telephone": baseInfo.telephone,
+                            "email": baseInfo.email
+                        }
+                        that.username = baseInfo.username;
+                        that.borndate = baseInfo.borndate;
+                        that.workcity = baseInfo.address;
+                        that.a_workyears = baseInfo.workyears;
+                        that.a_jobstatus = baseInfo.jobstatus;
+                        that.livecity = baseInfo.livecityid;
+                        that.a_marital = baseInfo.marital;
+                        that.telephone = baseInfo.telephone;
+                        that.email = baseInfo.email;
+                        that.$apply();
+                    } else {
+                        tip.error(json.returnMsg);
                     }
-                    that.username = baseInfo.username;
-                    that.borndate = baseInfo.borndate;
-                    that.workcity = baseInfo.address;
-                    that.a_workyears = baseInfo.workyears;
-                    that.a_jobstatus = baseInfo.jobstatus;
-                    that.livecity = baseInfo.livecityid;
-                    that.a_marital = baseInfo.marital;
-                    that.telephone = baseInfo.telephone;
-                    that.email = baseInfo.email;
-                    that.$apply();
-                } else {
-                    tip.error(json.returnMsg);
-                }
-            })
-
-          // 获取数据字典
+                })
+            } 
+        })
+            // 获取数据字典
+            const arr = ["DICT_COMP_CITY","DICT_RESUME_WORKYEAR","DICT_RESUME_JOBSTATU","DICT_RESUME_WEDDING"]
             arr.forEach((item,index) => {
             switch (item)
             {
@@ -226,7 +238,6 @@
                         arr.push(item.label)
                     })
                     that.city = arr;
-                    console.log(arr)
                     that.$apply();
                 } else {
                     tip.error(json.returnMsg);
@@ -281,8 +292,15 @@
       methods = {
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
-            console.log('form发生了submit事件，携带数据为：', e.detail.value)
-            this.changeBaseInfo(e.detail.value).then(data=>{
+            var obj2 = {
+                "token": this.token,
+                "tokenKey": this.tokenKey,
+                "resumeid": this.resumeid
+            }
+            if(!obj2.resumeid){
+                delete obj2['resumeid']
+            }
+            this.changeBaseInfo(e.detail.value,obj2).then(data=>{
                 if(data.data && data.data.returnCode == "AAAAAAA") {
                     wx.navigateTo({
                         url: `resume`
@@ -342,7 +360,7 @@
     }
 
     //获取简历基本信息
-    async getResumeInfo(code) {
+    async getResumeInfo(resumeid, token, tokenKey) {
         const json = await api.getResumeInfo({
         query: {
                 head: {
@@ -350,21 +368,17 @@
                     "type": "h"
                 },
                 data: {
-                    "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
-                    "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
-                    "resumeid": "2513998501"
+                    "token": token,
+                    "tokenKey": tokenKey,
+                    "resumeid": resumeid
                 }
             }
         })
         return json;
     }
     //修改表单数据
-    async changeBaseInfo(obj) {
-        var data = {
-            "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
-            "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
-            "resumeid": "2513998501"
-        }
+    async changeBaseInfo(obj, obj2) {
+        var data = obj2
         for (var Key in obj){
             if(!obj[Key]){
                 delete obj[Key]

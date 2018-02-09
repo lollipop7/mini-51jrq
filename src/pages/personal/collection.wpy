@@ -41,9 +41,6 @@ import api from '../../api/api';
 import tip from '../../utils/tip';
 import CommPosi from '../../components/commposi';
 
-// 绑定数据记得去掉，这里做调试
-// const collectData = require('../../data/collect-data.js');
-
 export default class CollectionPage extends wepy.page {
     config = {
         navigationBarTitleText: '我的收藏',
@@ -52,20 +49,32 @@ export default class CollectionPage extends wepy.page {
         collectStatus: false,
         warningWord: "",
         collectData: [],
+        token:'',
+        tokenKey:''
     }
 
     components = {
         commposi: CommPosi 
     };
     onLoad() { 
-        // 绑定数据记得去掉，这里做调试
-        // this.collectData = JSON.parse(collectData.collectData.data);
 
         // 获取收藏职位
         this.getCollectJob()
+
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.$apply();
+                that.getCollectJob(res.data.token,res.data.tokenKey)
+            } 
+        })
     }
 
-    async getCollectJob(currentPage) {
+    async getCollectJob(token,tokenKey,currentPage) {
         const that = this;
         const json = await api.getCollectJob({
             query: {
@@ -74,8 +83,8 @@ export default class CollectionPage extends wepy.page {
                     "type": "h"
                 },
                 data: {
-                    "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
-                    "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
+                    "token": token,
+                    "tokenKey": tokenKey,
                     "pageNo": currentPage || "1"
                 }
             }
@@ -87,7 +96,6 @@ export default class CollectionPage extends wepy.page {
                 that.collectStatus = false;
                 that.warningWord = "还没有收藏过职位哦";
             }
-            console.log(that.collectData)
             that.$apply();
         } else {
             that.collectStatus = false;

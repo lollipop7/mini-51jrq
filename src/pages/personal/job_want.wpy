@@ -163,38 +163,52 @@
         index3: "",
         index4: "",
         index5: "",
-        jobApply: {}
+        jobApply: {},
+        token: "",
+        tokenKey: "",
+        resumeid:''
     }
 
-    onLoad() { 
+    onLoad(options) { 
+        this.resumeid = options.resumeid;
+        this.$apply();
         const arr = ['DICT_JOB_JOBTYPE','DICT_COMP_INDUSTRY','DICT_COMP_CITY','DICT_RESUME_ESC','DICT_RESUME_POSTTIME']
         const that = this;
-
-        //获取求职意向
-        this.getJobInfo().then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            var jobApply = JSON.parse(json.data.data);
-            that.jobApply = {
-                "jobnature": jobApply.jobnature,
-                "postids": jobApply.postids,
-                "sitecity": jobApply.sitecity,
-                "expectsalarycode": jobApply.expectsalarycode,
-                "poststime": jobApply.poststime,
-                "functions": jobApply.functions,
-                "selfremark": jobApply.selfremark
-            }
-            that.a_jobnature = jobApply.jobnature;
-            that.a_postids = jobApply.postids;
-            that.a_sitecity = jobApply.sitecity;
-            that.a_expectsalarycode = jobApply.expectsalarycode;
-            that.a_poststime = jobApply.poststime;
-            that.functions = jobApply.functions;
-            that.selfremark = jobApply.selfremark;
-            that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
+        // 获取登录信息
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.$apply();
+                //获取求职意向
+                that.getJobInfo(res.data.token, res.data.tokenKey, that.resumeid).then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var jobApply = JSON.parse(json.data.data);
+                    that.jobApply = {
+                        "jobnature": jobApply.jobnature,
+                        "postids": jobApply.postids,
+                        "sitecity": jobApply.sitecity,
+                        "expectsalarycode": jobApply.expectsalarycode,
+                        "poststime": jobApply.poststime,
+                        "functions": jobApply.functions,
+                        "selfremark": jobApply.selfremark
+                    }
+                    that.a_jobnature = jobApply.jobnature;
+                    that.a_postids = jobApply.postids;
+                    that.a_sitecity = jobApply.sitecity;
+                    that.a_expectsalarycode = jobApply.expectsalarycode;
+                    that.a_poststime = jobApply.poststime;
+                    that.functions = jobApply.functions;
+                    that.selfremark = jobApply.selfremark;
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+                })
+            } 
         })
+        
 
         // 获取数据字典
             arr.forEach((item,index) => {
@@ -277,8 +291,15 @@
     methods = {
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
-            this.changeBaseInfo(e.detail.value).then(data=>{
-                console.log(data.data.returnCode)
+            var obj2 = {
+                "token": this.token,
+                "tokenKey": this.tokenKey,
+                "resumeid": this.resumeid
+            }
+            if(!obj2.resumeid){
+                delete obj2['resumeid']
+            }
+            this.changeBaseInfo(e.detail.value,obj2).then(data=>{
                 if(data.data && data.data.returnCode == "AAAAAAA") {
                     wx.navigateTo({
                         url: `resume`
@@ -316,7 +337,7 @@
     }
 
     //获取简历基本信息
-    async getJobInfo() {
+    async getJobInfo(token, tokenKey, resumeid) {
         const json = await api.getResumeInfo({
         query: {
                 head: {
@@ -324,9 +345,9 @@
                     "type": "h"
                 },
                 data: {
-                    "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
-                    "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
-                    "resumeid": "2513998501"
+                    "token": token,
+                    "tokenKey": tokenKey,
+                    "resumeid": resumeid
                 }
             }
         })
@@ -350,12 +371,8 @@
         return json;
     }
     //修改表单数据
-    async changeBaseInfo(obj) {
-        var data = {
-            "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
-            "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
-            "resumeid": "2513998501"
-        }
+    async changeBaseInfo(obj,obj2) {
+        var data = obj2
         for (var Key in obj){
             if(!obj[Key]){
                 delete obj[Key]
