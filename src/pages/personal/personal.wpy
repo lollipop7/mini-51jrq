@@ -102,14 +102,14 @@
 <template>
   <view class="personal-container">
       <view class="personal-info">
-          <image src="/images/corporation/bitmap.png"></image>
+          <image src="{{headimg}}"></image>
           <view class="name-intro">
-              <view class="name">吴彦祖</view>
-              <view class="intro">上海腾龙资本有限公司 | 高级理财顾问</view>
+              <view class="name">{{username}}</view>
+              <view class="intro">{{companyname}} <text wx:if="{{have}}">|</text> {{jobname}}</view>
           </view>
       </view>
       <view class="my-function">
-          <view class="fun-line" bindtap="goResumePage">
+          <view class="fun-line" bindtap="goResumePage({{resumeid}})">
             <view class="img-title">
                 <image src="/images/icons/resume.png"></image>
                 <text>我的简历</text>
@@ -148,31 +148,71 @@
 
 <script>
 import wepy from 'wepy';
-
-// 绑定数据记得去掉，这里做调试
-const resumePer = require('../../data/resume-percent.js'); 
+import api from '../../api/api';
 
 export default class PersPage extends wepy.page {
     data = {
         // 简历完成百分比
-        percentage: '0%'
+        percentage: '0%',
+        username:'',
+        headimg:'',
+        companyname:'',
+        jobname:'',
+        token:'',
+        tokenKey:'',
+        have: true,
+        resumeid: '',
     }
     onLoad() {
-        // 绑定数据记得去掉，这里做调试
-        let result =  resumePer.resumePer.data[0];
-        delete result.resumeid;
-        let addResult = 0;
-        for (var key in result){
-            addResult += result[key]
-        }
-        this.percentage = addResult + '%';
+
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.username = res.data.data.username;
+                that.headimg = res.data.data.headimg;
+                that.companyname = res.data.data.companyname;
+                that.jobname = res.data.data.jobname;
+                if(!res.data.data.companyname || !res.data.data.jobname){
+                    that.have = false;
+                }
+                that.$apply();
+                // 获取简历列表
+                that.getResumeList().then(data=>{
+                    if(data.data.returnCode == "AAAAAAA") {
+                        that.resumeid = JSON.parse(data.data.data)[0].resumeid
+                        that.$apply();
+                        that.getIntegrity(that.resumeid).then(data=>{
+                            if(data.data.returnCode == "AAAAAAA") {
+                                let result = JSON.parse(data.data.data)[0];
+                                delete result.resumeid;
+                                let addResult = 0;
+                                for (var key in result){
+                                    addResult += result[key]
+                                }
+                                that.percentage = addResult + '%';
+                                that.$apply();
+                            }else{
+                               console.log('getIntegrity',data) 
+                            }
+                        })
+                    }else{
+                        console.log(data)
+                    }
+                })
+            } 
+        })
+
     }
     methods = {
 
         // 跳转我的简历
-        goResumePage () {
+        goResumePage (resumeid) {
             wx.navigateTo({
-                url: `resume`
+                url: `resume?resumeid=${resumeid}`
             })
         },
 
@@ -191,5 +231,39 @@ export default class PersPage extends wepy.page {
         }
 
     };
+    //获取简历列表
+    async getResumeList() {
+        const json = await api.getCollectJob({
+        query: {
+                head: {
+                    "transcode": "P0001",
+                    "type": "h"
+                },
+                data: {
+                    "token": this.token,
+                    "tokenKey": this.tokenKey
+                }
+            }
+        })
+        return json;
+    }
+
+    //完整度查询
+    async getIntegrity(resumeid) {
+        const json = await api.getResumeInfo({
+        query: {
+                head: {
+                    "transcode": "M0002",
+                    "type": "h"
+                },
+                data: {
+                    "token": this.token,
+                    "tokenKey": this.tokenKey,
+                    "resumeid": resumeid
+                }
+            }
+        })
+        return json;
+    }
 }
 </script>

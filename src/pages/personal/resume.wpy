@@ -119,7 +119,8 @@
 <template>
   <view class="resume-container">
       <view class="head">
-        <image src="/images/icons/upload_head.png"></image>
+        <image src="{{headimg}}" wx:if="{{headimg !== ''}}"></image>
+        <image src="/images/icons/upload_head.png" wx:else="{{headimg == ''}}"></image>
         <view>点击上传头像</view>
       </view>
       <!-- 基本信息 -->
@@ -300,83 +301,96 @@ export default class resumePage extends wepy.page {
     eduExper: {},      // 教育经历
     projectExper: {},  // 项目经验
     certificate: {},    // 证书
-    sex: true
+    sex: true,
+    token: '',
+    tokenKey: '',
+    headimg: ''
   }
 
-  onLoad() { 
-    // 绑定数据记得去掉，这里做调试
-    // this.collectData = JSON.parse(collectData.collectData.data);
+  onLoad(options) { 
 
-    // 获取简历信息
-    const arr = ["M0003","M0004","M0005","M0006","M0008","M0010"]
+    // 获取登录信息
     const that = this;
-    arr.forEach((item,index) => {
-      switch (item)
-      {
-      case "M0003":// 基本信息
-        this.getJobInfo(item).then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            that.baseInfo = JSON.parse(json.data.data);
-            that.sex = (that.baseInfo.sex == "男");
+    wx.getStorage({
+        key: 'loginData',
+        success: function(res) {
+          console.log(res.data)
+            that.token = res.data.token;
+            that.tokenKey = res.data.tokenKey;
+            that.headimg = res.data.data.headimg;
             that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
-        })
-        break;
-      case "M0004":// 求职意向
-        this.getJobInfo(item).then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            that.jobApply = JSON.parse(json.data.data);
-            that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
-        })
-        break;
-      case "M0005":// 工作经历
-        this.getJobInfo(item).then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            that.workExper = JSON.parse(json.data.data);
-            that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
-        })
-        break;
-      case "M0006":// 教育经历
-        this.getJobInfo(item).then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            that.eduExper = JSON.parse(json.data.data);
-            that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
-        })
-        break;
-      case "M0008":// 项目经验
-        this.getJobInfo(item).then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            that.projectExper = JSON.parse(json.data.data);
-            that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
-        })
-        break;
-      case "M0010":// 证书
-        this.getJobInfo(item).then(json => {
-          if (json.data.returnCode == "AAAAAAA") {
-            that.certificate = JSON.parse(json.data.data);
-            that.$apply();
-          } else {
-            tip.error(json.returnMsg);
-          }
-        })
-        break;
-      }
-      
-    });
+            // 获取简历信息
+            const arr = ["M0003","M0004","M0005","M0006","M0008","M0010"]
+            arr.forEach((item,index) => {
+              switch (item)
+              {
+              case "M0003":// 基本信息
+                that.getJobInfo(item, options.resumeid, that.token, that.tokenKey).then(json => {
+                  if (json.data.returnCode == "AAAAAAA") {
+                    that.baseInfo = JSON.parse(json.data.data);
+                    that.sex = (that.baseInfo.sex == "男");
+                    that.$apply();
+                  } else {
+                    tip.error(json.returnMsg);
+                  }
+                })
+                break;
+              case "M0004":// 求职意向
+                that.getJobInfo(item, options.resumeid, that.token, that.tokenKey).then(json => {
+                  if (json.data.returnCode == "AAAAAAA") {
+                    that.jobApply = JSON.parse(json.data.data);
+                    that.$apply();
+                  } else {
+                    tip.error(json.returnMsg);
+                  }
+                })
+                break;
+              case "M0005":// 工作经历
+                that.getJobInfo(item, options.resumeid, that.token, that.tokenKey).then(json => {
+                  if (json.data.returnCode == "AAAAAAA") {
+                    that.workExper = JSON.parse(json.data.data);
+                    that.$apply();
+                  } else {
+                    tip.error(json.returnMsg);
+                  }
+                })
+                break;
+              case "M0006":// 教育经历
+                that.getJobInfo(item, options.resumeid, that.token, that.tokenKey).then(json => {
+                  if (json.data.returnCode == "AAAAAAA") {
+                    that.eduExper = JSON.parse(json.data.data);
+                    that.$apply();
+                  } else {
+                    tip.error(json.returnMsg);
+                  }
+                })
+                break;
+              case "M0008":// 项目经验
+                that.getJobInfo(item, options.resumeid, that.token, that.tokenKey).then(json => {
+                  if (json.data.returnCode == "AAAAAAA") {
+                    that.projectExper = JSON.parse(json.data.data);
+                    that.$apply();
+                  } else {
+                    tip.error(json.returnMsg);
+                  }
+                })
+                break;
+              case "M0010":// 证书
+                that.getJobInfo(item, options.resumeid, that.token, that.tokenKey).then(json => {
+                  if (json.data.returnCode == "AAAAAAA") {
+                    that.certificate = JSON.parse(json.data.data);
+                    that.$apply();
+                  } else {
+                    tip.error(json.returnMsg);
+                  }
+                })
+                break;
+              }
+            });
+        } 
+    })
+
+    
   }
   methods = {
 
@@ -439,7 +453,7 @@ export default class resumePage extends wepy.page {
     };
   
     //获取公司详情数据
-  async getJobInfo(code) {
+  async getJobInfo(code,resumeid,token,tokenKey) {
     const json = await api.getResumeInfo({
       query: {
         head: {
@@ -447,9 +461,9 @@ export default class resumePage extends wepy.page {
           "type": "h"
         },
         data: {
-          "token": "BB15B9673B4BB7D05E3927C225E57D624F658F6A5D5D728E47A34E3E3AE4722B6324F8DA0935EE5A2273942AE2F68BE39E18346998E51D90B67753E6BEBE3F419C57A749097DF6B3363D0361B317922D273CB57209A971B7",
-          "tokenKey": "17A84534D6AC38ABB9F0964E317B1A5CECBAD80B96DEEB9A16812339366A56C59E28577920CBA4380CE56DCB0E690192BDF6EBB12DDBAA18",
-          "resumeid": "2513998501"
+          "token": token,
+          "tokenKey": tokenKey,
+          "resumeid": resumeid
         }
       }
     })

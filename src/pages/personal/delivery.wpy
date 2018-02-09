@@ -72,18 +72,30 @@ export default class DeliveryPage extends wepy.page {
         _num: "1",
         collectData: {},
         warningWord:"",
-        collectStatus: false
+        collectStatus: false,
+        token:'',
+        tokenKey:''
     }
 
     components = {
         commposi: CommPosi 
     };
     onLoad() { 
-        // 绑定数据记得去掉，这里做调试
-        // this.collectData = JSON.parse(collectData.collectData.data);
 
         // 获取已投递职位
         this.getCollectJob()
+
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.$apply();
+                that.getCollectJob(res.data.token,res.data.tokenKey)
+            } 
+        })
     }
 
     methods = {
@@ -92,12 +104,12 @@ export default class DeliveryPage extends wepy.page {
         menuClick (e) {
             const _status = e.target.dataset.status;
             this._num = e.target.dataset.num;
-            this.getCollectJob(_status);
+            this.getCollectJob(this.token, this.tokenKey, _status);
         }
 
     };
 
-    async getCollectJob(status, currentPage) {
+    async getCollectJob(token, tokenKey, status, currentPage) {
         const that = this;
         const json = await api.getCollectJob({
             query: {
@@ -106,8 +118,8 @@ export default class DeliveryPage extends wepy.page {
                     "type": "h"
                 },
                 data: {
-                    "token": "81EEAEF84457BB3B4C054210016DB7173C896F9C0754D1F6B0500FF111E915E26507F982EB9AD54BB6455BE5B88CE363CF6C72686C682C738AA7A8C8714777AC528BE5A4E5AF3C6338FD51C4D93ACB1B7A76670096500916",
-                    "tokenKey": "17A84534D6AC38ABBB52DC54DAB9ADAA4B42D142FC068AB995A5EDCC4910D0C55D30774FB4AFDCF5E719EA14DD11CBBE30B075EC463D1F8E",
+                    "token": token,
+                    "tokenKey": tokenKey,
                     "status": status,
                     "pageNo": currentPage || "1"
                 }
