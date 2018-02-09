@@ -127,6 +127,9 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
+import {
+    LOGIN_INFO
+} from '../../utils/constants';
 
 // md5加密
 const code = require('../../utils/md5.js');
@@ -176,10 +179,17 @@ export default class LoginPage extends wepy.page {
                 if(data.data.returnCode == "AAAAAAA") {
 
                     // 存储信息到本地
+                    let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+                    loginInfo.tokenKey = data.data.tokenKey;
+                    loginInfo.token = data.data.token;
+                    loginInfo.headimg = data.data.data.headimg;
+                    wx.setStorageSync(LOGIN_INFO, loginInfo);
+
                     wx.setStorage({
                         key:'loginData', 
                         data:data.data
                     });
+
 
                     // 跳转到home页
                     wx.switchTab({

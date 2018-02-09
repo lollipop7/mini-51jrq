@@ -2,8 +2,13 @@ import {
     wxRequest
 } from '../utils/wxrequest'; 
 
+<<<<<<< HEAD
 // const apimall = 'http://192.168.1.251:8089/mobile';
 const apimall = 'https://m.51jrq.com/mobile2';
+=======
+const apimall = 'http://192.168.1.251:8089/mobile';
+// const apimall = 'https://m.51jrq.com/mobile2';
+>>>>>>> 1b6d0ccca60c29d4c150ec3f6a55dde2d61c2d49
 const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1'
 
 //得到首页banner图片列表
