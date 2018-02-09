@@ -331,6 +331,7 @@ export default class resumePage extends wepy.page {
                       if (json.data.returnCode == "AAAAAAA") {
                         that.baseInfo = JSON.parse(json.data.data);
                         that.sex = (that.baseInfo.sex == "男");
+                        console.log(baseInfo)
                         that.$apply();
                       } else {
                         tip.error(json.returnMsg);
@@ -391,6 +392,9 @@ export default class resumePage extends wepy.page {
                 });
             } 
         })
+      },
+      fail:function(res){
+        console.log(res)
       }
     })
   }

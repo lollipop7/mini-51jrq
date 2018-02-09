@@ -147,7 +147,8 @@
 <template>
   <view class="personal-container">
       <view class="personal-info">
-          <image src="{{headimg}}"></image>
+          <image src="{{headimg}}" wx:if="{{headimg != (''||undefined)}}"></image>
+          <image src="/images/icons/upload_head.png" wx:else="{{headimg != (''||undefined)}}"></image>
           <view class="name-intro">
               <view class="name">{{username}}</view>
               <view class="intro">{{companyname}} <text wx:if="{{have}}">|</text> {{jobname}}</view>
@@ -262,7 +263,10 @@ export default class PersPage extends wepy.page {
                         console.log(data)
                     }
                 })
-            } 
+            },
+            fail: function(res) {
+                that.have = false;
+            }
         })
 
     }
