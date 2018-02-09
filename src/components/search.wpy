@@ -70,7 +70,7 @@
         <view class="search-content">
             <view @tap="trShowCityFn" class="city-cascade">
                 <text>{{city}}</text>
-                <image class="arrow-img" src="/images/icons/arrow-down.png"></image>
+                <image class="arrow-img" src="/images/icons/arrow-down.png"/>
             </view>
             <view class='ver'></view>
             <input type="text" 
@@ -80,9 +80,9 @@
                 focus="true"
                 confirm-type="search"
                 maxlength="-1"
-                bindinput="onSearchInputFn" 
+                bindfocus="onSearchInputFn" 
                 value="{{search_input_value}}"
-            >
+            />
             <icon class='cancel-img' @tap="delTextFn" wx:if="{{search_input_value!=''}}" type="clear" color="#888" size="14"></icon>
         </view>
         <text class="btn btn-cancel" @tap="goBackFn" wx:if="{{search_input_value==''}}">取消</text>
@@ -120,24 +120,24 @@ export default class Search extends wepy.component {
     }
 
     methods={
-        trShowCityFn: function(even){ 
+        trShowCityFn: function(event){ 
             const that = this;
             that.isShowCity = true;
             that.$emit('trShowCityFn', that.isShowCity);
         },
-        onSearchInputFn: function (even) {
-            this.search_input_value = even.detail.value;
+        onSearchInputFn: function (event) {
+            this.search_input_value = event.detail.value;
         },
-        delTextFn: function (even) {
+        delTextFn: function (event) {
             this.search_input_value = '';
             this.$emit('trUnderSearchFn', false);
         },
-        goBackFn: function (even) {
+        goBackFn: function (event) {
             wepy.navigateTo({
               url: "search"
             })
         }, 
-        searchFn: function (even) { //完成“搜索”
+        searchFn: function (event) { //完成“搜索”
             const that = this;
             this.$emit('searchFn', that.search_input_value); 
         }

@@ -28,6 +28,10 @@
       <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
         <commposi :syncPosidata.sync="item"></commposi> 
       </repeat>
+      <!--加载更多时动画-->
+      <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+      <!--暂无数据显示-->
+      <placeholder :syncShow.sync="isEmpty" message="暂无发现数据"></placeholder>
     </view>
   </view>
 </template>
@@ -38,6 +42,8 @@ import api from '../../api/api';
 import tip from '../../utils/tip';
 import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
+import BottomLoadMore from "../../components/bottomloadmore";
+import PlaceHolder from "../../components/placeholder";
 
 //绑定数据记得去掉，这里做调试
 // const postData = require('../../data/companyjobs-data.js');
@@ -46,18 +52,46 @@ export default class HomePage extends wepy.page {
   
   components = {
     bannersearch: BannerSearch,
-    commposi: CommPosi 
+    commposi: CommPosi,
+    bottomloadmore: BottomLoadMore,
+    placeholder: PlaceHolder
   }
 
   data ={
     posiList: [],
-    hunterjobList: {}
+    hunterjobList: {},
+    showLoading: false,
+    isEmpty: false,
+    currentPage: 1,   //当前页面
+    totalPage: 0,    //总数
   }
 
   onLoad (options) { 
     //绑定数据记得去掉，这里做调试
     // this.hunterjobList = postData.hunterjobList.list;
     this.getCompanyjob()
+  }
+
+  /**
+ * 页面上拉触底事件的处理函数
+ */
+  onReachBottom(event) {
+    let that = this;
+    that.showLoading = true;
+    // console.log(that.totalPage + "===" + that.currentPage);
+      //判断总页数是否大于翻页数
+      if ((that.totalPage) > that.currentPage) {
+        //防止重复加载
+        if (that.preventRepeatReuqest) {
+          return true;
+        }
+        that.preventRepeatReuqest = true;
+        that.currentPage++;
+        that.getCompanyjob(that.currentPage);
+        that.preventRepeatReuqest = false;
+      } else {
+        that.showLoading = false;
+      }
   }
 
   async getCompanyjob(currentPage) {
@@ -69,16 +103,21 @@ export default class HomePage extends wepy.page {
             "type": "h"
         },
         data: {
-            pageNo: currentPage || "1"  
+            pageNo: currentPage || 1  
         }
       }
     })
     if (json.data.returnCode == "AAAAAAA") {
       that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
-      that.$apply();
+      that.totalPage =parseInt(json.data.data.num / 10);
+      if(json.data.data.num == 0) {
+        that.isEmpty = true;  //暂无数据
+      }
     } else {
-      tip.error(json.returnMsg);
+      tip.error(json.data.returnMsg);
     }
+    that.$apply();
+    that.showLoading = false
   }  
   
     // getHunterjob(currentPage){

@@ -6,6 +6,9 @@ const apimall = 'http://192.168.1.251:8089/';
 // const apimall = 'https://m.51jrq.com/';
 const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1'
 
+//得到首页banner图片列表
+const getMobileHomeBanner = (params) => wxRequest(params, apimall + 'mobile/api/ad_show/getMobileHomeBanner');
+
 //获取猎头职位
 const  getCompanyjob = (params) => wxRequest(params, apimall + 'mobile/api/companyjob');
 
@@ -28,6 +31,7 @@ const  loginIn = (params) => wxRequest(params, apimall + 'mobile/api/login');
 const  getVerifyCode = (params) => wxRequest(params, apimall + 'mobile/api/regphone');
 
 module.exports = {
+    getMobileHomeBanner,
     getCompanyjob,
     getCityName,
     getCollectJob,
