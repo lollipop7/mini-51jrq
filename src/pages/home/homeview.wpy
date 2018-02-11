@@ -204,12 +204,13 @@
     import wepy from 'wepy';
     import api from '../../api/api';
     import tip from '../../utils/tip';
-    import utils from '../../utils/utils';
     import {
       LOGIN_INFO
     } from '../../utils/constants';
     import PosiNameDuty from '../../components/posinameduty';
     import RelatedJob from '../../components/relatedjob';
+
+    const utils = require('../../utils/utils');
 
     export default class HomeView extends wepy.page {
       config = {
@@ -242,10 +243,14 @@
 
       methods={
         onCollectionFn(){
+          // 未登录跳转登录页
+          utils.goLogin()
           const that = this;
           that.collectJob(that.jobId);
         },
         onDeliverFn(){
+          // 未登录跳转登录页
+          utils.goLogin()
           const that = this;
           that.deliverJob(that.jobId, "9340016")
         }
@@ -328,7 +333,7 @@
         } else {
           tip.error(json.data.returnMsg);
         }
-      }  
+      }
     }
 </script>
 

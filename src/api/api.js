@@ -15,7 +15,7 @@ const  getCompanyjob = (params) => wxRequest(params, apimall + '/api/companyjob'
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
 
-//  获取我的收藏及投递记录
+//  获取我的收藏及投递记录 
 const  getCollectJob = (params) => wxRequest(params, apimall + '/api/persoanl');
 
 // 获取简历信息

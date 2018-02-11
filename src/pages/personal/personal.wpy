@@ -203,6 +203,7 @@
 <script>
 import wepy from 'wepy';
 import api from '../../api/api';
+const utils = require('../../utils/utils');
 
 export default class PersPage extends wepy.page {
     data = {
@@ -274,6 +275,8 @@ export default class PersPage extends wepy.page {
 
         // 跳转我的简历
         goResumePage () {
+            // 未登录跳转登录页
+            utils.goLogin()
             wx.navigateTo({
                 url: `resume`
             })
@@ -281,6 +284,8 @@ export default class PersPage extends wepy.page {
 
         // 跳转投递状态
         goDeliveryPage () {
+            // 未登录跳转登录页
+            utils.goLogin()
             wx.navigateTo({
                 url: `delivery`
             })
@@ -288,6 +293,8 @@ export default class PersPage extends wepy.page {
 
         // 跳转我的收藏
         goCollectionPage () {
+            // 未登录跳转登录页
+            utils.goLogin()
             wx.navigateTo({
                 url: `collection`
             })
@@ -306,10 +313,7 @@ export default class PersPage extends wepy.page {
         // 确定
         yes () {
             // 清空本地信息
-            wx.setStorage({
-                key:'loginData', 
-                data:''
-            });
+            wx.clearStorage()
             // 跳转登录页
             wx.navigateTo({
                 url: `/pages/login/login`

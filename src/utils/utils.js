@@ -1,7 +1,12 @@
-const token = "F9F732538B81E252DD074DFBCF7E12676689D4D8098893EC12DDF37266DAA15D5A71B566044030C7E5288731CC939C8E2FE8DC41584146A48E47AEA067BCF63D1B27EF36E04EBCE2051C7FF0AED873ED1CFD5EBD3DF38CE8";
-const tokenKey = "0B0E03BC4DB069FD6582605485EB21B856621ABA1E4AF4515D1A45B251CBE4F644861BF69B8CEC9F3762A8E3736A613C46310C98DEA794BA";
-
-export default class utils {
-    token;
-    tokenKey
+// 未登录跳转登录页
+export const goLogin = function(){
+    wx.getStorage({
+        key: 'loginData',
+        fail: function(){
+            wx.navigateTo({
+                url: '../login/login'
+            });
+            return;
+        }
+    })
 }
