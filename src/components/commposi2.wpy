@@ -90,7 +90,7 @@
     </view>
       <view class="corp-brief">
           <view class="logo">
-              <image src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/icons/upload_head.png'}}"></image>
+              <image mode="aspectFit" src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/icons/upload_head.png'}}"></image>
           </view>
           <view class="corp-info">
               <text class="corp-name">{{syncPosidata.corpname}}</text>

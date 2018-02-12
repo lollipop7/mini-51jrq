@@ -154,7 +154,7 @@
           <view class="corp-content">
             <image class="logo" src="{{homeDetailInfo.corpInfo.mlogo}}"></image>
             <view class="corp-info">
-                <text class="corp-name">{{homeDetailInfo.corpInfo.showname}}</text>
+                <text class="corp-name">{{homeDetailInfo.corpInfo.corpname}}</text>
                 <view class="corp-size-type">
                     <view class="corp-size">
                       <text>{{homeDetailInfo.corpInfo.industry}}</text> 

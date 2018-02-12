@@ -42,7 +42,7 @@
 
 <template>
   <view class="corp-container" bindtap="goCorpView({{syncCorpdata.id}})">
-    <image src="{{syncCorpdata.mlogo}}"/>
+    <image src="{{syncCorpdata.mlogo}}" mode="aspectFit"/>
     <view class="corp-intro">
         <view class="corp-name">{{syncCorpdata.corpname}}</view>
         <view class="corp-type">
