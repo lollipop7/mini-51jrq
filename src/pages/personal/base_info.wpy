@@ -65,7 +65,7 @@
                     </view>
                 </picker>
             </view>
-            <view class="list_item">
+            <!-- <view class="list_item">
                 <view class="title">所在城市</view>
                 <picker name="city" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
                     <view class="picker" wx:if="{{workcitystatus}}">
@@ -75,7 +75,7 @@
                         {{city[index4]}}
                     </view>
                 </picker>
-            </view>
+            </view> -->
             <view class="list_item">
                 <view class="title">工作年限</view>
                 <picker name="workyears" bindchange="bindPickerChange" value="{{workyears[index]}}" range="{{workyears}}">
@@ -111,7 +111,7 @@
                 </picker>
             </view>
             <view class="list_item">
-                <view class="title">户口所在地</view>
+                <view class="title">所在城市</view>
                 <picker name="address" bindchange="bindPickerChange5" value="{{city[index5]}}" range="{{city}}">
                     <view class="picker" wx:if="{{livecitystatus}}">
                         {{livecity}}
