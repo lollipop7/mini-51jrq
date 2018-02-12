@@ -95,7 +95,7 @@
               <image src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/home/logo1.png'}}"></image>
           </view>
           <view class="corp-info">
-              <text class="corp-name">{{syncPosidata.showname}}</text>
+              <text class="corp-name">{{syncPosidata.corpname}}</text>
               <view class="corp-size-type">
                   <view class="corp-size">
                     <text>{{syncPosidata.industry}}</text> 
