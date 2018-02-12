@@ -282,6 +282,7 @@ export default class PersPage extends wepy.page {
             fail: function(res) {
                 that.have = false;
                 that.loginStatus = false;
+                that.$apply();
             }
         })
 
@@ -292,27 +293,33 @@ export default class PersPage extends wepy.page {
         goResumePage () {
             // 未登录跳转登录页
             utils.goLogin()
-            wx.navigateTo({
-                url: `resume`
-            })
+            if(this.loginStatus){
+                wx.navigateTo({
+                    url: `resume`
+                })
+            }
         },
 
         // 跳转投递状态
         goDeliveryPage () {
             // 未登录跳转登录页
             utils.goLogin()
-            wx.navigateTo({
-                url: `delivery`
-            })
+            if(this.loginStatus){
+                wx.navigateTo({
+                    url: `delivery`
+                })
+            }
         },
 
         // 跳转我的收藏
         goCollectionPage () {
             // 未登录跳转登录页
             utils.goLogin()
-            wx.navigateTo({
-                url: `collection`
-            })
+            if(this.loginStatus){
+                wx.navigateTo({
+                    url: `collection`
+                })
+            }
         },
 
         // 退出登录
