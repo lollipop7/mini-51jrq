@@ -217,10 +217,10 @@ export default class PersPage extends wepy.page {
     data = {
         // 简历完成百分比
         percentage: '0%',
-        username:'',
+        username:'暂无',
         headimg:'',
         headimgStatus:false,
-        companyname:'',
+        companyname:'暂无',
         jobname:'',
         token:'',
         tokenKey:'',
@@ -236,6 +236,7 @@ export default class PersPage extends wepy.page {
         wx.getStorage({
             key: 'loginData',
             success: function(res) {
+                console.log(222222)
                 that.loginStatus = true;
                 that.token = res.data.token;
                 that.tokenKey = res.data.tokenKey;
@@ -280,6 +281,7 @@ export default class PersPage extends wepy.page {
                 })
             },
             fail: function(res) {
+                console.log(11111)
                 that.have = false;
                 that.loginStatus = false;
                 that.$apply();
