@@ -120,7 +120,7 @@
                 </picker>
             </view>
             <view class="section">
-                <textarea name="selfremark" value="{{selfremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
+                <textarea name="selfremark" value="{{selfremark}}" placeholder="请输入自我评价（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
             </view>
         </view>
     </view>
