@@ -163,17 +163,7 @@ export default class CorpDatailsView extends wepy.page {
 
   onLoad(options){
     // 获取公司详情数据
-    // 获取登录信息
-    const that = this;
-    wx.getStorage({
-        key: 'loginData',
-        success: function(res) {
-            that.token = res.data.token;
-            that.tokenKey = res.data.tokenKey;
-            that.$apply();
-            that.getCorpView(options.companyid)
-        } 
-    })
+    this.getCorpView(options.companyid)
   }
 
   methods = {
@@ -199,11 +189,9 @@ export default class CorpDatailsView extends wepy.page {
             }
         }
     })
-    
     if (json.data.returnCode == "AAAAAAA") {
       that.corpInfo = json.data.data.corpinfo;
       that.companyJobs = json.data.data.companyJobs;
-      console.log(that.companyJobs)
       that.$apply();
     } else {
       tip.error(json.returnMsg);
