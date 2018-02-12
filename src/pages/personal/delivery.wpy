@@ -59,7 +59,7 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
-import CommPosi from '../../components/commposi';
+import CommPosi from '../../components/commposi2';
 
 // 绑定数据记得去掉，这里做调试
 // const collectData = require('../../data/collect-data.js');

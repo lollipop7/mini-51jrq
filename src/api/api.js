@@ -12,6 +12,9 @@ const getMobileHomeBanner = (params) => wxRequest(params, apimall + '/api/ad_sho
 //获取猎头职位
 const  getCompanyjob = (params) => wxRequest(params, apimall + '/api/companyjob');
 
+//获取公司列表
+const  getCompanyList = (params) => wxRequest(params, apimall + '/api/company');
+
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
 
@@ -36,6 +39,7 @@ const  changeHeadImg = (params) => wxRequest(params, apimall + '/api/pimg');
 module.exports = {
     getMobileHomeBanner,
     getCompanyjob,
+    getCompanyList,
     getCityName,
     getCollectJob,
     getResumeInfo,

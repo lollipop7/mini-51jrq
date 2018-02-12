@@ -235,6 +235,7 @@
       }
 
       onLoad(options){
+        console.log('here2',options)
         this.jobId = options.jobid;
         this.corpId = options.corpid;
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
@@ -273,6 +274,7 @@
           }
         });
         if (json.data.returnCode == "AAAAAAA") {
+          console.log('here',json.data)
           that.homeDetailInfo = { ...that.jobInfo, ...json.data.data };
           that.jobInfo = { ...that.jobInfo, ...json.data.data.jobInfo };
           that.relatedJobs = { ...that.relatedJobs, ...json.data.data.relatedJobs};

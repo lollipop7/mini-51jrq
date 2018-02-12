@@ -100,19 +100,17 @@
 
 <template>  
   <view class="corp-view">
-    <import src="../../wxParse/wxParse.wxml" />
     <view class="head">
-        <image src="{{corpDetails.corpInfo.logo}}" wx:if="{{corpDetails.corpInfo.logo != (''||undefined)}}" ></image>
-        <image src="/images/icons/upload_head.png" wx:else="{{corpDetails.corpInfo.logo != (''||undefined)}}" ></image>
-        <view class="corp-name">{{corpDetails.corpInfo?corpDetails.corpInfo.corpname:'暂无'}}</view>
-        <view class="corp-type">{{corpDetails.corpInfo.city}} | {{corpDetails.corpInfo.scope}} | {{corpDetails.corpInfo.industry}}</view>
+        <image src="{{corpInfo.logo?corpInfo.logo:'/images/icons/upload_head.png'}}" ></image>
+        <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
+        <view class="corp-type">{{corpInfo.city}} | {{corpInfo.scope}} | {{corpInfo.industry}}</view>
     </view>
     <view class="gray-blank"></view>
     <view class="corp-intro">
         <view class="title">公司简介</view>
         <view class="gray-line"></view>
         <view class="introduce">
-            {{description}}
+            {{corpInfo.description}}
         </view>
     </view>
     <view class="gray-blank"></view>
@@ -121,20 +119,20 @@
         <view class="gray-line"></view>
         <view class="address">
             <image src="/images/icons/location_blue.png"></image>
-            <view class="addr-info">{{corpDetails.corpInfo.address}}</view>
+            <view class="addr-info">{{corpInfo.address}}</view>
         </view>
     </view>
     <view class="gray-blank"></view>
     <view class="corp-jobs">
         <view class="title">该公司发布的所有职位</view>
         <view class="gray-line"></view>
-        <repeat for="{{corpDetails.relatedJobs}}" key="index" index="index" item="item">
-            <view class="job-item">
+        <repeat for="{{companyJobs}}" key="index" index="index" item="item">
+            <view class="job-item" bindtap="goJobView({{item.corpid}},{{item.jobid}})">
                 <view class="job-content">
                     <view class="left">
                         <view class="position">{{item.jobname}}</view>
                         <view class="corp-name">{{item.corpname}}</view>
-                        <view class="corp-type">{{item.jobcity}} | 暂无 | {{item.workyears}} | {{item.ebid}}</view>
+                        <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
                     </view>
                     <view class="right">
                         <view class="salary">{{item.salary}}</view>
@@ -153,25 +151,17 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
 
-const Towxml = require('towxml');
-const towxml = new Towxml();
-
 export default class CorpDatailsView extends wepy.page {
   config = {
       navigationBarTitleText: '公司详情',
   }
 
   data = {
-    corpDetails: {},
-    description: ''
+    corpInfo: {},
+    companyJobs: []
   }
 
-  components = {
-    //   towxml: Towxml 
-  };
-
   onLoad(options){
-
     // 获取公司详情数据
     // 获取登录信息
     const that = this;
@@ -181,34 +171,39 @@ export default class CorpDatailsView extends wepy.page {
             that.token = res.data.token;
             that.tokenKey = res.data.tokenKey;
             that.$apply();
-            that.getCorpView(res.data.token,res.data.tokenKey, options.corpid, options.jobid)
+            that.getCorpView(options.companyid)
         } 
     })
   }
 
-//获取公司详情数据
-  async getCorpView(token, tokenKey, corpid, jobid) {
-    const that = this;
-    const json = await api.getCompanyjob({
-      query: {
-        head: {
-            "transcode": "Q0002",
-            "type": "h"
-        },
-        data: {
-            "token": token,
-            "tokenKey": tokenKey,
-            "corpid": corpid,
-            "jobid": jobid
+  methods = {
+        goJobView(corpid, jobid) {
+            wepy.navigateTo({
+                url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
+            })
         }
-      }
+    }
+
+//获取公司详情数据
+  async getCorpView(companyid) {
+    const that = this;
+    const json = await api.getCompanyList({
+      query: {
+            head: {
+                "transcode": "CP002",
+                "type": "h"
+            },
+            data: {
+                "companyid": companyid,
+                "p":"0"
+            }
+        }
     })
     
     if (json.data.returnCode == "AAAAAAA") {
-      that.corpDetails = json.data.data;
-      that.description = json.data.data.corpInfo.description;
-      console.log(565656,json.data.data)
-      console.log(that)
+      that.corpInfo = json.data.data.corpinfo;
+      that.companyJobs = json.data.data.companyJobs;
+      console.log(that.companyJobs)
       that.$apply();
     } else {
       tip.error(json.returnMsg);

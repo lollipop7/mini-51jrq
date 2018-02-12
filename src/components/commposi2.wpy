@@ -1,0 +1,135 @@
+<style lang="scss">
+    .posi-corp-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10rpx;
+        padding-bottom: 12rpx;
+        margin: 0 32rpx;
+        border-top: 1rpx solid #F1F1F1;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .corp-brief {
+            padding-top: 11rpx;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .logo {
+                margin-right: 16rpx;
+                width: 60rpx;
+                height: 60rpx;
+                image {
+                    width: 60rpx;
+                    height: 60rpx;
+                }
+            }
+            .corp-info {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                .corp-name {
+                    font-size: 26rpx;
+                    color: #888;
+                }
+                .corp-size-type {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    font-size: 22rpx;
+                    color: #b2b2b2;
+                    .up-date {
+                        font-size: 24rpx;
+                        color: #a0a0a0;
+                    }
+                }
+            }
+        }
+        .posi-container {
+            display: flex;
+            flex-direction: column;
+            .ver {
+                margin: 0 12rpx;
+            }
+            .posi-name-sal {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                font-size: 28rpx;
+                .posi-name {
+                    font-weight: bold;
+                    color: #353535;
+                }
+                .posi-sal {
+                    color: #FF9E00;
+                }
+            }
+            .posi-duty {
+                font-size: 22rpx;
+                color: #B2B2B2;
+            }
+        }
+    }
+</style>
+
+<template>
+  <view class="posi-corp-container"  bindtap="goToHomeView({{syncPosidata.companyid}}, {{syncPosidata.jobid}})" >
+    <view class="posi-container">
+        <view class="posi-name-sal">
+            <text class="posi-name">{{syncPosidata.jobname}}</text>
+            <text class="posi-sal">{{syncPosidata.salary}}</text>
+        </view>
+        <view class="posi-duty">
+            <text>{{syncPosidata.jobcity}}</text>
+            <!-- <text class="ver">|</text>
+            <text>{{}}</text> -->
+            <!-- <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text> -->
+            <!-- <text>{{syncPosidata.workyears}}</text> -->
+            <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
+            <text>{{syncPosidata.ebid}}</text>
+        </view>
+    </view>
+      <view class="corp-brief">
+          <view class="logo">
+              <image src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/icons/upload_head.png'}}"></image>
+          </view>
+          <view class="corp-info">
+              <text class="corp-name">{{syncPosidata.corpname}}</text>
+              <view class="corp-size-type">
+                  <view class="corp-size">
+                    <text>{{syncPosidata.industry?syncPosidata.industry:'暂无'}}</text> 
+                  </view>
+                  <text class="up-date">{{syncPosidata.refreshdate?syncPosidata.refreshdate:'暂无'}}</text> 
+              </view>
+          </view>
+      </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default  class CommPosi extends wepy.component {
+        components = {
+            
+        }
+
+        props = {
+            syncPosidata: {
+                type: Object,
+                default: null
+            }
+        }
+
+        onLoad(options){
+        }
+
+        methods = {
+            goToHomeView(corpid, jobid) {
+                
+                wepy.navigateTo({
+                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
+                })
+            }
+        }
+    }
+</script>
