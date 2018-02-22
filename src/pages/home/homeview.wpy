@@ -204,7 +204,6 @@
     import wepy from 'wepy';
     import api from '../../api/api';
     import tip from '../../utils/tip';
-    import utils from '../../utils/utils';
     import {
       LOGIN_INFO
     } from '../../utils/constants';
