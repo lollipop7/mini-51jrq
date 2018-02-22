@@ -2,8 +2,8 @@ import {
     wxRequest
 } from '../utils/wxrequest'; 
 
-const apimall = 'http://192.168.1.251:8089/mobile';
-// const apimall = 'https://m.51jrq.com/mobile2';
+// const apimall = 'http://192.168.1.251:8089/mobile';
+const apimall = 'https://m.51jrq.com/mobile2';
 const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1'
 
 //得到首页banner图片列表
@@ -12,10 +12,13 @@ const getMobileHomeBanner = (params) => wxRequest(params, apimall + '/api/ad_sho
 //获取猎头职位
 const  getCompanyjob = (params) => wxRequest(params, apimall + '/api/companyjob');
 
+//获取公司列表
+const  getCompanyList = (params) => wxRequest(params, apimall + '/api/company');
+
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
 
-//  获取我的收藏及投递记录
+//  获取我的收藏及投递记录 
 const  getCollectJob = (params) => wxRequest(params, apimall + '/api/persoanl');
 
 // 获取简历信息
@@ -36,6 +39,7 @@ const  changeHeadImg = (params) => wxRequest(params, apimall + '/api/pimg');
 module.exports = {
     getMobileHomeBanner,
     getCompanyjob,
+    getCompanyList,
     getCityName,
     getCollectJob,
     getResumeInfo,

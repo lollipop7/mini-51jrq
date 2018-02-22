@@ -72,9 +72,7 @@
 </style>
 
 <template>
-  <view class="posi-corp-container"
-        @tap="goToHomeView({{syncPosidata.corpid}}, {{syncPosidata.id}})" 
-  >
+  <view class="posi-corp-container"  bindtap="goToHomeView({{syncPosidata.companyid}}, {{syncPosidata.jobid}})" >
     <view class="posi-container">
         <view class="posi-name-sal">
             <text class="posi-name">{{syncPosidata.jobname}}</text>
@@ -84,23 +82,23 @@
             <text>{{syncPosidata.jobcity}}</text>
             <!-- <text class="ver">|</text>
             <text>{{}}</text> -->
-            <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text>
-            <text>{{syncPosidata.workyears}}</text>
+            <!-- <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text> -->
+            <!-- <text>{{syncPosidata.workyears}}</text> -->
             <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
             <text>{{syncPosidata.ebid}}</text>
         </view>
     </view>
       <view class="corp-brief">
           <view class="logo">
-              <image mode="aspectFit" src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/home/logo1.png'}}"></image>
+              <image mode="aspectFit" src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/icons/upload_head.png'}}"></image>
           </view>
           <view class="corp-info">
               <text class="corp-name">{{syncPosidata.corpname}}</text>
               <view class="corp-size-type">
                   <view class="corp-size">
-                    <text>{{syncPosidata.industry}}</text> 
+                    <text>{{syncPosidata.industry?syncPosidata.industry:'暂无'}}</text> 
                   </view>
-                  <text class="up-date">{{syncPosidata.refreshdate}}</text> 
+                  <text class="up-date">{{syncPosidata.refreshdate?syncPosidata.refreshdate:'暂无'}}</text> 
               </view>
           </view>
       </view>
@@ -127,10 +125,7 @@
 
         methods = {
             goToHomeView(corpid, jobid) {
-                console.log("jobid===" + jobid + "corpid===" + corpid);
-                if (jobid.length && corpid.length == 0) {
-                    return;
-                }
+                
                 wepy.navigateTo({
                     url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
                 })

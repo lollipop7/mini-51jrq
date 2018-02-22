@@ -28,6 +28,11 @@
                         font-size: 24rpx;
                         color: #888888;
                     }
+                    .intro2 {
+                        margin-top: 4rpx;
+                        font-size: 30rpx;
+                        color: #888888;
+                    }
                 }
             }
             .my-function {
@@ -147,10 +152,14 @@
 <template>
   <view class="personal-container">
       <view class="personal-info">
-          <image src="{{headimg}}"></image>
-          <view class="name-intro">
+          <image src="{{headimg}}" wx:if="{{headimgStatus}}"></image>
+          <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
+          <view class="name-intro" wx:if="{{loginStatus}}">
               <view class="name">{{username}}</view>
-              <view class="intro">{{companyname}} <text wx:if="{{have}}">|</text> {{jobname}}</view>
+              <view class="intro">{{jobname}}</view>
+          </view>
+          <view class="name-intro" wx:else="{{loginStatus}}">
+              <view class="intro2"><text bindtap="goLoginPage">登录</text>  / <text bindtap="goRegistPage">注册</text> </view>
           </view>
       </view>
       <view class="my-function">
@@ -185,7 +194,7 @@
             </view>
         </view>
       </view>
-      <view class="exit" bindtap="logout">
+      <view class="exit" bindtap="logout" wx:if="{{loginStatus}}">
           退出登录
       </view>
     <view class="alert-container" wx:if = "{{showbox}}"></view>
@@ -202,36 +211,47 @@
 <script>
 import wepy from 'wepy';
 import api from '../../api/api';
+const utils = require('../../utils/utils');
 
 export default class PersPage extends wepy.page {
     data = {
         // 简历完成百分比
         percentage: '0%',
-        username:'',
+        username:'暂无',
         headimg:'',
-        companyname:'',
+        headimgStatus:false,
         jobname:'',
         token:'',
         tokenKey:'',
         have: true,
         resumeid: '',
-        showbox: false
+        showbox: false,
+        loginStatus: false
     }
     onLoad() {
+        console.log('load')
+        
 
+    }
+    onShow(){
+        console.log('show')
         // 获取登录信息
         const that = this;
         wx.getStorage({
             key: 'loginData',
             success: function(res) {
+                console.log(res)
+                that.loginStatus = true;
                 that.token = res.data.token;
                 that.tokenKey = res.data.tokenKey;
                 that.username = res.data.data.username;
                 that.headimg = res.data.data.headimg;
-                that.companyname = res.data.data.companyname;
                 that.jobname = res.data.data.jobname;
                 if(!res.data.data.companyname || !res.data.data.jobname){
                     that.have = false;
+                }
+                if(res.data.data.headimg){
+                    that.headimgStatus = true;
                 }
                 that.$apply();
                 // 获取简历列表
@@ -259,34 +279,58 @@ export default class PersPage extends wepy.page {
                             }
                         })
                     }else{
-                        console.log(data)
+                        // 清空本地信息
+                        wx.clearStorage()
+                        that.headimgStatus=false;
+                        that.have = false;
+                        that.loginStatus = false;
+                        that.$apply();
                     }
                 })
-            } 
+            },
+            fail: function(res) {
+                // 清空本地信息
+                wx.clearStorage()
+                that.headimgStatus=false;
+                that.have = false;
+                that.loginStatus = false;
+                that.$apply();
+            }
         })
-
     }
     methods = {
 
         // 跳转我的简历
         goResumePage () {
-            wx.navigateTo({
-                url: `resume`
-            })
+            // 未登录跳转登录页
+            utils.goLogin()
+            if(this.loginStatus){
+                wx.navigateTo({
+                    url: `resume`
+                })
+            }
         },
 
         // 跳转投递状态
         goDeliveryPage () {
-            wx.navigateTo({
-                url: `delivery`
-            })
+            // 未登录跳转登录页
+            utils.goLogin()
+            if(this.loginStatus){
+                wx.navigateTo({
+                    url: `delivery`
+                })
+            }
         },
 
         // 跳转我的收藏
         goCollectionPage () {
-            wx.navigateTo({
-                url: `collection`
-            })
+            // 未登录跳转登录页
+            utils.goLogin()
+            if(this.loginStatus){
+                wx.navigateTo({
+                    url: `collection`
+                })
+            }
         },
 
         // 退出登录
@@ -302,13 +346,24 @@ export default class PersPage extends wepy.page {
         // 确定
         yes () {
             // 清空本地信息
-            wx.setStorage({
-                key:'loginData', 
-                data:''
-            });
+            wx.clearStorage()
             // 跳转登录页
             wx.navigateTo({
                 url: `/pages/login/login`
+            })
+        },
+
+        // 跳转登录页
+        goLoginPage () {
+            wx.navigateTo({
+                url: `/pages/login/login`
+            })
+        },
+
+        // 跳转注册页
+        goRegistPage () {
+            wx.navigateTo({
+                url: `/pages/login/regist`
             })
         }
 

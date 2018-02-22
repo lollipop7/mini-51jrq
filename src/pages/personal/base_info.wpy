@@ -66,8 +66,8 @@
                 </picker>
             </view>
             <view class="list_item">
-                <view class="title">所在城市</view>
-                <picker name="city" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
+                <view class="title">户口所在地</view>
+                <picker name="address" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
                     <view class="picker" wx:if="{{workcitystatus}}">
                         {{workcity}}
                     </view>
@@ -111,8 +111,8 @@
                 </picker>
             </view>
             <view class="list_item">
-                <view class="title">户口所在地</view>
-                <picker name="address" bindchange="bindPickerChange5" value="{{city[index5]}}" range="{{city}}">
+                <view class="title">所在城市</view>
+                <picker name="livecityid" bindchange="bindPickerChange5" value="{{city[index5]}}" range="{{city}}">
                     <view class="picker" wx:if="{{livecitystatus}}">
                         {{livecity}}
                     </view>
@@ -209,6 +209,7 @@
                             "telephone": baseInfo.telephone,
                             "email": baseInfo.email
                         }
+                        console.log(baseInfo)
                         that.username = baseInfo.username;
                         that.borndate = baseInfo.borndate;
                         that.workcity = baseInfo.address;
@@ -385,6 +386,7 @@
             }
         }
         let resultObj = Object.assign(data, this.baseInfo, obj);
+        console.log('result',resultObj)
         const json = await api.getResumeInfo({
         query: {
                 head: {

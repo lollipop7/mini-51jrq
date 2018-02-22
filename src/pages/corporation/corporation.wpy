@@ -60,15 +60,16 @@ export default class CorpPage extends wepy.page {
 
   async getCorpList(currentPage) {
     const that = this;
-    const json = await api.getCompanyjob({
+    const json = await api.getCompanyList({
       query: {
-        head: {
-          "transcode": "Q0001",
-          "type": "h"
-        },
-        data: {
-          pageNo: currentPage || "1"
-        }
+          head: {
+              "transcode": "CP001",
+              "type": "h"
+          },
+          data: {
+              "p": 1,
+              "pageNo": currentPage || 1 
+          }
       }
     })
     if (json.data.returnCode == "AAAAAAA") {

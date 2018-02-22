@@ -193,7 +193,7 @@ export default class LoginPage extends wepy.page {
 
                     // 跳转到home页
                     wx.switchTab({
-                        url: '../home/home'
+                        url: '../personal/personal'
                     });
 
                 }else{
