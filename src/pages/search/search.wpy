@@ -76,9 +76,6 @@
         display: flex;
         flex-direction: column;
     }
-    .search-job {
-      
-    }
 </style>
 
 <template>
@@ -121,18 +118,38 @@
                 </view>
                 <view wx:if="{{isUnderSearch}}"
                     class="radio-search">
-                     <view class="jrq-cell" @tap="trJobListFn">
+                     <view class="jrq-cell" @tap="trJobListFn" wx:if="{{(!isShowJobList)&&(!isShowCorplist)}}">
                         <view class="jrq-bd">
                             <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位</text>
                         </view>
                         <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
                     </view>
-                    <view class="jrq-cell" @tap="trCorpListFn">
+                    <view class="jrq-cell" @tap="trCorpListFn" wx:if="{{(!isShowCorplist)&&(!isShowJobList)}}">
                         <view class="jrq-bd">
                             <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关企业</text>
                         </view>
                         <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
                     </view>
+                    
+                    <view wx:if="{{isShowJobList}}">
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                            <view class="picker">
+                            当前选择：{{array[index]}}
+                            </view>
+                        </picker>
+                        <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
+                            <commposi :syncPosidata.sync="item"></commposi>  
+                        </repeat>
+                    </view>
+                    <view wx:if="{{isShowCorplist}}">
+                        <repeat for="{{corplist}}" key="index" index="index" item="item">
+                            <corplist :syncCorpdata.sync="item"></corplist>
+                        </repeat>
+                    </view>
+                    <!--加载更多时动画-->
+                    <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+                    <!--暂无数据显示-->
+                    <placeholder wx:if="{{isShowCorplist||isShowJobList}}" :syncShow.sync="isEmpty" message="暂无发现数据"></placeholder>
                 </view>
             </view>
         </view>
@@ -140,6 +157,7 @@
                   @cityNameFn.user="parentCityNameFn"
                   :citySelected.sync="city"
         ></citylist>
+        
     </view>
     
 </template>
@@ -153,6 +171,8 @@ import Search from '../../components/search';
 import CityList from '../../components/citylist';
 import CommPosi from '../../components/commposi';
 import CorpList from '../../components/corplist';
+import BottomLoadMore from "../../components/bottomloadmore";
+import PlaceHolder from "../../components/placeholder";
 import {uniq, filter} from 'lodash';
 const peoSearch = require('../../data/peosearch-data.js');
 
@@ -164,22 +184,30 @@ export default class SearchPage extends wepy.page {
     }
 
     data={
+        array: ['美国', '中国', '巴西', '日本'],
         isShowCity: false,
         isUnderSearch: false,       //是否在搜索状态
-        isShowJobList: false,
-        isShowCorplist: false,
         keyword: '',    //输入字段
         hunterjobList: [],       //服务器返回
         corplist: [],
-        totalNum: 0,    //服务器返回num
         peoSearch: peoSearch,
         city: '',
         keywordhisList: [],
+        isShowJobList: false,
+        isShowCorplist: false, 
+        showLoading: false,
+        isEmpty: false,    
+        currentPage: 1,   //当前页面
+        totalPage: 0,    //总数   
     }
 
     components = {
         search: Search,
         citylist: CityList,
+        commposi: CommPosi,
+        corplist: CorpList,
+        bottomloadmore: BottomLoadMore,
+        placeholder: PlaceHolder
     }
 
     onLoad (options) {
@@ -201,8 +229,10 @@ export default class SearchPage extends wepy.page {
         parentTrShowCityFn(val) {
             this.isShowCity = val;
         },
-        parentUnderSearchFn(val){
+        parentUnderSearchFn(val){//清空搜索框内容后，不在搜索状态
             this.isUnderSearch = val;
+            this.isShowJobList = val;
+            this.isShowCorplist = val;
         },
         parentCityNameFn(val){
             if(val.length > 3) {
@@ -228,19 +258,40 @@ export default class SearchPage extends wepy.page {
             this.$invoke('search', 'setSearchInputFn', event.target.dataset.peoBadge);
         },
         trJobListFn(event){//显示职位
-            this.isShowjobList = true;
+            this.isShowJobList = true;
             this.isShowCorplist = false;
-            console.log(this.isShowjobList)
         },
         trCorpListFn(event){//显示公司
             this.isShowCorplist = true;
-            this.isShowjobList = false;
+            this.isShowJobList = false;
         }
     }
 
-    
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom(event) {
+        let that = this;
+        that.showLoading = true;
+        // console.log(that.totalPage + "===" + that.currentPage);
+        //判断总页数是否大于翻页数
+        if ((that.totalPage) > that.currentPage) {
+            //防止重复加载
+            if (that.preventRepeatReuqest) {
+            return true;
+            }
+            that.preventRepeatReuqest = true;
+            that.currentPage++;
+            that.conveySearch(that.keyword, that.currentPage);
+            that.preventRepeatReuqest = false;
+        } else {
+            that.showLoading = false;
+        }
+    }
+
     async conveySearch(keyword, currentPage) {
         const that = this;
+        console.log("进行搜索", that.city)        
         const json = await api.getCompanyjob({
         query: {
             head: {
@@ -249,13 +300,15 @@ export default class SearchPage extends wepy.page {
             },
             data: {
                 pageNo: currentPage || "1",
-                keyword: that.keyword
+                keyword: that.keyword,
+                areaid: that.city
             }
         }
         })
         if (json.data.returnCode == "AAAAAAA") {
             if (json.data.data.num == 0) {
                 tip.toast('搜索结果为空');
+                that.isEmpty = true;  //暂无数据
             } else {
                 let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
                 if(that.keywordhisList.indexOf(keyword) == -1) {
@@ -265,10 +318,10 @@ export default class SearchPage extends wepy.page {
                 }
                 that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
                 that.corplist = [...that.corplist, ...json.data.data.list];
-                that.total = json.data.data.num;
-                this.$apply();  
+                that.totalPage =parseInt(json.data.data.num / 10);
             }
             that.$apply();
+            that.showLoading = false
         } else {
             tip.error(json.data.returnMsg);
         }
