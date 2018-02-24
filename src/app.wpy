@@ -24,9 +24,7 @@ export default class extends wepy.app {
       'pages/personal/work_exper', 
       'pages/personal/job_want', 
       'pages/personal/base_info', 
-      'pages/search/search',        
-      'pages/search/searchJob',
-      'pages/search/searchCorp',     
+      'pages/search/search',      
       'pages/personal/delivery', 
       'pages/personal/collection',
       'pages/home/homeview', 
@@ -64,7 +62,8 @@ export default class extends wepy.app {
 
   globalData = {
     userInfo: null,
-    appid: "wxd48d26a8a3f6938f"
+    appid: "wxd48d26a8a3f6938f",
+    secret: 'ffd389347ef65447d93b82a332a59aad',
   }
 
   constructor () {
