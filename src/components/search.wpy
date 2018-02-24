@@ -52,6 +52,9 @@
                 height: 10rpx;
             }
         } 
+        .city-transparent {
+            width: 16rpx;
+        }
         .picker{
             text-align: center;
             font-size: 24rpx;
@@ -68,11 +71,12 @@
 <template>
     <view class="search-container">
         <view class="search-content">
-            <view @tap="trShowCityFn" class="city-cascade">
+            <view wx:if="{{isShowCityName}}" @tap="trShowCityFn" class="city-cascade">
                 <text>{{city}}</text>
                 <image class="arrow-img" src="/images/icons/arrow-down.png"/>
             </view>
-            <view class='ver'></view>
+            <view wx:else="{{isShowCityName}}" class="city-transparent"></view>
+            <view wx:if="{{isShowCityName}}" class='ver'></view>
             <input type="text" 
                 class="search-input"
                 placeholder="请输入关键词，如职位名/公司名等"
@@ -105,8 +109,11 @@ export default class Search extends wepy.component {
         search_input_value: ''
     };
 
-    component={
-        
+    props={
+        isShowCityName: {
+            type: Boolean,
+            default: true
+        }
     }
 
     onLoad(options) {
@@ -128,7 +135,7 @@ export default class Search extends wepy.component {
         onSearchInputFn: function (event) {
             this.search_input_value = event.detail.value;
         },
-        delTextFn: function (event) {
+        delTextFn: function (event) {//清空搜索
             this.search_input_value = '';
             this.$emit('trUnderSearchFn', false);
         },
