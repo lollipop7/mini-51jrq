@@ -68,13 +68,13 @@
                     align-items: center;
                     .percentage { 
                         width: 100rpx;
-                        height: 28rpx;
-                        border-radius: 28rpx;
+                        height: 26rpx;
+                        border-radius: 26rpx;
                         border: 1rpx solid #EC6955;
                         color: #EC6955;
-                        font-size: 28rpx;
+                        font-size: 26rpx;
                         text-align: center;
-                        line-height: 28rpx;
+                        line-height: 26rpx;
                         margin-right: 20rpx;
                     }
                     view {
@@ -229,10 +229,20 @@ export default class PersPage extends wepy.page {
         loginStatus: false
     }
     onLoad() {
-        console.log('load')
-        
-
+       
     }
+    // 转发分享
+    onShareAppMessage() {
+        var pages = getCurrentPages()    //获取加载的页面
+        var currentPage = pages[pages.length-1]    //获取当前页面的对象
+        var url = currentPage.route    //当前页面url
+        return {
+        title: '金融职业机会尽在51金融圈',
+        desc: '51金融圈丨金融人才求职招聘',
+        path: `/${url}`
+        }
+    }
+    
     onShow(){
         console.log('show')
         // 获取登录信息
@@ -240,7 +250,6 @@ export default class PersPage extends wepy.page {
         wx.getStorage({
             key: 'loginData',
             success: function(res) {
-                console.log(res)
                 that.loginStatus = true;
                 that.token = res.data.token;
                 that.tokenKey = res.data.tokenKey;

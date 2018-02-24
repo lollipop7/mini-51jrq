@@ -112,7 +112,7 @@
                 <view class="title">到岗时间</view>
                 <picker name="poststime" value="{{poststime[index5]}}" bindchange="bindPickerChange5" range="{{poststime}}">
                     <view class="picker" wx:if="{{poststimestatus}}">
-                        {{a_poststime}}
+                        {{a_poststime?a_poststime:'暂无'}}
                     </view>
                     <view class="picker" wx:else="{{poststimestatus}}">
                         {{poststime[index5]}}
@@ -166,7 +166,8 @@
         jobApply: {},
         token: "",
         tokenKey: "",
-        resumeid:''
+        resumeid:'',
+        jobintentcode:''
     }
 
     onLoad(options) { 
@@ -201,6 +202,7 @@
                     that.a_poststime = jobApply.poststime;
                     that.functions = jobApply.functions;
                     that.selfremark = jobApply.selfremark;
+                    that.jobintentcode = jobApply.jobintentcode;
                     that.$apply();
                 } else {
                     tip.error(json.returnMsg);
@@ -301,11 +303,11 @@
             }
             this.changeBaseInfo(e.detail.value,obj2).then(data=>{
                 if(data.data && data.data.returnCode == "AAAAAAA") {
-                    wx.navigateTo({
+                    wx.redirectTo({
                         url: `resume`
                     })
                 }else{
-                    console.log(data)
+                    console.log('err',data)
                 }
             })
         },
@@ -379,8 +381,9 @@
             }
         }
         let resultObj = Object.assign(data, this.jobApply, obj);
-        resultObj.jobintentcode = '';
-        console.log(resultObj)
+        if(this.jobintentcode){
+            resultObj.jobintentcode = this.jobintentcode;
+        }
         const json = await api.getResumeInfo({
         query: {
                 head: {
