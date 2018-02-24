@@ -25,7 +25,7 @@ margin-top:150rpx;
 </style>
 <template>
     <view class="empty-placeholder row-center" wx:if="{{syncShow}}">
-        <image class="icon-xl" src="/images/no_delivery.png" />
+        <image class="icon-xl" src="/images/icons/no_delivery.png" />
         <view class="txt">{{message}}</view>
     </view>
 </template>

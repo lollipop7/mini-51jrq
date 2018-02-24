@@ -9,11 +9,14 @@ const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1'
 //得到首页banner图片列表
 const getMobileHomeBanner = (params) => wxRequest(params, apimall + '/api/ad_show/getMobileHomeBanner');
 
-//获取猎头职位
+//获取职位
 const  getCompanyjob = (params) => wxRequest(params, apimall + '/api/companyjob');
 
 //获取公司列表
 const  getCompanyList = (params) => wxRequest(params, apimall + '/api/company');
+
+//查找公司
+const  searchCorp = (params) => wxRequest(params, apimall + '/api/imain');
 
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
@@ -39,6 +42,7 @@ const  changeHeadImg = (params) => wxRequest(params, apimall + '/api/pimg');
 module.exports = {
     getMobileHomeBanner,
     getCompanyjob,
+    searchCorp,
     getCompanyList,
     getCityName,
     getCollectJob,

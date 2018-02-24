@@ -53,12 +53,12 @@
                 </repeat>
             </swiper>
         </view>
-        <!-- <view class='search-read-only'>
+        <view class='search-read-only'>
             <navigator class="inner-container" url="/pages/search/search">
                 <icon class="search-img" type="search" color="#fff" size="14"></icon>
                 <text class="hint-text">请输入关键词，如职位名/公司名等</text>
             </navigator>
-        </view> -->
+        </view>
     </view>
 </template>
 
