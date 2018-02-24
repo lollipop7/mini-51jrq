@@ -158,12 +158,28 @@ export default class CorpDatailsView extends wepy.page {
 
   data = {
     corpInfo: {},
-    companyJobs: []
+    companyJobs: [],
+    companyid:'',
   }
 
   onLoad(options){
     // 获取公司详情数据
-    this.getCorpView(options.companyid)
+    this.getCorpView(options.companyid);
+    this.companyid = options.companyid;
+    this.$apply();
+  }
+
+  // 转发分享
+  onShareAppMessage() {
+      var pages = getCurrentPages()    //获取加载的页面
+      var currentPage = pages[pages.length-1]    //获取当前页面的对象
+      var url = currentPage.route    //当前页面url
+      var id = this.companyid
+      return {
+        title: '金融职业机会尽在51金融圈',
+        desc: '51金融圈丨金融人才求职招聘',
+        path: `/${url}?companyid=${id}`
+      }
   }
 
   methods = {
