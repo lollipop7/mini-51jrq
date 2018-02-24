@@ -1,0 +1,30 @@
+<style lang="scss">
+    .share-container {
+        position: fixed;
+        bottom: 150rpx;
+        right: 16rpx;
+        .share-btn {
+            width: 96rpx;
+            height: 96rpx;
+            &:after {
+                border: none;
+            }
+        }
+    }
+</style>
+
+<template>
+  <view class="share-container">
+      <button class="share-btn" open-type="share" 
+        style="background: url('/images/icons/share.png') no-repeat center center;background-size: contain"></button>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class ShareMiniPro extends wepy.component {
+  
+}
+</script>
+
+

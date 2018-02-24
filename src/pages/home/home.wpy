@@ -22,7 +22,7 @@
     <bannersearch></bannersearch>
     <view class="comm-posis-container">
       <view class="header-container">
-        <image src="/images/home/comm-posi.png"></image>
+        <image src="/images/icons/comm-posi.png"></image>
         <text>推荐职位</text>
       </view>
       <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
