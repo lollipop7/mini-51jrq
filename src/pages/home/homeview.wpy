@@ -234,7 +234,7 @@
         isFav: false,   //未收藏
         isDelivery: false,    //未投递
         resumeId: '',
-        loginInfo: {}
+        loginInfo: {},
       }
 
       onLoad(options){
@@ -242,7 +242,7 @@
         this.corpId = options.corpid;
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
         this.viewCompanyjob();
-        console.log(options)
+        // const scene = decodeURIComponent(options.scene);
       }
 
       onShareAppMessage (res) {
@@ -260,20 +260,6 @@
           fail: function(res) {
             // 转发失败
           }
-        }
-      }
-
-      // 转发分享
-      onShareAppMessage() {
-        var pages = getCurrentPages()    //获取加载的页面
-        var currentPage = pages[pages.length-1]    //获取当前页面的对象
-        var url = currentPage.route    //当前页面url
-        var corpid = this.corpId;
-        var jobid = this.jobId;
-        return {
-          title: '金融职业机会尽在51金融圈',
-          desc: '51金融圈丨金融人才求职招聘',
-          path: `/${url}?corpid=${corpid}&jobid=${jobid}`
         }
       }
 

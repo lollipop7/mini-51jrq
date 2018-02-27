@@ -21,6 +21,9 @@ const  searchCorp = (params) => wxRequest(params, apimall + '/api/imain');
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
 
+//获取access_token
+var getAccessToken = (params) => wxRequest(params, apimall + '/wx/get');
+
 //  获取我的收藏及投递记录 
 const  getCollectJob = (params) => wxRequest(params, apimall + '/api/persoanl');
 
