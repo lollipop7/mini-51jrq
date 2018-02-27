@@ -233,7 +233,6 @@
         relatedJobs: [],
         isFav: false,   //未收藏
         isDelivery: false,    //未投递
-        resumeId: '',
         loginInfo: {},
       }
 
@@ -243,9 +242,12 @@
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
         this.viewCompanyjob();
         // const scene = decodeURIComponent(options.scene);
+        this.getWxaCode(this.$parent.globalData.access_token);                  
       }
 
       onShareAppMessage (res) {
+        const corpid = this.corpId,
+          jobid = this.jobId;
         if (res.from === 'button') {
           // 来自页面内转发按钮
           console.log(res.target)
@@ -274,8 +276,18 @@
           // 未登录跳转登录页
           utils.goLogin()
           const that = this;
-          that.deliverJob(that.jobId, "9340016")
+          that.deliverJob(that.jobId, that.loginInfo.resumeid)
         }
+      }
+
+      
+      async getWxaCode(access_token) {//获取小程序码
+        console.log('getWxaCode')
+        const that = this;
+        const json = await api.getWxaCode({
+          access_token: access_token
+        });
+        console.log(json)
       }
 
       async viewCompanyjob(){//查看企业职位详细
@@ -348,14 +360,16 @@
           }
         })
         if (json.data.returnCode == "AAAAAAA") {
-          console.log("进入企业职位申请");
           that.isDelivery = !that.isDelivery;
-          // tip.success();
+          tip.success("投递成功");
           that.$apply();
         } else {
           tip.error(json.data.returnMsg);
         }
       }
     }
+
+    
+   
 </script>
 

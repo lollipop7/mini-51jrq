@@ -4,7 +4,8 @@ import {
 
 // const apimall = 'http://192.168.1.251:8089/mobile';
 const apimall = 'https://m.51jrq.com/mobile2';
-const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1'
+const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1';
+const apiWxaCode = 'https://api.weixin.qq.com/wxa/getwxacode';
 
 //得到首页banner图片列表
 const getMobileHomeBanner = (params) => wxRequest(params, apimall + '/api/ad_show/getMobileHomeBanner');
@@ -20,6 +21,9 @@ const  searchCorp = (params) => wxRequest(params, apimall + '/api/imain');
 
 //逆地址解析
 const getCityName = (params) => wxRequest(params, apiGps);
+
+//获取小程序码
+const getWxaCode = (params) => wxRequest(params, apiWxaCode);
 
 //获取access_token
 var getAccessToken = (params) => wxRequest(params, apimall + '/wx/get');
@@ -48,6 +52,8 @@ module.exports = {
     searchCorp,
     getCompanyList,
     getCityName,
+    getWxaCode,
+    getAccessToken,
     getCollectJob,
     getResumeInfo,
     getDictData,

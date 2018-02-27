@@ -211,7 +211,11 @@
 <script>
 import wepy from 'wepy';
 import api from '../../api/api';
+import {
+    LOGIN_INFO
+} from '../../utils/constants';
 const utils = require('../../utils/utils');
+
 
 export default class PersPage extends wepy.page {
     data = {
@@ -266,8 +270,11 @@ export default class PersPage extends wepy.page {
                 // 获取简历列表
                 that.getResumeList().then(data=>{
                     if(data.data.returnCode == "AAAAAAA") {
-                        that.resumeid = JSON.parse(data.data.data)[0].resumeid
+                        that.resumeid = JSON.parse(data.data.data)[0].resumeid;
                         // 存储信息到本地
+                        let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+                        loginInfo.resumeid = that.resumeid;
+                        wx.setStorageSync(LOGIN_INFO, loginInfo);
                         wx.setStorage({
                             key:'resumeid', 
                             data:that.resumeid

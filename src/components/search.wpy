@@ -84,7 +84,7 @@
                 focus="true"
                 confirm-type="search"
                 maxlength="-1"
-                bindfocus="onSearchInputFn" 
+                bindconfirm="onSearchInputFn" 
                 value="{{search_input_value}}"
             />
             <icon class='cancel-img' @tap="delTextFn" wx:if="{{search_input_value!=''}}" type="clear" color="#888" size="14"></icon>

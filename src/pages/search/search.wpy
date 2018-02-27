@@ -189,7 +189,7 @@
                             <commposi :syncPosidata.sync="item"></commposi>  
                         </repeat>
                         <!--暂无数据显示-->
-                        <placeholder :syncShow.sync="isJobEmpty" message="暂无发现数据"></placeholder>
+                        <placeholder :syncJobShow.sync="isJobEmpty" message="暂无发现数据"></placeholder>
                     </view>
                     <view wx:if="{{isShowCorpList}}">
                         <view class="select-area">
@@ -219,7 +219,7 @@
                             <corplist :syncCorpdata.sync="item"></corplist>
                         </repeat>
                         <!--暂无数据显示-->
-                        <placeholder :syncShow.sync="isCorpEmpty" message="暂无发现数据"></placeholder>
+                        <placeholder :syncCorpShow.sync="isCorpEmpty" message="暂无发现数据"></placeholder>
                     </view>
                     <!--加载更多时动画-->
                     <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
@@ -502,6 +502,12 @@ export default class SearchPage extends wepy.page {
     //职位搜索
     async doPosiSearch(keyword, currentPage) {
         const that = this;
+        let region_name = ''
+        if (that.city == '全国' || that.areaid[that.indexRegion] == '全部' ) {
+            region_name = '';
+        } else {
+            region_name = that.areaid[that.indexRegion] || that.city;
+        }
         const json = await api.getCompanyjob({
         query: {
             head: {
@@ -511,7 +517,7 @@ export default class SearchPage extends wepy.page {
             data: {
                 pageNo: currentPage || "1",
                 keyword: that.keyword,
-                areaid: that.areaid[that.indexRegion] || that.city,
+                areaid: region_name,
                 industryid: that.industryid[that.indexIndustry] || "",
                 publicdate: that.publicdate[that.indexPublic] || ""
             }
@@ -544,18 +550,24 @@ export default class SearchPage extends wepy.page {
     //查找公司(已登录)
     async doCorpSearch(keyword, currentPage) {
         const that = this;
+        let region_name = '';
+        if (that.city == '全国' || that.areaid[that.indexRegion] == '全部' ) {
+            region_name = '';
+        } else {
+            region_name = that.areaid[that.indexRegion] || that.city;
+        }
         const json = await api.searchCorp({
         query: {
             head: {
                 "transcode": "I0002", 
-                "type": "h"
+                "type": "h" 
             },
             data: {
                 token: that.loginInfo.token,
                 tokenKey: that.loginInfo.tokenKey,
                 p: currentPage || "1",
-                keyword: that.keyword,
-                city: that.areaid[that.indexRegion] || that.city,
+                keywork: that.keyword,  
+                city: region_name,
                 industry: that.industryid[that.indexIndustry] || "",
                 nature: that.nature[that.indexNature] || ""
             }
