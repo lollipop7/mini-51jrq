@@ -137,8 +137,9 @@ const date = function(format, timestamp){
         return ret; 
     }); 
 }
+
 /*获取当前页url*/
-function getCurrentPageUrl(){
+const getCurrentPageUrl = function (){
     let pages = getCurrentPages()    //获取加载的页面
     let currentPage = pages[pages.length-1]    //获取当前页面的对象
     let url = currentPage.route    //当前页面url
@@ -146,7 +147,7 @@ function getCurrentPageUrl(){
 }
 
 /*获取当前页带参数的url*/
-function getCurrentPageUrlWithArgs(){
+const getCurrentPageUrlWithArgs = function (){
     let pages = getCurrentPages()    //获取加载的页面
     let currentPage = pages[pages.length-1]    //获取当前页面的对象
     let url = currentPage.route    //当前页面url
@@ -162,14 +163,6 @@ function getCurrentPageUrlWithArgs(){
     
     return urlWithArgs
 }
-
-// function getFsMock(){
-//     const fs = require('fs');
-//     let bufferData = fs.readFileSync(json.data);
-//     let base64Str = bufferData.toString('base64');
-//     let datauri = 'data:image/png;base64,' + base64Str;
-//     return datauri;
-// }
 
 module.exports = {
     goLogin,

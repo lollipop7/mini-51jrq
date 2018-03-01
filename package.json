@@ -13,7 +13,7 @@
   "dependencies": {
     "moment": "^2.20.1",
     "promise-polyfill": "^7.0.0",
-    "wepy": "^1.6.0",
+    "wepy": "^1.7.1",
     "wepy-async-function": "^1.4.4",
     "wepy-com-toast": "^1.0.2"
   },
