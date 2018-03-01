@@ -9,6 +9,7 @@ import 'wepy-async-function';
 import {
       LOGIN_INFO
 } from './utils/constants';
+import api from './api/api';
 
 export default class extends wepy.app {
   config = {
@@ -16,6 +17,7 @@ export default class extends wepy.app {
       'pages/home/home',    
       'pages/personal/resume_list',
       'pages/login/login',
+      'pages/home/home',             
       'pages/personal/personal', 
       'pages/login/regist',
       'pages/personal/resume',
@@ -65,6 +67,7 @@ export default class extends wepy.app {
     userInfo: null,
     appid: "wxd48d26a8a3f6938f",
     secret: 'ffd389347ef65447d93b82a332a59aad',
+    access_token: '',
   }
 
   constructor () {
@@ -73,9 +76,9 @@ export default class extends wepy.app {
   }
 
   //当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
-  async onLaunch() {
-    let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
-    
+  onLaunch() {
+    let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {}; 
+    this.getAccessToken(); 
   }
 
   // sleep (s) {
@@ -89,6 +92,15 @@ export default class extends wepy.app {
   // async testAsync () {
   //   const data = await this.sleep(3)
   // }
+  async getAccessToken() {
+    const that = this;
+    const json = await api.getAccessToken({
+      method: 'GET'
+    });
+    if (json.data.result) {
+      that.globalData.access_token = json.data.access_token;
+    }
+  }
 
   getUserInfo(cb) {
     const that = this
