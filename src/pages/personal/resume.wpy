@@ -119,9 +119,9 @@
 <template>
   <view class="resume-container">
       <view class="head">
-        <image bindtap="changeHeadPic" src="{{headimg}}" wx:if="{{headimg != (''||undefined)}}"></image>
-        <image bindtap="changeHeadPic" src="/images/icons/upload_head.png" wx:else="{{headimg != (''||undefined)}}"></image>
-        <view>点击上传头像</view>
+        <image src="{{headimg}}" wx:if="{{headimg != (''||undefined)}}"></image>
+        <image src="/images/icons/upload_head.png" wx:else="{{headimg != (''||undefined)}}"></image>
+        <view>{{baseInfo.username}}</view>
       </view>
       <!-- 基本信息 -->
       <view class="info-container">
@@ -135,7 +135,7 @@
           <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
           <image src="/images/icons/female.png" wx:else="{{sex}}"></image>
         </view>
-        <view class="small-info">25岁 | {{baseInfo.livecityid}} | {{baseInfo.workyears}} | 本科</view>
+        <view class="small-info">{{baseInfo.livecityid}} | {{baseInfo.workyears}}</view>
         <view class="intro-container">
           <view class="hukou"><view>户口：</view><view class="result">{{baseInfo.address}}</view></view>
           <view class="hukou"><view>婚姻状况：</view><view class="result">{{baseInfo.marital}}</view></view>
@@ -327,7 +327,6 @@ export default class resumePage extends wepy.page {
                   if (json.data.returnCode == "AAAAAAA") {
                     that.baseInfo = JSON.parse(json.data.data);
                     that.sex = (that.baseInfo.sex == "男");
-                    console.log(baseInfo)
                     that.$apply();
                   } else {
                     tip.error(json.returnMsg);

@@ -26,6 +26,9 @@
                       font-size: 24rpx;
                       color: #888888;
                     }
+                    .percent {
+                      width: 50%;
+                    }
                   }
                   .down {
                     display: flex;
@@ -136,20 +139,13 @@
 <template>  
   <view class="resumelist-container">
     <view class="alert-container" wx:if = "{{showbox}}"></view>
-    <view class="alert-box" wx:if = "{{showbox}}">
-        <view class="sure">删除后不可恢复，是否确认删除？</view>
-        <view class="yesno">
-            <view class="no" bindtap="cancel">取消</view>
-            <view class="yes" bindtap="yes">确定</view>
-        </view>
-    </view>
     <repeat for="{{resumelist}}" key="index" index="index" item="item">
       <view class="resume-list">
         <view class="content">
           <view class="up">
-            <view>
+            <view class="percent">
               <view class="title">{{item.resumename}}</view>
-              <progress percent="{{item.percent}}" show-info />
+              <progress percent="{{item.percent}}" show-info color="#FF9E00" />
             </view>
             <view>
               <view class="date">{{item.updatedate}}   ></view>
@@ -157,9 +153,16 @@
           </view>
           <view class="line"></view>
           <view class="down">
-            <view class="delete" bindtap="deleteResume({{item.resumeid}})">删除简历</view>
+            <view class="delete" bindtap="deleteResume">删除简历</view>
             <view class="edit" bindtap="editResume({{item.resumeid}})">编辑简历</view>
           </view>
+        </view>
+      </view>
+      <view class="alert-box" wx:if = "{{showbox}}">
+        <view class="sure">删除后不可恢复，是否确认删除？</view>
+        <view class="yesno">
+            <view class="no" bindtap="cancel">取消</view>
+            <view class="yes" bindtap="yes({{item.resumeid}})">确定</view>
         </view>
       </view>
     </repeat>
@@ -174,13 +177,13 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
-const utils = require('../../utils/utils');
+import utils from'../../utils/utils';
 
 export default class CorpPage extends wepy.page {
 
   data = {
     resumelist: [],
-    showbox: true
+    showbox: false
   }
 
   onLoad (options) { 
@@ -225,13 +228,9 @@ export default class CorpPage extends wepy.page {
 
   methods = {
       // 删除我的简历
-      deleteResume (resumeid) {
+      deleteResume () {
         this.showbox = true;
-        // this.deleteMyResume(resumeid).then(data => {
-        //   console.log(data);
-        // }).catch(err => {
-        //   console.log(err)
-        // })
+        
       },
       // 编辑我的简历
       editResume (resumeid) {
@@ -248,6 +247,28 @@ export default class CorpPage extends wepy.page {
     //   取消删除
     cancel() {
         this.showbox = false;
+        this.$apply();
+    },
+    // 确认删除
+    yes(resumeid) {
+      this.deleteMyResume(resumeid).then(data => {
+        this.showbox = false;
+        // 获取简历列表
+        this.getResumeList().then(data=>{
+            if(data.data.returnCode == "AAAAAAA") {
+                var resumeArr = JSON.parse(data.data.data);
+                resumeArr.forEach(element => {
+                  element.updatedate = utils.date('Y-m-d',element.updatedate)
+                });
+                this.resumelist = resumeArr
+                this.$apply();
+            }else{
+                console.log(222111,data)
+            }
+        })
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 

@@ -267,41 +267,41 @@ export default class PersPage extends wepy.page {
                 }
                 that.$apply();
                 // 获取简历列表
-                that.getResumeList().then(data=>{
-                    if(data.data.returnCode == "AAAAAAA") {
-                        that.resumeid = JSON.parse(data.data.data)[0].resumeid;
-                        // 存储信息到本地
-                        let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
-                        loginInfo.resumeid = that.resumeid;
-                        wx.setStorageSync(LOGIN_INFO, loginInfo);
-                        wx.setStorage({
-                            key:'resumeid', 
-                            data:that.resumeid
-                        });
-                        that.$apply();
-                        that.getIntegrity(that.resumeid).then(data=>{
-                            if(data.data.returnCode == "AAAAAAA") {
-                                let result = JSON.parse(data.data.data)[0];
-                                delete result.resumeid;
-                                let addResult = 0;
-                                for (var key in result){
-                                    addResult += result[key]
-                                }
-                                that.percentage = addResult + '%';
-                                that.$apply();
-                            }else{
-                               console.log('getIntegrity',data) 
-                            }
-                        })
-                    }else{
-                        // 清空本地信息
-                        wx.clearStorage()
-                        that.headimgStatus=false;
-                        that.have = false;
-                        that.loginStatus = false;
-                        that.$apply();
-                    }
-                })
+                // that.getResumeList().then(data=>{
+                //     if(data.data.returnCode == "AAAAAAA") {
+                //         that.resumeid = JSON.parse(data.data.data)[0].resumeid;
+                //         // 存储信息到本地
+                //         let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+                //         loginInfo.resumeid = that.resumeid;
+                //         wx.setStorageSync(LOGIN_INFO, loginInfo);
+                //         wx.setStorage({
+                //             key:'resumeid', 
+                //             data:that.resumeid
+                //         });
+                //         that.$apply();
+                //         that.getIntegrity(that.resumeid).then(data=>{
+                //             if(data.data.returnCode == "AAAAAAA") {
+                //                 let result = JSON.parse(data.data.data)[0];
+                //                 delete result.resumeid;
+                //                 let addResult = 0;
+                //                 for (var key in result){
+                //                     addResult += result[key]
+                //                 }
+                //                 that.percentage = addResult + '%';
+                //                 that.$apply();
+                //             }else{
+                //                console.log('getIntegrity',data) 
+                //             }
+                //         })
+                //     }else{
+                //         // 清空本地信息
+                //         wx.clearStorage()
+                //         that.headimgStatus=false;
+                //         that.have = false;
+                //         that.loginStatus = false;
+                //         that.$apply();
+                //     }
+                // })
             },
             fail: function(res) {
                 // 清空本地信息
