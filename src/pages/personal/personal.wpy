@@ -163,13 +163,13 @@
           </view>
       </view>
       <view class="my-function">
-          <view class="fun-line" bindtap="goResumePage({{resumeid}})">
+          <view class="fun-line" bindtap="goResumeList">
             <view class="img-title">
                 <image src="/images/icons/resume.png"></image>
                 <text>我的简历</text>
             </view>
             <view class="percent-arrow">
-                <view class="percentage">{{percentage}}</view>
+                <!-- <view class="percentage">{{percentage}}</view> -->
                 <image src="/images/icons/arrow_right.png"></image>
             </view>
         </view>
@@ -244,7 +244,6 @@ export default class PersPage extends wepy.page {
     }
     
     onShow(){
-        console.log('show')
         // 获取登录信息
         const that = this;
         wx.getStorage({
@@ -310,15 +309,26 @@ export default class PersPage extends wepy.page {
     methods = {
 
         // 跳转我的简历
-        goResumePage () {
+        goResumeList () {
             // 未登录跳转登录页
             utils.goLogin()
             if(this.loginStatus){
                 wx.navigateTo({
-                    url: `resume`
+                    url: `resume_list`
                 })
             }
         },
+
+        // 跳转我的简历
+        // goResumePage () {
+        //     // 未登录跳转登录页
+        //     utils.goLogin()
+        //     if(this.loginStatus){
+        //         wx.navigateTo({
+        //             url: `resume`
+        //         })
+        //     }
+        // },
 
         // 跳转投递状态
         goDeliveryPage () {
@@ -381,21 +391,21 @@ export default class PersPage extends wepy.page {
         this.showbox = false;
     }
     //获取简历列表
-    async getResumeList() {
-        const json = await api.getCollectJob({
-        query: {
-                head: {
-                    "transcode": "P0001",
-                    "type": "h"
-                },
-                data: {
-                    "token": this.token,
-                    "tokenKey": this.tokenKey
-                }
-            }
-        })
-        return json;
-    }
+    // async getResumeList() {
+    //     const json = await api.getCollectJob({
+    //     query: {
+    //             head: {
+    //                 "transcode": "P0001",
+    //                 "type": "h"
+    //             },
+    //             data: {
+    //                 "token": this.token,
+    //                 "tokenKey": this.tokenKey
+    //             }
+    //         }
+    //     })
+    //     return json;
+    // }
 
     //完整度查询
     async getIntegrity(resumeid) {
