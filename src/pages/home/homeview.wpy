@@ -197,7 +197,7 @@
           <button wx:else @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
         </view>
       </view>
-      <shareminipro></shareminipro>
+      <shareminipro :urlWithArgs.sync="urlWithArgs"></shareminipro>
   </view>
 </template>
 
@@ -211,8 +211,7 @@
     import PosiNameDuty from '../../components/posinameduty';
     import RelatedJob from '../../components/relatedjob';
     import ShareMiniPro from '../../components/shareminipro';
-
-    const utils = require('../../utils/utils');
+    import utils from '../../utils/utils';
 
     export default class HomeView extends wepy.page {
       config = {
@@ -234,30 +233,33 @@
         isFav: false,   //未收藏
         isDelivery: false,    //未投递
         loginInfo: {},
+        urlWithArgs: ""
       }
 
       onLoad(options){
         this.jobId = options.jobid;
         this.corpId = options.corpid;
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+        this.urlWithArgs = utils.getCurrentPageUrlWithArgs();
         this.viewCompanyjob();
-        // const scene = decodeURIComponent(options.scene);
-        this.getWxaCode(this.$parent.globalData.access_token);                  
+        // const scene = decodeURIComponent(options.scene);                   
       }
 
       onShareAppMessage (res) {
-        const corpid = this.corpId,
-          jobid = this.jobId;
+        const that = this;
+        const corpname = that.homeDetailInfo.corpInfo.corpname,
+          jobname = that.jobInfo.jobname;
+        let title = `${corpname}正在招聘 ${jobname}`;
         if (res.from === 'button') {
           // 来自页面内转发按钮
           console.log(res.target)
         }
         return {
-          title: '转发标题',
-          path: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`,
-          imageUrl: "/images/icons/logo.png",
+          title: title.length > 30 ? title.slice(0, 29)+'...' : title,
+          path: that.urlWithArgs,
           success: function(res) {
             // 转发成功
+            res.shareTickets // 单聊是没有的，注意必须要在分享前调用wx.showShareMenu方法，否则是不会带分享票据
           },
           fail: function(res) {
             // 转发失败
@@ -278,16 +280,6 @@
           const that = this;
           that.deliverJob(that.jobId, that.loginInfo.resumeid)
         }
-      }
-
-      
-      async getWxaCode(access_token) {//获取小程序码
-        console.log('getWxaCode')
-        const that = this;
-        const json = await api.getWxaCode({
-          access_token: access_token
-        });
-        console.log(json)
       }
 
       async viewCompanyjob(){//查看企业职位详细

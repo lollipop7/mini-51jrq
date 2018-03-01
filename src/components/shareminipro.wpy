@@ -11,19 +11,166 @@
             }
         }
     }
+    .sheet-list {
+        action-sheet-item {
+            text-align: left;
+            padding: 10px;
+            .sheet-item {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                &.sheet-btn:after {
+                    border: none;
+                }
+                &.sheet-btn {
+                    padding: 0;
+                    background-color: #fff;
+                    line-height: inherit;
+                }
+            }
+            .arrow-right {
+                color: #ccc;
+                font-size: 28rpx;
+            }
+        }
+    }
+    .bomb-screen {
+        background-color: rgb(0, 0, 0);
+        position: fixed;
+        z-index: 2000;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+    }
 </style>
 
 <template>
-  <view class="share-container">
-      <button class="share-btn" open-type="share" 
-        style="background: url('/images/icons/share.png') no-repeat center center;background-size: contain"></button>
-  </view>
+    <view>
+        <view class="share-container">
+            <button class="share-btn" @tap.stop="openActionSheet"
+                style="background: url('/images/icons/share.png') no-repeat center center;background-size: contain"></button>
+        </view>
+        <action-sheet hidden="{{actionSheetHidden}}" bindchange="actionSheetbindchange" class="sheet-list">
+            <!-- <block wx:for="{{sheetList}}">
+                <action-sheet-item>
+                    <view class="sheet-item" @tap.stop="bind{{item.bindtap}}">
+                        <text>{{item.txt}}</text>
+                        <view class="arrow-right">&gt;</view> 
+                    </view>
+                </action-sheet-item>
+            </block> -->
+            <action-sheet-item>
+                <view class="sheet-item" @tap.stop="bindMenu0">
+                    <text>生成朋友圈分享图</text>
+                    <view class="arrow-right">&gt;</view> 
+                </view>
+            </action-sheet-item>
+            <action-sheet-item>
+                <button class="sheet-btn sheet-item" open-type="share" @tap.stop="bindMenu1">
+                    <text open-type="share">转发给好友或群聊</text>
+                    <view class="arrow-right">&gt;</view> 
+                </button>
+            </action-sheet-item>
+            <action-sheet-item>
+                <view class="sheet-item" @tap.stop="bindMenu2">
+                    <text>生成公众号文章分享图</text>
+                    <view class="arrow-right">&gt;</view>  
+                </view>
+            </action-sheet-item>
+            <action-sheet-cancel>取消</action-sheet-cancel> 
+        </action-sheet>
+        <view wx:if="{{isShowBombScreen}}">
+            <!-- <view class="pop-pic">
+                <image></image>
+            </view> -->
+            <view class="bomb-screen" @tap.stop="close"></view>
+        </view>
+    </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import api from '../api/api';
+
 export default class ShareMiniPro extends wepy.component {
-  
+    data = {
+        actionSheetHidden: true,
+        sheetList: [
+            {bindtap: "Menu0", txt: "生成朋友圈分享图"},
+            {bindtap: "Menu1", txt: "转发给好友或群聊"},
+            {bindtap: "Menu2", txt: "生成公众号文章分享图"},
+        ],
+        isShowBombScreen: false
+    }
+
+    props={
+        urlWithArgs: {
+            type: String,
+            default: 'null'
+        }
+    }
+
+    components = {
+    }
+
+    methods={
+        openActionSheet() {
+            this.actionSheetHidden = !this.actionSheetHidden;
+        },
+        actionSheetbindchange() {//调取 “取消”按钮
+            this.actionSheetHidden = !this.actionSheetHidden;
+        },
+        bindMenu0(){//生成朋友圈分享图
+            this.menu = 0;
+            this.actionSheetHidden = !this.actionSheetHidden;
+            this.isShowBombScreen = true;
+            wx.showLoading({
+                title: '正在生成图片',
+                // mask: true,
+            })
+            this.getWxaCode()
+        },
+        bindMenu1(){//转发给好友或群聊
+            this.menu = 1;
+            this.actionSheetHidden = !this.actionSheetHidden; 
+        },
+        bindMenu2(){//生成公众号文章分享图
+            this.menu = 2;
+            this.actionSheetHidden = !this.actionSheetHidden;   
+        },
+        close() {
+            this.isShowBombScreen = false;
+            console.log('关闭遮罩')
+        }
+    }
+    
+    async getWxaCode() {//获取小程序码
+        const that = this;
+        const json = await api.getWxaCode({
+          query: {
+             head: {
+                transcode: "P00016",
+                type: "h"
+            },
+            data: {
+              path: that.urlWithArgs,
+              width: 430
+            }
+          }
+        });
+        if(json.errMsg == "request:ok") {
+            const base64 = wx.arrayBufferToBase64(json.data)  
+            console.log(typeof(json.data), `data:image/png;base64,${base64}`);
+        //   wx.getImageInfo({
+        //     src: json.errMsg,
+        //     success: function(res){
+        //       console.log(res)
+        //     }
+        //   })
+        }
+    }
 }
 </script>
 
