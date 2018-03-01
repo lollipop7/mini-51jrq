@@ -163,13 +163,13 @@
           </view>
       </view>
       <view class="my-function">
-          <view class="fun-line" bindtap="goResumePage({{resumeid}})">
+          <view class="fun-line" bindtap="goResumeList">
             <view class="img-title">
                 <image src="/images/icons/resume.png"></image>
                 <text>我的简历</text>
             </view>
             <view class="percent-arrow">
-                <view class="percentage">{{percentage}}</view>
+                <!-- <view class="percentage">{{percentage}}</view> -->
                 <image src="/images/icons/arrow_right.png"></image>
             </view>
         </view>
@@ -267,41 +267,41 @@ export default class PersPage extends wepy.page {
                 }
                 that.$apply();
                 // 获取简历列表
-                that.getResumeList().then(data=>{
-                    if(data.data.returnCode == "AAAAAAA") {
-                        that.resumeid = JSON.parse(data.data.data)[0].resumeid;
-                        // 存储信息到本地
-                        let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
-                        loginInfo.resumeid = that.resumeid;
-                        wx.setStorageSync(LOGIN_INFO, loginInfo);
-                        wx.setStorage({
-                            key:'resumeid', 
-                            data:that.resumeid
-                        });
-                        that.$apply();
-                        that.getIntegrity(that.resumeid).then(data=>{
-                            if(data.data.returnCode == "AAAAAAA") {
-                                let result = JSON.parse(data.data.data)[0];
-                                delete result.resumeid;
-                                let addResult = 0;
-                                for (var key in result){
-                                    addResult += result[key]
-                                }
-                                that.percentage = addResult + '%';
-                                that.$apply();
-                            }else{
-                               console.log('getIntegrity',data) 
-                            }
-                        })
-                    }else{
-                        // 清空本地信息
-                        wx.clearStorage()
-                        that.headimgStatus=false;
-                        that.have = false;
-                        that.loginStatus = false;
-                        that.$apply();
-                    }
-                })
+                // that.getResumeList().then(data=>{
+                //     if(data.data.returnCode == "AAAAAAA") {
+                //         that.resumeid = JSON.parse(data.data.data)[0].resumeid;
+                //         // 存储信息到本地
+                //         let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+                //         loginInfo.resumeid = that.resumeid;
+                //         wx.setStorageSync(LOGIN_INFO, loginInfo);
+                //         wx.setStorage({
+                //             key:'resumeid', 
+                //             data:that.resumeid
+                //         });
+                //         that.$apply();
+                //         that.getIntegrity(that.resumeid).then(data=>{
+                //             if(data.data.returnCode == "AAAAAAA") {
+                //                 let result = JSON.parse(data.data.data)[0];
+                //                 delete result.resumeid;
+                //                 let addResult = 0;
+                //                 for (var key in result){
+                //                     addResult += result[key]
+                //                 }
+                //                 that.percentage = addResult + '%';
+                //                 that.$apply();
+                //             }else{
+                //                console.log('getIntegrity',data) 
+                //             }
+                //         })
+                //     }else{
+                //         // 清空本地信息
+                //         wx.clearStorage()
+                //         that.headimgStatus=false;
+                //         that.have = false;
+                //         that.loginStatus = false;
+                //         that.$apply();
+                //     }
+                // })
             },
             fail: function(res) {
                 // 清空本地信息
@@ -316,15 +316,26 @@ export default class PersPage extends wepy.page {
     methods = {
 
         // 跳转我的简历
-        goResumePage () {
+        goResumeList () {
             // 未登录跳转登录页
             utils.goLogin()
             if(this.loginStatus){
                 wx.navigateTo({
-                    url: `resume`
+                    url: `resume_list`
                 })
             }
         },
+
+        // 跳转我的简历
+        // goResumePage () {
+        //     // 未登录跳转登录页
+        //     utils.goLogin()
+        //     if(this.loginStatus){
+        //         wx.navigateTo({
+        //             url: `resume`
+        //         })
+        //     }
+        // },
 
         // 跳转投递状态
         goDeliveryPage () {
@@ -387,21 +398,21 @@ export default class PersPage extends wepy.page {
         this.showbox = false;
     }
     //获取简历列表
-    async getResumeList() {
-        const json = await api.getCollectJob({
-        query: {
-                head: {
-                    "transcode": "P0001",
-                    "type": "h"
-                },
-                data: {
-                    "token": this.token,
-                    "tokenKey": this.tokenKey
-                }
-            }
-        })
-        return json;
-    }
+    // async getResumeList() {
+    //     const json = await api.getCollectJob({
+    //     query: {
+    //             head: {
+    //                 "transcode": "P0001",
+    //                 "type": "h"
+    //             },
+    //             data: {
+    //                 "token": this.token,
+    //                 "tokenKey": this.tokenKey
+    //             }
+    //         }
+    //     })
+    //     return json;
+    // }
 
     //完整度查询
     async getIntegrity(resumeid) {

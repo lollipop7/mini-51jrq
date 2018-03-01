@@ -158,10 +158,11 @@
             if(!obj2.resumeid){
                 delete obj2['resumeid']
             }
+            const that = this;
             this.changeBaseInfo(e.detail.value, obj2).then(data=>{
                 if(data.data && data.data.returnCode == "AAAAAAA") {
                     wx.navigateTo({
-                        url: `resume`
+                        url: `resume?resumeid=${that.resumeid}`
                     })
                 }else{
                     console.log(data)
