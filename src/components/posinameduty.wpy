@@ -22,6 +22,7 @@
             padding-top: 4rpx;
             font-size: 22rpx;
             color: #B2B2B2;
+            text-align:left;
         }
     }
 </style>

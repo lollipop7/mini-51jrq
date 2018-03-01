@@ -44,6 +44,18 @@
         left: 0;
         top: 0;
     }
+    .pop-pic {
+        position: fixed;
+        width: 550rpx;
+        height: 550rpx;
+        margin-left: -275rpx;
+        top: 20%;
+        left: 50%;
+        z-index: 2001;
+        padding: 24rpx;
+        text-align: center;
+        background-color: #fff;
+    }
 </style>
 
 <template>
@@ -82,9 +94,12 @@
             <action-sheet-cancel>取消</action-sheet-cancel> 
         </action-sheet>
         <view wx:if="{{isShowBombScreen}}">
-            <!-- <view class="pop-pic">
-                <image></image>
-            </view> -->
+            <view class="pop-pic">
+                <!-- <posinameduty :syncJobInfo.sync="jobInfo"></posinameduty> -->
+
+                <!-- <canvas canvas-id="myCanvas" style="border: 1px solid;"/> -->
+                <image src="{{wxacodeBase64}}"></image>
+            </view>
             <view class="bomb-screen" @tap.stop="close"></view>
         </view>
     </view>
@@ -93,6 +108,7 @@
 <script>
 import wepy from 'wepy';
 import api from '../api/api';
+import PosiNameDuty from './posinameduty';
 
 export default class ShareMiniPro extends wepy.component {
     data = {
@@ -102,17 +118,23 @@ export default class ShareMiniPro extends wepy.component {
             {bindtap: "Menu1", txt: "转发给好友或群聊"},
             {bindtap: "Menu2", txt: "生成公众号文章分享图"},
         ],
-        isShowBombScreen: false
+        isShowBombScreen: false,
+        wxacodeBase64: ''
     }
 
     props={
         urlWithArgs: {
             type: String,
             default: 'null'
+        },
+        jobInfo: {
+            type: Object,
+            default: null
         }
     }
 
     components = {
+        posinameduty: PosiNameDuty,
     }
 
     methods={
@@ -125,20 +147,21 @@ export default class ShareMiniPro extends wepy.component {
         bindMenu0(){//生成朋友圈分享图
             this.menu = 0;
             this.actionSheetHidden = !this.actionSheetHidden;
-            this.isShowBombScreen = true;
-            wx.showLoading({
-                title: '正在生成图片',
-                // mask: true,
-            })
-            this.getWxaCode()
         },
         bindMenu1(){//转发给好友或群聊
             this.menu = 1;
-            this.actionSheetHidden = !this.actionSheetHidden; 
+            this.actionSheetHidden = !this.actionSheetHidden;
         },
         bindMenu2(){//生成公众号文章分享图
             this.menu = 2;
-            this.actionSheetHidden = !this.actionSheetHidden;   
+            this.actionSheetHidden = !this.actionSheetHidden; 
+            this.isShowBombScreen = true;             
+            // wx.showLoading({
+            //     title: '正在生成图片',
+            //     mask: true,
+            // })
+            this.getWxaCode();
+            // this.generateShareImage();  
         },
         close() {
             this.isShowBombScreen = false;
@@ -161,15 +184,86 @@ export default class ShareMiniPro extends wepy.component {
           }
         });
         if(json.errMsg == "request:ok") {
-            const base64 = wx.arrayBufferToBase64(json.data)  
-            console.log(typeof(json.data), `data:image/png;base64,${base64}`);
+            let blob = new Blob([json.data]);//读取二进制流
+            let reader = new FileReader();
+            reader.readAsArrayBuffer(blob);   
+            let base64 = reader.onload = function(e) {
+                //查看文件输出内容
+                console.log(this.result);
+                //查看文件内容字节大小
+                // console.log(new Blob([this.result]));
+                that.wxacodeBase64 = 'data:image/jpeg;base64,' + wx.arrayBufferToBase64(this.result);
+                that.$apply();
+            }
         //   wx.getImageInfo({
-        //     src: json.errMsg,
+        //     src: `data:image/png;base64,${base64}`,
         //     success: function(res){
-        //       console.log(res)
+        //       console.log(res);
         //     }
         //   })
         }
+    }
+
+    generateShareImage(jobInfo) {
+        const ctx = wx.createCanvasContext('myCanvas')
+        const {
+            jobname, avatarUrl
+        } = jobInfo
+        const {
+            nickName, count, wishesContent
+        } = this.data
+        const CANVAS_W = 300
+        const CANVAS_H = 375
+            // draw background
+        ctx.drawImage(bgWishes, 0, 0, CANVAS_W, CANVAS_H)
+            // draw wishes content
+        const getWishBlocks = (content = '') => {
+            let result = []
+            if (typeof content === 'string') {
+            // 将文字简单分行，每十六个字符为一行
+            const COUNT_PER_BLOCK = 16
+            for (let offset = 0, l = content.length; offset < l;) {
+                let start = offset
+                let end = offset + COUNT_PER_BLOCK
+                let block = content.substring(start, end)
+                result.push(block)
+                offset += COUNT_PER_BLOCK
+            }
+            }
+            return result
+        }
+        const WISHES_X = CANVAS_W / 2
+        const WISHES_Y = 90
+        const WISHES_LIGHT_HEIGHT = 21
+        ctx.setTextAlign('center')
+        ctx.setFontSize(15)
+        let wishesContentBlocks = getWishBlocks(wishesContent)
+        for (let i = 0, l = wishesContentBlocks.length; i < l; i++) {
+            let x = WISHES_X
+            let y = WISHES_Y + WISHES_LIGHT_HEIGHT * i
+            ctx.fillText(wishesContentBlocks[i], x, y)
+        }
+        // draw userInfo
+        //draw avatar
+        const AVATAR_X = CANVAS_W - 5 - 53
+        const AVATAR_Y = CANVAS_H - 104 - 15
+        const AVATAR_SIZE = 53
+        ctx.drawImage(avatarUrl, AVATAR_X, AVATAR_Y, 53, 53)
+            // draw avatar border
+            // draw nickname
+        const NICKNAME_X = CANVAS_W - 5
+        const NICKNAME_Y = CANVAS_H - 20 - 5 - 15
+        ctx.setTextAlign('right')
+        ctx.setFontSize(15)
+        ctx.fillText(nickName, NICKNAME_X, NICKNAME_Y)
+            // draw wishes count
+        const COUNT_X = NICKNAME_X
+        const COUNT_Y = CANVAS_H - 15
+        ctx.setTextAlign('right')
+        ctx.setFontSize(13)
+        ctx.fillText(`第${count}位送出祝福`, COUNT_X, COUNT_Y)
+        ctx.draw()
+        return ctx
     }
 }
 </script>
