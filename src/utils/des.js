@@ -371,11 +371,11 @@ function hexToBt4(hex) {
 */
 function byteToString(byteData){
  var str="";
- for(i = 0;i<4;i++){
+ for(var i = 0;i<4;i++){
    var count=0;
-   for(j=0;j<16;j++){        
+   for(var j=0;j<16;j++){        
      var pow=1;
-     for(m=15;m>j;m--){
+     for(var m=15;m>j;m--){
        pow*=2;
      }              
      count+=byteData[16*i+j]*pow;
@@ -389,9 +389,9 @@ function byteToString(byteData){
 
 function bt64ToHex(byteData){
  var hex = "";
- for(i = 0;i<16;i++){
+ for(var i = 0;i<16;i++){
    var bt = "";
-   for(j=0;j<4;j++){    
+   for(var j=0;j<4;j++){    
      bt += byteData[i*4+j];
    }    
    hex+=bt4ToHex(bt);
@@ -401,7 +401,7 @@ function bt64ToHex(byteData){
 
 function hexToBt64(hex){
  var binary = "";
- for(i = 0;i<16;i++){
+ for(var i = 0;i<16;i++){
    binary+=hexToBt4(hex.substring(i,i+1));
  }
  return binary;
@@ -485,8 +485,8 @@ function dec(dataByte,keyByte){
 
 function initPermute(originalData){
  var ipByte = new Array(64);
- for (i = 0, m = 1, n = 0; i < 4; i++, m += 2, n += 2) {
-   for (j = 7, k = 0; j >= 0; j--, k++) {
+ for (var i = 0, m = 1, n = 0; i < 4; i++, m += 2, n += 2) {
+   for (var j = 7, k = 0; j >= 0; j--, k++) {
      ipByte[i * 8 + k] = originalData[j * 8 + m];
      ipByte[i * 8 + k + 32] = originalData[j * 8 + n];
    }
@@ -496,7 +496,7 @@ function initPermute(originalData){
 
 function expandPermute(rightData){  
  var epByte = new Array(48);
- for (i = 0; i < 8; i++) {
+ for (var i = 0; i < 8; i++) {
    if (i == 0) {
      epByte[i * 6 + 0] = rightData[31];
    } else {
@@ -517,7 +517,7 @@ function expandPermute(rightData){
 
 function xor(byteOne,byteTwo){  
  var xorByte = new Array(byteOne.length);
- for(i = 0;i < byteOne.length; i ++){      
+ for(var i = 0;i < byteOne.length; i ++){      
    xorByte[i] = byteOne[i] ^ byteTwo[i];
  }  
  return xorByte;
@@ -581,7 +581,7 @@ function sBoxPermute(expandByte){
        [7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8],
        [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11]];
    
-   for(m=0;m<8;m++){
+   for(var m=0;m<8;m++){
    var i=0,j=0;
    i = expandByte[m*6+0]*2+expandByte[m*6+5];
    j = expandByte[m * 6 + 1] * 2 * 2 * 2 
@@ -776,8 +776,8 @@ function generateKeys(keyByte){
  keys[15] = new Array();  
  var loop = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1];
 
- for(i=0;i<7;i++){
-   for(j=0,k=7;j<8;j++,k--){
+ for(var i=0;i<7;i++){
+   for(var j=0,k=7;j<8;j++,k--){
      key[i*8+j]=keyByte[8*k+i];
    }
  }    
@@ -846,22 +846,22 @@ function generateKeys(keyByte){
    tempKey[46] = key[28];
    tempKey[47] = key[31];
    switch(i){
-     case 0: for(m=0;m < 48 ;m++){ keys[ 0][m] = tempKey[m]; } break;
-     case 1: for(m=0;m < 48 ;m++){ keys[ 1][m] = tempKey[m]; } break;
-     case 2: for(m=0;m < 48 ;m++){ keys[ 2][m] = tempKey[m]; } break;
-     case 3: for(m=0;m < 48 ;m++){ keys[ 3][m] = tempKey[m]; } break;
-     case 4: for(m=0;m < 48 ;m++){ keys[ 4][m] = tempKey[m]; } break;
-     case 5: for(m=0;m < 48 ;m++){ keys[ 5][m] = tempKey[m]; } break;
-     case 6: for(m=0;m < 48 ;m++){ keys[ 6][m] = tempKey[m]; } break;
-     case 7: for(m=0;m < 48 ;m++){ keys[ 7][m] = tempKey[m]; } break;
-     case 8: for(m=0;m < 48 ;m++){ keys[ 8][m] = tempKey[m]; } break;
-     case 9: for(m=0;m < 48 ;m++){ keys[ 9][m] = tempKey[m]; } break;
-     case 10: for(m=0;m < 48 ;m++){ keys[10][m] = tempKey[m]; } break;
-     case 11: for(m=0;m < 48 ;m++){ keys[11][m] = tempKey[m]; } break;
-     case 12: for(m=0;m < 48 ;m++){ keys[12][m] = tempKey[m]; } break;
-     case 13: for(m=0;m < 48 ;m++){ keys[13][m] = tempKey[m]; } break;
-     case 14: for(m=0;m < 48 ;m++){ keys[14][m] = tempKey[m]; } break;
-     case 15: for(m=0;m < 48 ;m++){ keys[15][m] = tempKey[m]; } break;
+     case 0: for(var m=0;m < 48 ;m++){ keys[ 0][m] = tempKey[m]; } break;
+     case 1: for(var m=0;m < 48 ;m++){ keys[ 1][m] = tempKey[m]; } break;
+     case 2: for(var m=0;m < 48 ;m++){ keys[ 2][m] = tempKey[m]; } break;
+     case 3: for(var m=0;m < 48 ;m++){ keys[ 3][m] = tempKey[m]; } break;
+     case 4: for(var m=0;m < 48 ;m++){ keys[ 4][m] = tempKey[m]; } break;
+     case 5: for(var m=0;m < 48 ;m++){ keys[ 5][m] = tempKey[m]; } break;
+     case 6: for(var m=0;m < 48 ;m++){ keys[ 6][m] = tempKey[m]; } break;
+     case 7: for(var m=0;m < 48 ;m++){ keys[ 7][m] = tempKey[m]; } break;
+     case 8: for(var m=0;m < 48 ;m++){ keys[ 8][m] = tempKey[m]; } break;
+     case 9: for(var m=0;m < 48 ;m++){ keys[ 9][m] = tempKey[m]; } break;
+     case 10: for(var m=0;m < 48 ;m++){ keys[10][m] = tempKey[m]; } break;
+     case 11: for(var m=0;m < 48 ;m++){ keys[11][m] = tempKey[m]; } break;
+     case 12: for(var m=0;m < 48 ;m++){ keys[12][m] = tempKey[m]; } break;
+     case 13: for(var m=0;m < 48 ;m++){ keys[13][m] = tempKey[m]; } break;
+     case 14: for(var m=0;m < 48 ;m++){ keys[14][m] = tempKey[m]; } break;
+     case 15: for(var m=0;m < 48 ;m++){ keys[15][m] = tempKey[m]; } break;
    }
  }
  return keys;  
@@ -895,7 +895,24 @@ function test() {
 
 export {
   strEnc,
-  strDec
+  strDec,
+  getKeyBytes,
+  strToBt,
+  bt4ToHex,
+  hexToBt4,
+  byteToString,
+  bt64ToHex,
+  hexToBt64,
+  enc,
+  dec,
+  initPermute,
+  expandPermute,
+  xor,
+  sBoxPermute,
+  pPermute,
+  finallyPermute,
+  getBoxBinary,
+  generateKeys
 }
 
  

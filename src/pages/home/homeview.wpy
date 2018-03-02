@@ -199,7 +199,8 @@
       </view>
       <shareminipro 
             :urlWithArgs.sync="urlWithArgs" 
-            :jobInfo.sync="jobInfo"></shareminipro>
+            :jobInfo.sync="jobInfo"
+            :homeDetailInfo.sync="homeDetailInfo"></shareminipro>
   </view>
 </template>
 
