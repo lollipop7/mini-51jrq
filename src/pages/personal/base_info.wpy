@@ -312,7 +312,7 @@
             const that = this;
             this.changeBaseInfo(e.detail.value,obj2).then(data=>{
                 if(data.data && data.data.returnCode == "AAAAAAA") {
-                    wx.navigateTo({
+                    wx.redirectTo({
                         url: `resume?resumeid=${data.data.resumeid ||that.resumeid}`
                     })
                 }else{
