@@ -311,6 +311,8 @@ export default class resumePage extends wepy.page {
     this.resumeid = options.resumeid;
     if(options.look=="just"){
       this.operateShow = true;
+    }else{
+      this.operateShow = false;
     }
     this.$apply();
     const that = this;

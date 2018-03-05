@@ -3,6 +3,9 @@
         position: fixed;
         bottom: 150rpx;
         right: 16rpx;
+        width: 96rpx;
+        height: 96rpx;
+        z-index: 8;
         .share-btn {
             width: 96rpx;
             height: 96rpx;
@@ -64,8 +67,7 @@
 <template>
     <view>
         <view class="share-container">
-            <button class="share-btn" @tap.stop="openActionSheet"
-                style="background: url('/images/icons/share.png') no-repeat center center;background-size: contain"></button>
+            <image class="share-btn" @tap.stop="openActionSheet" src='/images/icons/share.png'></image>
         </view>
         <action-sheet hidden="{{actionSheetHidden}}" bindchange="actionSheetbindchange" class="sheet-list">
             <action-sheet-item>
