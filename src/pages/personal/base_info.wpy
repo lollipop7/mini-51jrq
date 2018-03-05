@@ -64,6 +64,17 @@
                 </view>
             </view>
             <view class="list_item">
+                <view class="title">性别</view>
+                <picker name="sex" bindchange="bindPickerChange6" value="{{sex[index6]}}" range="{{sex}}">
+                    <view class="picker" wx:if="{{sexstatus}}">
+                        {{a_sex?a_sex:'请选择'}}
+                    </view>
+                    <view class="picker" wx:else="{{sexstatus}}">
+                        {{sex[index6]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
                 <view class="title">年龄</view>
                 <picker name="borndate" mode="date" value="{{borndate}}" bindchange="bindDateChange">
                     <view class="picker">
@@ -170,10 +181,12 @@
         index3: '',
         index4: '',
         index5: '',
+        index6: '',
         email: "",
         jobstatus: [],
         marital:[],
         city: [],
+        sex: [],
         baseInfo:{},
         // ============
         workcity:'',
@@ -186,6 +199,8 @@
         livecitystatus:true,
         a_marital:'',
         maritalstatus:true,
+        a_sex:'',
+        sexstatus:true,
         token:'',
         tokenKey:'',
         resumeid: ''
@@ -215,7 +230,8 @@
                             "livecityid": baseInfo.livecityid,
                             "marital": baseInfo.marital,
                             "telephone": baseInfo.telephone,
-                            "email": baseInfo.email
+                            "email": baseInfo.email,
+                            "sex": baseInfo.sex
                         }
                         that.username = baseInfo.username;
                         that.resumename = baseInfo.resumename;
@@ -225,6 +241,7 @@
                         that.a_jobstatus = baseInfo.jobstatus;
                         that.livecity = baseInfo.livecityid;
                         that.a_marital = baseInfo.marital;
+                        that.a_sex = baseInfo.sex;
                         that.telephone = baseInfo.telephone;
                         that.email = baseInfo.email;
                         that.$apply();
@@ -235,7 +252,7 @@
             } 
         })
             // 获取数据字典
-            const arr = ["DICT_COMP_CITY","DICT_RESUME_WORKYEAR","DICT_RESUME_JOBSTATU","DICT_RESUME_WEDDING"]
+            const arr = ["DICT_COMP_CITY","DICT_RESUME_WORKYEAR","DICT_RESUME_JOBSTATU","DICT_RESUME_WEDDING","DICT_BASE_SEX"]
             arr.forEach((item,index) => {
             switch (item)
             {
@@ -295,6 +312,20 @@
                 }
                 })
                 break;
+            case "DICT_BASE_SEX":// 性别
+                this.getDict(item).then(json => {
+                if (json.data.returnCode == "AAAAAAA") {
+                    var arr = []
+                    json.data.data.forEach((item,index)=>{
+                        arr.push(item.label)
+                    })
+                    that.sex = arr;
+                    that.$apply();
+                } else {
+                    tip.error(json.returnMsg);
+                }
+                })
+                break;
             }
         });
       }
@@ -347,6 +378,12 @@
         bindPickerChange5: function(e) {
             this.livecitystatus = false;
             this.index5 = e.detail.value;
+            this.$apply();
+        },
+        bindPickerChange6: function(e) {
+            this.sexstatus = false;
+            console.log(e.detail.value)
+            this.index6 = e.detail.value;
             this.$apply();
         }
         
