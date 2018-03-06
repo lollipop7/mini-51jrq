@@ -168,7 +168,7 @@
     </repeat>
     <view class="bottom-operate">
       <view class="add-resume" bindtap="addResume">添加简历</view>
-      <view class="import-resume">导入简历</view>
+      <view class="import-resume" bindtap="importResume">导入简历</view>
     </view>
   </view>
 </template>
@@ -274,6 +274,12 @@ export default class CorpPage extends wepy.page {
         wx.navigateTo({
             url: `resume?resumeid=${resumeid}&look=just`
         })
+    },
+    // 导入简历
+    importResume() {
+      wx.navigateTo({
+          url: `import_resume`
+      })
     }
   }
 
