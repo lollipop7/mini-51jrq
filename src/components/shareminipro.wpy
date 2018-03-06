@@ -86,14 +86,17 @@
             </action-sheet-item>
             <action-sheet-cancel>取消</action-sheet-cancel> 
         </action-sheet>
-        <view wx:if="{{isShowBombScreen}}">
+        <view wx:if="{{isShowMyCanvasScreen}}">
             <view class="bomb-screen" @tap.stop="close">
                 <canvas canvas-id="myCanvas" 
-                    bindtap="previewMyImage"
                     hidden="{{myCanvasShow}}"
+                    @longpress.stop="previewMyCanvas"
                     style="width: {{ctxWidth}}px; height: {{ctxHeight}}px; background-color: #ffffff;"/>
+            </view>
+        </view>
+        <view wx:if="{{isShowPubCanvasScreen}}">
+            <view class="bomb-screen" @tap.stop="close">
                 <canvas canvas-id="pubCanvas" 
-                    bindtap="previewPubImage"
                     hidden="{{pubCanvasShow}}"
                     style="width: {{ctxPubWidth}}px; height: {{ctxPubHeight}}px; background-color: #ffffff;"/>    
             </view>
@@ -119,7 +122,8 @@ export default class ShareMiniPro extends wepy.component {
         //     {bindtap: "Menu1", txt: "生成朋友圈分享图"},
         //     {bindtap: "Menu2", txt: "生成公众号文章分享图"},
         // ],
-        isShowBombScreen: false,
+        isShowMyCanvasScreen: false,
+        isShowPubCanvasScreen: false,
         myCanvasShow: true,
         pubCanvasShow: true,
         wxacodeurl: '',
@@ -134,8 +138,7 @@ export default class ShareMiniPro extends wepy.component {
 
     props={
         urlWithArgs: {
-            type: String,
-            default: 'null'
+            type: String
         },
         jobInfo: {
             type: Object,
@@ -152,10 +155,10 @@ export default class ShareMiniPro extends wepy.component {
         const screenWidth = wx.getSystemInfoSync();
         this.canvasRpx = screenWidth.windowWidth / 750 * 2;
         this.$apply();
+        console.log('onLoad----shareminipro', (new Date()).getTime())
     }
 
-    components = {
-    }
+    
 
     methods={
         openActionSheet() {
@@ -171,7 +174,8 @@ export default class ShareMiniPro extends wepy.component {
         bindMenu1(){//生成朋友圈分享图
             this.menu = 0;
             this.actionSheetHidden = true;
-            this.isShowBombScreen = true;  
+            this.isShowMyCanvasScreen = true;
+            this.isShowPubCanvasScreen = false;
             this.myCanvasShow = false;
             this.pubCanvasShow = true;
             this.generateShareImage();
@@ -179,26 +183,30 @@ export default class ShareMiniPro extends wepy.component {
         bindMenu2(){//生成公众号文章分享图
             this.menu = 2;
             this.actionSheetHidden = true;
-            this.isShowBombScreen = true; 
+            this.isShowMyCanvasScreen = false;
+            this.isShowPubCanvasScreen = true;
             this.pubCanvasShow = false;
             this.myCanvasShow = true;
             this.generatePublicAccountImage();
         },
         close() {
-            this.isShowBombScreen = false;
+            this.isShowMyCanvasScreen = false;
+            this.isShowPubCanvasScreen = false;
             console.log('关闭遮罩')
         },
-        previewImage: function (e) {  
-            // wx.previewImage({  
-            // urls: this.data.scene.split(',')  
-            // // 需要预览的图片http链接  使用split把字符串转数组。不然会报错  
-            // })  
+        previewMyCanvas: function (e) { 
+            const that = this; 
+            //wx.previewImage({  
+            // 需要预览的图片http链接  使用split把字符串转数组。不然会报错  
+            //})  
         }  
     }
     
     getWxaCode() {//获取小程序码
         const that = this;
-        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {path: that.urlWithArgs,width: 180}});
+        let v = (new Date()).getTime();
+        console.log(`${that.urlWithArgs}&v=${v}`)
+        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {path: `${that.urlWithArgs}&v=${v}`,width: 180}});
         const wxacodeurl = api.apimall + '/wx/createwxaqrcode?params='+strEnc(`${params}`, DESKEY);
         that.wxacodeurl = wxacodeurl; 
         console.log(wxacodeurl)
@@ -217,7 +225,7 @@ export default class ShareMiniPro extends wepy.component {
             jobname, jobcity, workyears, ebid, salary
         } = that.jobInfo;
         const {
-            corpname
+            corpname, mlogo
         } = that.homeDetailInfo.corpInfo;
         const CANVAS_W = that.ctxWidth;
         const CANVAS_H = that.ctxHeight;
@@ -249,7 +257,17 @@ export default class ShareMiniPro extends wepy.component {
         const WXACODE_X = that.canvasRpx * 98;
         const WXACODE_Y = that.canvasRpx* 180;
         const WXACODE_SIZE = that.canvasRpx * 180;
+        const MLOGO_SIZE = that.canvasRpx * 78;
         ctx.drawImage(that.wxacodeurl, (CANVAS_W / 2) - (WXACODE_SIZE/2), WXACODE_Y, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setStrokeStyle('#ff9e00');
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc((CANVAS_W / 2), WXACODE_Y + WXACODE_SIZE / 2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
+        ctx.closePath()
+        ctx.stroke()
+        ctx.clip()
+        ctx.drawImage(mlogo,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.restore()
 
         //draw hint
         ctx.drawImage('/images/icons/finger.png', CANVAS_W/2-that.canvasRpx * 40 / 2 / 2, that.canvasRpx * 420, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
@@ -266,7 +284,17 @@ export default class ShareMiniPro extends wepy.component {
         // ctx.setFillStyle('#b2b2b2');
         // ctx.fillText('51金融圈 | 中国领先的金融职业平台', that.canvasRpx * (132), that.canvasRpx * 564);
 
-        ctx.draw();
+        ctx.draw(true, function(){
+            wx.canvasToTempFilePath({
+                canvasId: 'myCanvas',
+                success: function(res) {
+                    console.log(res)
+                },
+                complete: function(){
+
+                }
+            })
+        });
     }
 
     generatePublicAccountImage(){//生成公众号文章分享图
@@ -281,7 +309,7 @@ export default class ShareMiniPro extends wepy.component {
             jobname, jobcity, workyears, ebid, salary
         } = that.jobInfo;
         const {
-            corpname
+            corpname, mlogo
         } = that.homeDetailInfo.corpInfo;
         const CANVAS_W = that.ctxPubWidth;
         const CANVAS_H = that.ctxPubHeight;
@@ -306,10 +334,18 @@ export default class ShareMiniPro extends wepy.component {
         ctx.fillText(salary, CANVAS_W - that.canvasRpx * (16 + that.mesureText(salary)), that.canvasRpx * 28);
 
         //draw wxacode
-        // const WXACODE_X = that.canvasRpx * 98;
-        // const WXACODE_Y = that.canvasRpx* 180;
         const WXACODE_SIZE = that.canvasRpx * 100;
+        const MLOGO_SIZE = that.canvasRpx * 42;
         ctx.drawImage(that.wxacodeurl, CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setStrokeStyle('#ff9e00');
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE/2, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE/2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
+        ctx.closePath()
+        ctx.stroke()
+        ctx.clip()
+        ctx.drawImage(mlogo,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.restore()
 
         //draw hint
         ctx.drawImage('/images/icons/finger.png', that.canvasRpx * 16, that.canvasRpx * 82, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
