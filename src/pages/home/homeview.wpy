@@ -245,7 +245,12 @@
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
         this.urlWithArgs = utils.getCurrentPageUrlWithArgs();
         this.viewCompanyjob();
-        // const scene = decodeURIComponent(options.scene);                   
+        // const scene = decodeURIComponent(options.scene);    
+        console.log('onLoad----homeview', (new Date()).getTime())               
+      }
+
+      onShow(){
+        console.log('onShow----homeview', (new Date()).getTime())
       }
 
       onShareAppMessage (res) {
