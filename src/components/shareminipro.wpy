@@ -134,6 +134,8 @@ export default class ShareMiniPro extends wepy.component {
         opHint1: '您可了解这个职位，并投递您的简历',
         ctxPubWidth: 0,
         ctxPubHeight: 0,
+        qrcodePath: '',
+        mlogoPath: ''
     }
 
     props={
@@ -155,7 +157,6 @@ export default class ShareMiniPro extends wepy.component {
         const screenWidth = wx.getSystemInfoSync();
         this.canvasRpx = screenWidth.windowWidth / 750 * 2;
         this.$apply();
-        console.log('onLoad----shareminipro', (new Date()).getTime())
     }
 
     
@@ -205,11 +206,30 @@ export default class ShareMiniPro extends wepy.component {
     getWxaCode() {//获取小程序码
         const that = this;
         let v = (new Date()).getTime();
-        console.log(`${that.urlWithArgs}&v=${v}`)
         let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {path: `${that.urlWithArgs}&v=${v}`,width: 180}});
         const wxacodeurl = api.apimall + '/wx/createwxaqrcode?params='+strEnc(`${params}`, DESKEY);
+        wx.getImageInfo({
+            src: wxacodeurl,
+            success: function (res) {
+                that.qrcodePath = res.path;
+                console.log('qrcodePath', res.path)
+            },
+            fail: function(res){
+                console.log('fail download image qrcodePath', res)
+            }
+        })
+        console.log('mlogo', (that.homeDetailInfo.corpInfo.mlogo).replace(/http/, 'https'))
+        wx.getImageInfo({
+            src: (that.homeDetailInfo.corpInfo.mlogo).replace(/http/, 'https'),
+            success: function (res) {
+                that.mlogoPath = res.path;
+                // console.log('mlogoPath', res.path)
+            },
+            fail: function(res){
+                console.log('fail download image mlogoPath', res)
+            }
+        })
         that.wxacodeurl = wxacodeurl; 
-        console.log(wxacodeurl)
         that.$apply();
     }
 
@@ -227,6 +247,7 @@ export default class ShareMiniPro extends wepy.component {
         const {
             corpname, mlogo
         } = that.homeDetailInfo.corpInfo;
+        
         const CANVAS_W = that.ctxWidth;
         const CANVAS_H = that.ctxHeight;
         // draw background
@@ -238,7 +259,6 @@ export default class ShareMiniPro extends wepy.component {
         //  draw jobduty
         ctx.setTextAlign('center');
         ctx.setFontSize(that.canvasRpx * 20);
-        ctx.font = "bold";
         ctx.setFillStyle('#353535');
         ctx.fillText(corpname + '正在招聘', CANVAS_W / 2, that.canvasRpx * 60);
 
@@ -250,24 +270,9 @@ export default class ShareMiniPro extends wepy.component {
 
         ctx.setFontSize(that.canvasRpx * 20);
         ctx.setFillStyle('#ff9e00');
-        ctx.font = "bold";
         ctx.fillText(salary, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10 + 20 + 10 + 14 +10));
 
-        //draw wxacode
-        const WXACODE_X = that.canvasRpx * 98;
-        const WXACODE_Y = that.canvasRpx* 180;
-        const WXACODE_SIZE = that.canvasRpx * 180;
-        const MLOGO_SIZE = that.canvasRpx * 78;
-        ctx.drawImage(that.wxacodeurl, (CANVAS_W / 2) - (WXACODE_SIZE/2), WXACODE_Y, WXACODE_SIZE, WXACODE_SIZE);
-        ctx.setStrokeStyle('#ff9e00');
-        ctx.save()
-        ctx.beginPath()
-        ctx.arc((CANVAS_W / 2), WXACODE_Y + WXACODE_SIZE / 2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
-        ctx.closePath()
-        ctx.stroke()
-        ctx.clip()
-        ctx.drawImage(mlogo,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
-        ctx.restore()
+        
 
         //draw hint
         ctx.drawImage('/images/icons/finger.png', CANVAS_W/2-that.canvasRpx * 40 / 2 / 2, that.canvasRpx * 420, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
@@ -284,17 +289,24 @@ export default class ShareMiniPro extends wepy.component {
         // ctx.setFillStyle('#b2b2b2');
         // ctx.fillText('51金融圈 | 中国领先的金融职业平台', that.canvasRpx * (132), that.canvasRpx * 564);
 
-        ctx.draw(true, function(){
-            wx.canvasToTempFilePath({
-                canvasId: 'myCanvas',
-                success: function(res) {
-                    console.log(res)
-                },
-                complete: function(){
+        //draw wxacode
+        const WXACODE_X = that.canvasRpx * 98;
+        const WXACODE_Y = that.canvasRpx* 180;
+        const WXACODE_SIZE = that.canvasRpx * 180;
+        const MLOGO_SIZE = that.canvasRpx * 65;
+        
+        ctx.drawImage(that.qrcodePath, (CANVAS_W / 2) - (WXACODE_SIZE/2), WXACODE_Y, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setFillStyle('#ff9e00');
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc((CANVAS_W / 2), WXACODE_Y + WXACODE_SIZE / 2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
+        ctx.closePath() 
+        ctx.fill()
+        ctx.clip()
+        ctx.drawImage(that.mlogoPath,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.restore()
 
-                }
-            })
-        });
+        ctx.draw();
     }
 
     generatePublicAccountImage(){//生成公众号文章分享图
@@ -311,6 +323,7 @@ export default class ShareMiniPro extends wepy.component {
         const {
             corpname, mlogo
         } = that.homeDetailInfo.corpInfo;
+
         const CANVAS_W = that.ctxPubWidth;
         const CANVAS_H = that.ctxPubHeight;
         // draw background
@@ -319,9 +332,7 @@ export default class ShareMiniPro extends wepy.component {
        
         //  draw jobduty
         ctx.setFontSize(that.canvasRpx * 18);
-        ctx.font = "bold";
         ctx.setFillStyle('#353535');
-        // ctx.fillText(corpname + '正在招聘', CANVAS_W / 2, that.canvasRpx * 14);
         ctx.fillText(jobname, that.canvasRpx * 16, that.canvasRpx * 28);
 
         ctx.setFontSize(that.canvasRpx * 12);
@@ -330,22 +341,9 @@ export default class ShareMiniPro extends wepy.component {
 
         ctx.setFontSize(that.canvasRpx * 20);
         ctx.setFillStyle('#ff9e00');
-        ctx.font = "bold";
         ctx.fillText(salary, CANVAS_W - that.canvasRpx * (16 + that.mesureText(salary)), that.canvasRpx * 28);
 
-        //draw wxacode
-        const WXACODE_SIZE = that.canvasRpx * 100;
-        const MLOGO_SIZE = that.canvasRpx * 42;
-        ctx.drawImage(that.wxacodeurl, CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE, WXACODE_SIZE, WXACODE_SIZE);
-        ctx.setStrokeStyle('#ff9e00');
-        ctx.save()
-        ctx.beginPath()
-        ctx.arc(CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE/2, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE/2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
-        ctx.closePath()
-        ctx.stroke()
-        ctx.clip()
-        ctx.drawImage(mlogo,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
-        ctx.restore()
+        
 
         //draw hint
         ctx.drawImage('/images/icons/finger.png', that.canvasRpx * 16, that.canvasRpx * 82, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
@@ -360,6 +358,20 @@ export default class ShareMiniPro extends wepy.component {
         // ctx.setFontSize(that.canvasRpx * 10);
         // ctx.setFillStyle('#b2b2b2');
         // ctx.fillText('51金融圈 | 中国领先的金融职业平台', that.canvasRpx * (132), that.canvasRpx * 564);
+
+        //draw wxacode
+        const WXACODE_SIZE = that.canvasRpx * 100;
+        const MLOGO_SIZE = that.canvasRpx * 42;
+        ctx.drawImage(that.qrcodePath, CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setStrokeStyle('#ff9e00');
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE/2, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE/2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
+        ctx.closePath()
+        ctx.stroke()
+        ctx.clip()
+        ctx.drawImage(that.mlogoPath,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.restore()
 
         ctx.draw();
     }

@@ -5,6 +5,32 @@
       padding: 16rpx 28rpx;
       background-color: #fff; 
     }
+    .posi-container {
+        display: flex;
+        flex-direction: column;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .posi-name-sal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 28rpx;
+            .posi-name {
+                font-weight: bold;
+                color: #353535;
+            }
+            .posi-sal {
+                color: #FF9E00;
+            }
+        }
+        .posi-duty {
+            padding-top: 4rpx;
+            font-size: 22rpx;
+            color: #B2B2B2;
+            text-align:left;
+        }
+    }
     .weal-container {
       display: flex;
       flex-flow: row wrap;
@@ -143,7 +169,23 @@
 <template>
   <view class="homeview-container">
       <view class="jobbrief-container">
-        <posinameduty :syncJobInfo.sync="jobInfo"></posinameduty>
+        <view class="posi-container">
+            <view style="height: 5rpx;"></view>
+            <view class="posi-name-sal">
+                <text class="posi-name">{{jobInfo.jobname}}</text>
+                <text class="posi-sal">{{jobInfo.salary}}</text>
+            </view>
+            <view class="posi-duty">
+                <text>{{jobInfo.jobcity}}</text>
+                <!-- <text class="ver">|</text>
+                <text>{{}}</text> -->
+                <text class="ver" wx:if="{{jobInfo.workyears}}">|</text>
+                <text>{{jobInfo.workyears}}</text>
+                <text class="ver" wx:if="{{jobInfo.ebid}}">|</text>
+                <text>{{jobInfo.ebid}}</text>
+            </view>
+        </view>
+        <!-- <posinameduty :syncJobInfo.sync="jobInfo"></posinameduty> -->
         <view class="weal-container">
           <repeat for="{{jobInfo.weal}}" item="weal">
             <text>{{weal}}</text>
@@ -246,11 +288,6 @@
         this.urlWithArgs = utils.getCurrentPageUrlWithArgs();
         this.viewCompanyjob();
         // const scene = decodeURIComponent(options.scene);    
-        console.log('onLoad----homeview', (new Date()).getTime())               
-      }
-
-      onShow(){
-        console.log('onShow----homeview', (new Date()).getTime())
       }
 
       onShareAppMessage (res) {
