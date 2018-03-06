@@ -142,7 +142,7 @@
     <repeat for="{{resumelist}}" key="index" index="index" item="item">
       <view class="resume-list">
         <view class="content">
-          <view class="up">
+          <view class="up" bindtap="goLook({{item.resumeid}})">
             <view class="percent">
               <view class="title">{{item.resumename}}</view>
               <progress percent="{{item.percent}}" show-info color="#FF9E00" />
@@ -208,12 +208,11 @@ export default class CorpPage extends wepy.page {
               // 获取简历列表
               that.getResumeList().then(data=>{
                   if(data.data.returnCode == "AAAAAAA") {
-                      var resumeArr = JSON.parse(data.data.data);
+                      var resumeArr = data.data.data;
                       resumeArr.forEach(element => {
                         element.updatedate = utils.date('Y-m-d',element.updatedate)
                       });
-                      console.log(resumeArr)
-                      that.resumelist = resumeArr
+                      that.resumelist = resumeArr;
                       that.$apply();
                   }else{
                       console.log(222111,data)
@@ -269,6 +268,12 @@ export default class CorpPage extends wepy.page {
       }).catch(err => {
         console.log(err)
       })
+    },
+    // 预览简历
+    goLook (resumeid) {
+        wx.navigateTo({
+            url: `resume?resumeid=${resumeid}&look=just`
+        })
     }
   }
 

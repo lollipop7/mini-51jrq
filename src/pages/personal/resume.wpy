@@ -126,8 +126,8 @@
       <!-- 基本信息 -->
       <view class="info-container">
         <view class="title-container">
-          <view class="title">基本信息 | 必填</view>
-          <view class="edit" bindtap="goBaseInfo({{resumeid}})">编辑</view>
+          <view class="title">基本信息<text hidden="{{operateShow}}"> | 必填</text></view>
+          <view class="edit" bindtap="goBaseInfo({{resumeid}})" hidden="{{operateShow}}">编辑</view>
         </view>
         <view class="resume-gray-line"></view>
         <view class="name-container">
@@ -157,8 +157,8 @@
       <!-- 求职意向 -->
       <view class="info-container">
         <view class="title-container">
-          <view class="title">求职意向 | 必填</view>
-          <view class="edit" bindtap="goJobWant({{resumeid}})">编辑</view>
+          <view class="title">求职意向<text hidden="{{operateShow}}"> | 必填</text></view>
+          <view class="edit" bindtap="goJobWant({{resumeid}})" hidden="{{operateShow}}">编辑</view>
         </view>
         <view class="resume-gray-line"></view>
         <view class="intro-container">
@@ -169,8 +169,8 @@
       <!-- 自我评价 -->
       <view class="info-container">
         <view class="title-container">
-          <view class="title">自我评价 | 必填</view>
-          <view class="edit" bindtap="goJobWant({{resumeid}})">编辑</view>
+          <view class="title">自我评价<text hidden="{{operateShow}}"> | 必填</text></view>
+          <view class="edit" bindtap="goJobWant({{resumeid}})" hidden="{{operateShow}}">编辑</view>
         </view>
         <view class="resume-gray-line"></view>
         <view class="intro-container">
@@ -182,14 +182,14 @@
       <!-- 工作经历 -->
       <view class="info-container">
         <view class="title-container">
-          <view class="title">工作经历 | 必填</view>
+          <view class="title">工作经历<text hidden="{{operateShow}}"> | 必填</text></view>
         </view>
         <view class="resume-gray-line"></view>
         <repeat for="{{workExper}}" key="index" index="index" item="item"> 
           <view class="job-container">
             <view class="intro-container" style="justify-content:space-between">
               <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-              <view class="edit" bindtap="goWorkExper({{item.workid}},{{resumeid}})">编辑</view>
+              <view class="edit" bindtap="goWorkExper({{item.workid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
             </view>
             <view class="yellow-title"> {{item.corpname}} </view>
             <view class="small-info">{{item.postcode}}</view>
@@ -201,7 +201,7 @@
             <view class="resume-gray-line"></view>
           </view>
         </repeat>
-        <view class="add-btn">
+        <view class="add-btn" hidden="{{operateShow}}">
           <image src="/images/icons/long_btn.png"></image>
           <view class="btn-word" bindtap="goWorkExper(undefined,{{resumeid}})">+ 添加工作经历</view>
         </view>
@@ -209,14 +209,14 @@
       <!-- 教育经历 -->
       <view class="info-container">
         <view class="title-container">
-          <view class="title">教育经历 | 必填</view>
+          <view class="title">教育经历<text hidden="{{operateShow}}"> | 必填</text></view>
         </view>
         <view class="resume-gray-line"></view>
         <repeat for="{{eduExper}}" key="index" index="index" item="item"> 
           <view class="job-container">
             <view class="intro-container" style="justify-content:space-between">
               <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-              <view class="edit" bindtap="goEduExper({{item.educationid}},{{resumeid}})">编辑</view>
+              <view class="edit" bindtap="goEduExper({{item.educationid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
             </view>
             <view class="yellow-title"> {{item.school}} </view>
             <view class="intro-container">
@@ -225,7 +225,7 @@
             <view class="resume-gray-line"></view>
           </view>
         </repeat>
-        <view class="add-btn">
+        <view class="add-btn" hidden="{{operateShow}}">
           <image src="/images/icons/long_btn.png"></image>
           <view class="btn-word" bindtap="goEduExper(undefined,{{resumeid}})">+ 添加教育经历</view>
         </view>
@@ -241,7 +241,7 @@
             <view class="yellow-title" style="margin-top:12rpx;"> {{item.projectname}} </view>
             <view class="intro-container" style="justify-content:space-between">
               <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-              <view class="edit" bindtap="goProjectExper({{item.projectid}},{{resumeid}})">编辑</view>
+              <view class="edit" bindtap="goProjectExper({{item.projectid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
             </view>
             <view class="intro-container">
               <view>
@@ -251,7 +251,7 @@
             <view class="resume-gray-line"></view>
           </view>
         </repeat>
-        <view class="add-btn">
+        <view class="add-btn" hidden="{{operateShow}}">
           <image src="/images/icons/long_btn.png"></image>
           <view class="btn-word" bindtap="goProjectExper(undefined,{{resumeid}})">+ 添加项目经验</view>
         </view>
@@ -267,12 +267,12 @@
             <view class="yellow-title" style="margin-top:12rpx;"> {{item.certname}} </view>
             <view class="intro-container" style="justify-content:space-between">
               <view class="time">{{item.gaintime}} 颁发</view>
-              <view class="edit" bindtap="goCert({{item.certid}},{{resumeid}})">编辑</view>
+              <view class="edit" bindtap="goCert({{item.certid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
             </view>
             <view class="resume-gray-line"></view>
           </view>
         </repeat>
-        <view class="add-btn">
+        <view class="add-btn" hidden="{{operateShow}}">
           <image src="/images/icons/long_btn.png"></image>
           <view class="btn-word" bindtap="goCert(undefined,{{resumeid}})">+ 添加资格证书</view>
         </view>
@@ -302,11 +302,18 @@ export default class resumePage extends wepy.page {
     token: '',
     tokenKey: '',
     headimg: '',
-    resumeid: ''
+    resumeid: '',
+    operateShow: false
   }
 
   onLoad(options) { 
+    console.log(options)
     this.resumeid = options.resumeid;
+    if(options.look=="just"){
+      this.operateShow = true;
+    }else{
+      this.operateShow = false;
+    }
     this.$apply();
     const that = this;
     // 获取登录信息

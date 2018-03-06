@@ -304,7 +304,6 @@
             const that = this;
             this.changeBaseInfo(e.detail.value,obj2).then(data=>{
                 if(data.data && data.data.returnCode == "AAAAAAA") {
-                    console.log(data)
                     wx.redirectTo({
                         url: `resume?resumeid=${that.resumeid}`
                     })
