@@ -2,6 +2,21 @@
     page {
         background: #F0F1F2;
         .resumelist-container {
+          .blank {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            image {
+              width: 160rpx;
+              height: 200rpx;
+              margin-top: 200rpx;
+            }
+            view {
+              margin-top: 20rpx;
+              font-size: 28rpx;
+              color: #353535;
+            }
+          }
             .resume-list {
                 height: 240rpx;
                 width: 100%;
@@ -133,39 +148,46 @@
                 }
             }
         }
+        
     }
 </style>
 
 <template>  
   <view class="resumelist-container">
-    <view class="alert-container" wx:if = "{{showbox}}"></view>
-    <repeat for="{{resumelist}}" key="index" index="index" item="item">
-      <view class="resume-list">
-        <view class="content">
-          <view class="up" bindtap="goLook({{item.resumeid}})">
-            <view class="percent">
-              <view class="title">{{item.resumename}}</view>
-              <progress percent="{{item.percent}}" show-info color="#FF9E00" />
+    <view class="blank" wx:if="{{no_resume}}">
+      <image src="/images/icons/blank_resume.png"></image>
+      <view>暂无简历</view>
+    </view>
+    <view wx:else="{{no_resume}}">
+      <view class="alert-container" wx:if = "{{showbox}}"></view>
+      <repeat for="{{resumelist}}" key="index" index="index" item="item">
+        <view class="resume-list">
+          <view class="content">
+            <view class="up" bindtap="goLook({{item.resumeid}})">
+              <view class="percent">
+                <view class="title">{{item.resumename}}</view>
+                <progress percent="{{item.percent}}" show-info color="#FF9E00" />
+              </view>
+              <view>
+                <view class="date">{{item.updatedate}}   ></view>
+              </view>
             </view>
-            <view>
-              <view class="date">{{item.updatedate}}   ></view>
+            <view class="line"></view>
+            <view class="down">
+              <view class="delete" bindtap="deleteResume">删除简历</view>
+              <view class="edit" bindtap="editResume({{item.resumeid}})">编辑简历</view>
             </view>
           </view>
-          <view class="line"></view>
-          <view class="down">
-            <view class="delete" bindtap="deleteResume">删除简历</view>
-            <view class="edit" bindtap="editResume({{item.resumeid}})">编辑简历</view>
+        </view>
+        <view class="alert-box" wx:if = "{{showbox}}">
+          <view class="sure">删除后不可恢复，是否确认删除？</view>
+          <view class="yesno">
+              <view class="no" bindtap="cancel">取消</view>
+              <view class="yes" bindtap="yes({{item.resumeid}})">确定</view>
           </view>
         </view>
-      </view>
-      <view class="alert-box" wx:if = "{{showbox}}">
-        <view class="sure">删除后不可恢复，是否确认删除？</view>
-        <view class="yesno">
-            <view class="no" bindtap="cancel">取消</view>
-            <view class="yes" bindtap="yes({{item.resumeid}})">确定</view>
-        </view>
-      </view>
-    </repeat>
+      </repeat>
+    </view>
     <view class="bottom-operate">
       <view class="add-resume" bindtap="addResume">添加简历</view>
       <view class="import-resume" bindtap="importResume">导入简历</view>
@@ -183,10 +205,11 @@ export default class CorpPage extends wepy.page {
 
   data = {
     resumelist: [],
-    showbox: false
+    showbox: false,
+    no_resume: false
   }
 
-  onLoad (options) { 
+  onShow (options) { 
     // 获取登录信息
       const that = this;
       wx.getStorage({
@@ -209,18 +232,26 @@ export default class CorpPage extends wepy.page {
               that.getResumeList().then(data=>{
                   if(data.data.returnCode == "AAAAAAA") {
                       var resumeArr = data.data.data;
-                      resumeArr.forEach(element => {
-                        element.updatedate = utils.date('Y-m-d',element.updatedate)
-                      });
-                      that.resumelist = resumeArr;
-                      that.$apply();
+                      if(resumeArr.length>0){
+                        that.no_resume = false;
+                        resumeArr.forEach(element => {
+                          element.updatedate = utils.date('Y-m-d',element.updatedate)
+                        });
+                        that.resumelist = resumeArr;
+                        that.$apply();
+                      }else{
+                        that.no_resume = true;
+                        that.$apply();
+                      }
                   }else{
-                      console.log(222111,data)
+                      that.no_resume = true;
+                      that.$apply();
                   }
               })
           },
           fail: function(res) {
-              console.log(55555,data)
+              that.no_resume = true;
+              that.$apply();
           }
       })
   }
@@ -255,14 +286,21 @@ export default class CorpPage extends wepy.page {
         // 获取简历列表
         this.getResumeList().then(data=>{
             if(data.data.returnCode == "AAAAAAA") {
-                var resumeArr = JSON.parse(data.data.data);
-                resumeArr.forEach(element => {
-                  element.updatedate = utils.date('Y-m-d',element.updatedate)
-                });
-                this.resumelist = resumeArr
-                this.$apply();
+                var resumeArr = data.data.data;
+                if(resumeArr.length>0){
+                  this.no_resume = false;
+                  resumeArr.forEach(element => {
+                    element.updatedate = utils.date('Y-m-d',element.updatedate)
+                  });
+                  this.resumelist = resumeArr
+                  this.$apply();
+                }else{
+                  this.no_resume = true;
+                  this.$apply();
+                }
             }else{
-                console.log(222111,data)
+                this.no_resume = true;
+                this.$apply();
             }
         })
       }).catch(err => {
