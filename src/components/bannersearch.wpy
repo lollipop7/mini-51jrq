@@ -6,10 +6,10 @@
   }
   .banner-container{
     swiper {
-      height: 260rpx;
+      height: 300rpx;
       width: 100%;
       image {
-        height: 260rpx;
+        height: 300rpx;
         width: 100%;
       }
     }
@@ -25,7 +25,7 @@
         flex-direction: row;
         align-items: center;
         margin: 0 auto;
-        padding: 8rpx 90rpx;
+        padding: 15rpx 90rpx;
         background-color: rgba(0, 0, 0, 0.4);
         border-radius: 60rpx;
     }
@@ -34,7 +34,7 @@
     }
     .hint-text {
         width: 100%;
-        font-size: 24rpx;
+        font-size: 25rpx;
         color: #d1d1d1;
     }
  }
@@ -48,7 +48,7 @@
             >
                 <repeat for="{{bannerlist}}" key="index" item="item">
                     <swiper-item>
-                        <image src='{{item}}'></image>
+                        <image src='{{item}}' mode="aspectFill"></image>
                     </swiper-item>
                 </repeat>
             </swiper>
