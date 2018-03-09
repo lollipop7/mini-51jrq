@@ -66,7 +66,28 @@ export default class HomePage extends wepy.page {
   onLoad (options) { 
     //绑定数据记得去掉，这里做调试
     // this.hunterjobList = postData.hunterjobList.list;
-    this.getCompanyjob()
+    this.getCompanyjob();
+    // options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
+    let sceneArgs = decodeURIComponent(options.scene);
+    console.log(sceneArgs)
+    if (sceneArgs) {  //hv*cid=42&jid=1180015
+      let args_arr = [], params_arr = [];
+      args_arr = sceneArgs.split('*');
+      let _type = args_arr[0];
+      let params_arr = args_arr[1].split('&');
+      let paramObj = new Object();
+      if (_type == 'hv') {
+        for (let i = 0; i < params_arr.length; i++) {
+          paramObj[params_arr[i].split('=')[0]] = params_arr[i].split('=')[1];
+        }
+        let param = `corpid=${paramObj["cid"]}&jobid=${paramObj["jid"]}`;
+        wx.redirectTo({ url: `homeview?${param}`});
+      }
+    }else{
+      wx.switchTab({
+        url: 'home',
+      })
+    }
   }
 
   // 转发分享

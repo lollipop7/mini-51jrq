@@ -47,7 +47,7 @@ export default class PlaceHolder extends wepy.component {
         syncShow: {
            type: Boolean,
            default: false 
-        }
+        },
         syncJobShow: {
             type: Boolean,
             default: false

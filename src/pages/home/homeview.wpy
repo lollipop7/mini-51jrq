@@ -170,7 +170,6 @@
   <view class="homeview-container">
       <view class="jobbrief-container">
         <view class="posi-container">
-            <view style="height: 5rpx;"></view>
             <view class="posi-name-sal">
                 <text class="posi-name">{{jobInfo.jobname}}</text>
                 <text class="posi-sal">{{jobInfo.salary}}</text>
@@ -194,12 +193,12 @@
         <view class="gray-line"></view>
         <view class="corp-brief">
           <view class="corp-content">
-            <image class="logo" src="{{homeDetailInfo.corpInfo.mlogo}}"></image>
+            <image class="logo" src="{{corpInfo.mlogo}}"></image>
             <view class="corp-info">
-                <text class="corp-name">{{homeDetailInfo.corpInfo.corpname}}</text>
+                <text class="corp-name">{{corpInfo.corpname}}</text>
                 <view class="corp-size-type">
                     <view class="corp-size">
-                      <text>{{homeDetailInfo.corpInfo.industry}}</text> 
+                      <text>{{corpInfo.industry}}</text> 
                     </view>
                 </view>
             </view>
@@ -219,7 +218,7 @@
         <view class="gray-line"></view>
         <view class="address">
             <image src="/images/icons/location_pink.png"></image>
-            <text class="addr-info">{{homeDetailInfo.corpInfo.address}}</text>
+            <text class="addr-info">{{corpInfo.address}}</text>
         </view>
       </view>
       <view class="gray-blank"></view>
@@ -239,10 +238,11 @@
           <button wx:else @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
         </view>
       </view>
-      <shareminipro 
+      <shareminipro hidden="{{!showShareBtn}}"
             :urlWithArgs.sync="urlWithArgs" 
+            :currentUrl.sync="currentUrl" 
             :jobInfo.sync="jobInfo"
-            :homeDetailInfo.sync="homeDetailInfo"></shareminipro>
+            :corpInfo.sync="corpInfo"></shareminipro>
   </view>
 </template>
 
@@ -272,13 +272,15 @@
       data = {
         jobId: '',
         corpId: '',
-        homeDetailInfo: {},
+        corpInfo: {},
         jobInfo: {},
         relatedJobs: [],
         isFav: false,   //未收藏
         isDelivery: false,    //未投递
         loginInfo: {},
-        urlWithArgs: ""
+        urlWithArgs: "",
+        currentUrl: "",
+        showShareBtn: false,
       }
 
       onLoad(options){
@@ -286,13 +288,21 @@
         this.corpId = options.corpid;
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
         this.urlWithArgs = utils.getCurrentPageUrlWithArgs();
+        this.currentUrl = utils.getCurrentPageUrl();
+        this.$apply();
         this.viewCompanyjob();
-        // const scene = decodeURIComponent(options.scene);    
+      }
+
+      onShow(){
+      }
+
+      onReady(){
+        this.showShareBtn = true;
       }
 
       onShareAppMessage (res) {
         const that = this;
-        const corpname = that.homeDetailInfo.corpInfo.corpname,
+        const corpname = that.corpInfo.corpname,
           jobname = that.jobInfo.jobname;
         let title = `${corpname}正在招聘 ${jobname}`;
         if (res.from === 'button') {
@@ -301,7 +311,7 @@
         }
         return {
           title: title.length > 30 ? title.slice(0, 29)+'...' : title,
-          path: that.urlWithArgs,
+          path: that.currentUrl,
           success: function(res) {
             // 转发成功
             res.shareTickets // 单聊是没有的，注意必须要在分享前调用wx.showShareMenu方法，否则是不会带分享票据
@@ -344,9 +354,9 @@
           }
         });
         if (json.data.returnCode == "AAAAAAA") {
-          that.homeDetailInfo = { ...that.jobInfo, ...json.data.data };
+          that.corpInfo = { ...that.corpInfo, ...json.data.data.corpInfo };
           that.jobInfo = { ...that.jobInfo, ...json.data.data.jobInfo };
-          that.relatedJobs = { ...that.relatedJobs, ...json.data.data.relatedJobs};
+          that.relatedJobs = json.data.data.relatedJobs;
           that.isFav = json.data.data.isFav;
           that.isDelivery = json.data.data.isDelivery;
           that.$apply();

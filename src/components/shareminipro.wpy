@@ -87,19 +87,16 @@
             <action-sheet-cancel>取消</action-sheet-cancel> 
         </action-sheet>
         <view wx:if="{{isShowMyCanvasScreen}}">
-            <view class="bomb-screen" @tap.stop="close">
-                <canvas canvas-id="myCanvas" 
-                    hidden="{{myCanvasShow}}"
-                    @longpress.stop="previewMyCanvas"
+            <view class="bomb-screen"></view>
+            <canvas canvas-id="myCanvas" 
+                    hidden="{{true}}"
                     style="width: {{ctxWidth}}px; height: {{ctxHeight}}px; background-color: #ffffff;"/>
-            </view>
-        </view>
+        </view>        
         <view wx:if="{{isShowPubCanvasScreen}}">
-            <view class="bomb-screen" @tap.stop="close">
-                <canvas canvas-id="pubCanvas" 
-                    hidden="{{pubCanvasShow}}"
-                    style="width: {{ctxPubWidth}}px; height: {{ctxPubHeight}}px; background-color: #ffffff;"/>    
-            </view>
+            <view class="bomb-screen"></view>
+            <canvas canvas-id="pubCanvas" 
+                    hidden="{{true}}"
+                    style="width: {{ctxPubWidth}}px; height: {{ctxPubHeight}}px; background-color: #ffffff;"/>
         </view>
     </view>
 </template>
@@ -107,6 +104,7 @@
 <script>
 import wepy from 'wepy';
 import api from '../api/api';
+import tip from '../utils/tip';
 import {
     strEnc, strDec
 } from '../utils/des';
@@ -117,16 +115,8 @@ import {
 export default class ShareMiniPro extends wepy.component {
     data = {
         actionSheetHidden: true,
-        // sheetList: [
-        //     {bindtap: "Menu0", txt: "转发给好友或群聊"},
-        //     {bindtap: "Menu1", txt: "生成朋友圈分享图"},
-        //     {bindtap: "Menu2", txt: "生成公众号文章分享图"},
-        // ],
         isShowMyCanvasScreen: false,
         isShowPubCanvasScreen: false,
-        myCanvasShow: true,
-        pubCanvasShow: true,
-        wxacodeurl: '',
         canvasRpx: 0,
         ctxWidth: 0,
         ctxHeight: 0,
@@ -135,22 +125,28 @@ export default class ShareMiniPro extends wepy.component {
         ctxPubWidth: 0,
         ctxPubHeight: 0,
         qrcodePath: '',
-        mlogoPath: ''
+        mlogoPath: '',
     }
 
     props={
         urlWithArgs: {
-            type: String
+            type: String,
+            default: ''
+        },
+        currentUrl: {
+            type: String,
+            default: ''
         },
         jobInfo: {
             type: Object,
             default: null
         },
-        homeDetailInfo: {
+        corpInfo: {
             type: Object,
             default: null
         }
     }
+
 
     onLoad(){
         //获取屏幕宽度
@@ -160,7 +156,6 @@ export default class ShareMiniPro extends wepy.component {
     }
 
     
-
     methods={
         openActionSheet() {
             this.actionSheetHidden = false;
@@ -169,73 +164,111 @@ export default class ShareMiniPro extends wepy.component {
             this.actionSheetHidden = true;
         },
         bindMenu0(){//转发给好友或群聊
-            this.menu = 1;
             this.actionSheetHidden = true;
         },
         bindMenu1(){//生成朋友圈分享图
-            this.menu = 0;
-            this.actionSheetHidden = true;
-            this.isShowMyCanvasScreen = true;
-            this.isShowPubCanvasScreen = false;
-            this.myCanvasShow = false;
-            this.pubCanvasShow = true;
-            this.generateShareImage();
+            const that = this;
+            that.actionSheetHidden = true;
+            that.isShowMyCanvasScreen = true;
+            that.isShowPubCanvasScreen = false;
+            wx.showLoading({
+                title: '正在生成图片',
+                mask: true,
+            })
+            that.loadResources().then((resources) => {
+                that.generateShareImage(resources);
+                wx.hideLoading();
+            }).catch(err => {
+                console.log(err);
+                // tip.error(err);
+                that.isShowMyCanvasScreen = false;
+                that.$apply();
+                wx.hideLoading();
+            });
         },
         bindMenu2(){//生成公众号文章分享图
-            this.menu = 2;
-            this.actionSheetHidden = true;
-            this.isShowMyCanvasScreen = false;
-            this.isShowPubCanvasScreen = true;
-            this.pubCanvasShow = false;
-            this.myCanvasShow = true;
-            this.generatePublicAccountImage();
-        },
-        close() {
-            this.isShowMyCanvasScreen = false;
-            this.isShowPubCanvasScreen = false;
-            console.log('关闭遮罩')
-        },
-        previewMyCanvas: function (e) { 
-            const that = this; 
-            //wx.previewImage({  
-            // 需要预览的图片http链接  使用split把字符串转数组。不然会报错  
-            //})  
-        }  
+            const that = this;
+            that.actionSheetHidden = true;
+            that.isShowMyCanvasScreen = false;
+            that.isShowPubCanvasScreen = true;
+            wx.showLoading({
+                title: '正在生成图片',
+                mask: true,
+            })
+            that.loadResources().then((resources) => {
+                that.generatePublicAccountImage(resources);
+                wx.hideLoading();
+            }).catch(err => {
+                console.log(err);
+                // tip.error(err);
+                that.isShowPubCanvasScreen = false;
+                that.$apply();
+                wx.hideLoading();
+            });
+        }
     }
     
-    getWxaCode() {//获取小程序码
-        const that = this;
-        let v = (new Date()).getTime();
-        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {path: `${that.urlWithArgs}&v=${v}`,width: 180}});
-        const wxacodeurl = api.apimall + '/wx/createwxaqrcode?params='+strEnc(`${params}`, DESKEY);
-        wx.getImageInfo({
-            src: wxacodeurl,
-            success: function (res) {
-                that.qrcodePath = res.path;
-                console.log('qrcodePath', res.path)
+    
+    previewMyCanvasImage(path) { 
+        const that = this; 
+        wx.previewImage({
+            //current: that.myCanvasTempFilePath, // 当前显示图片的http链接
+            urls: [path], // 需要预览的图片http链接列表
+            success(res){
+                console.log(res)
             },
-            fail: function(res){
-                console.log('fail download image qrcodePath', res)
+            fail(res){
+                console.log(res)
             }
         })
-        console.log('mlogo', (that.homeDetailInfo.corpInfo.mlogo).replace(/http/, 'https'))
-        wx.getImageInfo({
-            src: (that.homeDetailInfo.corpInfo.mlogo).replace(/http/, 'https'),
-            success: function (res) {
-                that.mlogoPath = res.path;
-                // console.log('mlogoPath', res.path)
-            },
-            fail: function(res){
-                console.log('fail download image mlogoPath', res)
-            }
-        })
-        that.wxacodeurl = wxacodeurl; 
-        that.$apply();
-    }
+    }  
 
-    generateShareImage() {//转发给好友或群聊
+    loadResources() { //将在线路径转为本地临时路径
+        let {mlogo} = this.corpInfo;
+        if(mlogo != undefined) {
+            mlogo = mlogo.replace(/http/, 'https'); 
+        }else {
+            mlogo = `/images/test/mlogo_test.png`;
+        }
+        
+        // 绑定数据记得去掉，这里做调试
+        // let mlogo = `/images/test/mlogo_test.png`;
+        const {qrcodePath, mlogoPath} = this.data;
+        let len = (this.currentUrl + '?').length;
+        let args = this.urlWithArgs.slice(len).split('&');  //corpid=990003&jobid=1040013
+        let objs = new Object();
+        for( let i = 0; i < args.length; i++) {
+            objs[args[i].split('=')[0]] = args[i].split('=')[1];    
+        }
+        let sceneArgs = `hv*cid=${objs["corpid"]}&jid=${objs["jobid"]}`;
+        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/home/home`,width: 180, scene:`${sceneArgs}`}});
+        let  wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
+        const getWxaCode = (src) => {
+            return new Promise(function(resolve, reject) {
+                wx.getImageInfo({
+                    src,
+                    success({width,height,path}) {
+                        resolve(path);
+                    },
+                    fail(){
+                        reject(`获取图片失败: ${src}`)
+                    }
+                })
+            })
+        }
+        
+        let promises = [getWxaCode(wxacodeurl), getWxaCode(mlogo)];
+        return Promise.all(promises).then(values => {
+            return {
+                qrcodePath: values[0],
+                mlogoPath: values[1],
+            }
+        })
+     }
+    
+
+    generateShareImage(resources) {//转发给好友或群聊
         const that = this;
-        that.getWxaCode();          
         that.ctxWidth = that.canvasRpx * 375;
         that.ctxHeight = that.canvasRpx * 600;
         that.$apply();
@@ -245,9 +278,8 @@ export default class ShareMiniPro extends wepy.component {
             jobname, jobcity, workyears, ebid, salary
         } = that.jobInfo;
         const {
-            corpname, mlogo
-        } = that.homeDetailInfo.corpInfo;
-        
+            corpname
+        } = that.corpInfo;
         const CANVAS_W = that.ctxWidth;
         const CANVAS_H = that.ctxHeight;
         // draw background
@@ -260,7 +292,7 @@ export default class ShareMiniPro extends wepy.component {
         ctx.setTextAlign('center');
         ctx.setFontSize(that.canvasRpx * 20);
         ctx.setFillStyle('#353535');
-        ctx.fillText(corpname + '正在招聘', CANVAS_W / 2, that.canvasRpx * 60);
+        ctx.fillText(corpname, CANVAS_W / 2, that.canvasRpx * 60);
 
         ctx.fillText(jobname, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10));
 
@@ -271,8 +303,6 @@ export default class ShareMiniPro extends wepy.component {
         ctx.setFontSize(that.canvasRpx * 20);
         ctx.setFillStyle('#ff9e00');
         ctx.fillText(salary, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10 + 20 + 10 + 14 +10));
-
-        
 
         //draw hint
         ctx.drawImage('/images/icons/finger.png', CANVAS_W/2-that.canvasRpx * 40 / 2 / 2, that.canvasRpx * 420, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
@@ -293,25 +323,40 @@ export default class ShareMiniPro extends wepy.component {
         const WXACODE_X = that.canvasRpx * 98;
         const WXACODE_Y = that.canvasRpx* 180;
         const WXACODE_SIZE = that.canvasRpx * 180;
-        const MLOGO_SIZE = that.canvasRpx * 65;
-        
-        ctx.drawImage(that.qrcodePath, (CANVAS_W / 2) - (WXACODE_SIZE/2), WXACODE_Y, WXACODE_SIZE, WXACODE_SIZE);
-        ctx.setFillStyle('#ff9e00');
+        const MLOGO_SIZE = that.canvasRpx * 78;
+        const {qrcodePath, mlogoPath} = resources;
+        ctx.drawImage(qrcodePath, (CANVAS_W / 2) - (WXACODE_SIZE/2), WXACODE_Y, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setFillStyle('#ffffff');
         ctx.save()
         ctx.beginPath()
         ctx.arc((CANVAS_W / 2), WXACODE_Y + WXACODE_SIZE / 2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
         ctx.closePath() 
         ctx.fill()
         ctx.clip()
-        ctx.drawImage(that.mlogoPath,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.drawImage(mlogoPath,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
         ctx.restore()
 
-        ctx.draw();
+        setTimeout(() => {
+            ctx.draw();
+            setTimeout(() => {
+                wx.canvasToTempFilePath({
+                    canvasId: 'myCanvas',
+                    success: function(res) {
+                        console.log(res.tempFilePath);
+                        that.previewMyCanvasImage(res.tempFilePath);
+                        that.isShowMyCanvasScreen = false;
+                        that.$apply();
+                    },
+                    fail(res){
+                        console.log(res)
+                    }
+                }, that)
+            }, 300);
+        }, 800)
     }
 
-    generatePublicAccountImage(){//生成公众号文章分享图
+    generatePublicAccountImage(resources){//生成公众号文章分享图
         const that = this;
-        that.getWxaCode();     
         that.ctxPubWidth = that.canvasRpx * 375;
         that.ctxPubHeight = that.canvasRpx * 170;
         that.$apply();
@@ -320,10 +365,7 @@ export default class ShareMiniPro extends wepy.component {
         const {
             jobname, jobcity, workyears, ebid, salary
         } = that.jobInfo;
-        const {
-            corpname, mlogo
-        } = that.homeDetailInfo.corpInfo;
-
+        
         const CANVAS_W = that.ctxPubWidth;
         const CANVAS_H = that.ctxPubHeight;
         // draw background
@@ -362,18 +404,35 @@ export default class ShareMiniPro extends wepy.component {
         //draw wxacode
         const WXACODE_SIZE = that.canvasRpx * 100;
         const MLOGO_SIZE = that.canvasRpx * 42;
-        ctx.drawImage(that.qrcodePath, CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE, WXACODE_SIZE, WXACODE_SIZE);
-        ctx.setStrokeStyle('#ff9e00');
+        const {qrcodePath, mlogoPath} = resources;
+        ctx.drawImage(qrcodePath, CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setStrokeStyle('#ffffff');
         ctx.save()
         ctx.beginPath()
         ctx.arc(CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE/2, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE/2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
         ctx.closePath()
         ctx.stroke()
         ctx.clip()
-        ctx.drawImage(that.mlogoPath,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.drawImage(mlogoPath,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
         ctx.restore()
 
-        ctx.draw();
+        setTimeout(() => {
+            ctx.draw();
+            setTimeout(() => {
+                wx.canvasToTempFilePath({
+                    canvasId: 'pubCanvas',
+                    success: function(res) {
+                        console.log(res.tempFilePath);
+                        that.previewMyCanvasImage(res.tempFilePath);
+                        that.isShowPubCanvasScreen = false;
+                        that.$apply();
+                    },
+                    fail(res){
+                        console.log(res)
+                    }
+                }, that)
+            }, 300)
+        }, 800)
     }
 
     //小程序中没提供获文本宽度的方法 判断各种字符宽度 返回字符串总宽度
