@@ -156,7 +156,7 @@
   <view class="resumelist-container">
     <view class="blank" wx:if="{{no_resume}}">
       <image src="/images/icons/blank_resume.png"></image>
-      <view>暂无简历</view>
+      <view>{{warnword}}</view>
     </view>
     <view wx:else="{{no_resume}}">
       <view class="alert-container" wx:if = "{{showbox}}"></view>
@@ -206,7 +206,8 @@ export default class CorpPage extends wepy.page {
   data = {
     resumelist: [],
     showbox: false,
-    no_resume: false
+    no_resume: false,
+    warnword: '暂无简历'
   }
 
   onShow (options) { 
@@ -240,16 +241,19 @@ export default class CorpPage extends wepy.page {
                         that.resumelist = resumeArr;
                         that.$apply();
                       }else{
+                        that.warnword = '暂无简历';
                         that.no_resume = true;
                         that.$apply();
                       }
                   }else{
+                      that.warnword = data.data.returnMsg;
                       that.no_resume = true;
                       that.$apply();
                   }
               })
           },
           fail: function(res) {
+              that.warnword = res.data.returnMsg;
               that.no_resume = true;
               that.$apply();
           }

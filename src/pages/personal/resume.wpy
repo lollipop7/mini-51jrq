@@ -135,7 +135,7 @@
           <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
           <image src="/images/icons/female.png" wx:else="{{sex}}"></image>
         </view>
-        <view class="small-info">{{baseInfo.livecityid}} | {{baseInfo.workyears}}</view>
+        <view class="small-info">{{baseInfo.livecityid}} <text wx:if="{{baseInfo.livecityid}}">|</text> {{baseInfo.workyears}}</view>
         <view class="intro-container">
           <view class="hukou"><view>户口：</view><view class="result">{{baseInfo.address}}</view></view>
           <view class="hukou"><view>婚姻状况：</view><view class="result">{{baseInfo.marital}}</view></view>
@@ -162,9 +162,9 @@
         </view>
         <view class="resume-gray-line"></view>
         <view class="intro-container">
-          <view class="color-word">{{jobApply.functions}} | {{jobApply.postids}}</view>
+          <view class="color-word">{{jobApply.functions}} <text wx:if="{{jobApply.functions}}">|</text> {{jobApply.postids}}</view>
         </view>
-        <view class="small-info">{{jobApply.jobnature}} / {{jobApply.sitecity}} / {{jobApply.expectsalarycode}} / {{jobApply.poststime}}</view>
+        <view class="small-info">{{jobApply.jobnature}} <text wx:if="{{jobApply.jobnature}}">/</text> {{jobApply.sitecity}} <text wx:if="{{jobApply.sitecity}}">/</text> {{jobApply.expectsalarycode}} <text wx:if="{{jobApply.expectsalarycode}}">/</text> {{jobApply.poststime}}</view>
       </view>
       <!-- 自我评价 -->
       <view class="info-container">
