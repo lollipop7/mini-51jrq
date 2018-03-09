@@ -242,7 +242,8 @@
             :urlWithArgs.sync="urlWithArgs" 
             :currentUrl.sync="currentUrl" 
             :jobInfo.sync="jobInfo"
-            :corpInfo.sync="corpInfo"></shareminipro>
+            :corpInfo.sync="corpInfo"
+            :dataOrg="dataOrg"></shareminipro>
   </view>
 </template>
 
@@ -281,6 +282,7 @@
         urlWithArgs: "",
         currentUrl: "",
         showShareBtn: false,
+        dataOrg: "homeview"
       }
 
       onLoad(options){
