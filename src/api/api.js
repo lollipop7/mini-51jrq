@@ -45,6 +45,9 @@ const  getVerifyCode = (params) => wxRequest(params, apimall + '/api/regphone');
 // 修改头像
 const  changeHeadImg = (params) => wxRequest(params, apimall + '/api/pimg');
 
+// 导入简历
+const  importResume = (params) => wxRequest(params, apimall + '/api/importResume');
+
 module.exports = {
     apimall,
     getMobileHomeBanner,
@@ -59,6 +62,6 @@ module.exports = {
     getDictData,
     loginIn,
     getVerifyCode,
-    changeHeadImg 
+    importResume
 }
   

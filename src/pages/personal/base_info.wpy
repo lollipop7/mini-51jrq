@@ -332,6 +332,9 @@
       methods = {
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
+            wx.showLoading({
+                title: '加载中',
+            })
             var obj2 = {
                 "token": this.token,
                 "tokenKey": this.tokenKey,
@@ -349,6 +352,7 @@
                 }else{
                     console.log(data)
                 }
+                wx.hideLoading()
             })
         },
         bindDateChange: function(e) {

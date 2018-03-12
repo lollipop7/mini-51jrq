@@ -25,7 +25,7 @@
         flex-direction: row;
         align-items: center;
         margin: 0 auto;
-        padding: 15rpx 90rpx;
+        padding: 8rpx 90rpx;
         background-color: rgba(0, 0, 0, 0.4);
         border-radius: 60rpx;
     }
@@ -34,7 +34,7 @@
     }
     .hint-text {
         width: 100%;
-        font-size: 25rpx;
+        font-size: 24rpx;
         color: #d1d1d1;
     }
  }

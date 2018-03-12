@@ -7,8 +7,8 @@
     margin: 0 32rpx;
     border-bottom: 1px solid #F1F1F1;
     image {
-      height: 80rpx;
-      width: 80rpx;
+      height: 120rpx;
+      width: 120rpx;
     }
     .corp-intro{
       margin-left: 30rpx;
