@@ -227,15 +227,15 @@ export default class ShareMiniPro extends wepy.component {
     }  
 
     loadResources() { //将在线路径转为本地临时路径
-        // let {mlogo} = this.corpInfo;
-        // if(mlogo != undefined) {
-        //     mlogo = mlogo.replace(/http/, 'https'); 
-        // }else {
-        //     mlogo = `/images/test/mlogo_test.png`;
-        // }
+        let {mlogo} = this.corpInfo;
+        if(mlogo != undefined) {
+            mlogo = mlogo.replace(/http/, 'https'); 
+        }else {
+            mlogo = `/images/test/mlogo_test.png`;
+        }
         
         // 绑定数据记得去掉，这里做调试
-        let mlogo = `/images/test/mlogo_test.png`;
+        // let mlogo = `/images/test/mlogo_test.png`;
         const {qrcodePath, mlogoPath} = this.data;
         let len = (this.currentUrl + '?').length;
         let args = this.urlWithArgs.slice(len).split('&');  //corpid=990003&jobid=1040013 || companyid=1010527
