@@ -250,6 +250,7 @@ export default class CorpPage extends wepy.page {
                       that.no_resume = true;
                       that.$apply();
                   }
+                  wx.hideLoading()
               })
           },
           fail: function(res) {
@@ -285,6 +286,9 @@ export default class CorpPage extends wepy.page {
     },
     // 确认删除
     yes(resumeid) {
+      wx.showLoading({
+          title: '加载中',
+      })
       this.deleteMyResume(resumeid).then(data => {
         this.showbox = false;
         // 获取简历列表
@@ -306,6 +310,7 @@ export default class CorpPage extends wepy.page {
                 this.no_resume = true;
                 this.$apply();
             }
+            wx.hideLoading()
         })
       }).catch(err => {
         console.log(err)
@@ -327,6 +332,9 @@ export default class CorpPage extends wepy.page {
 
   //获取简历列表
   async getResumeList() {
+    wx.showLoading({
+        title: '加载中',
+    })
     const json = await api.getCollectJob({
     query: {
             head: {

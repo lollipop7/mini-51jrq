@@ -307,7 +307,6 @@ export default class resumePage extends wepy.page {
   }
 
   onLoad(options) { 
-    console.log(options)
     this.resumeid = options.resumeid;
     if(options.look=="just"){
       this.operateShow = true;

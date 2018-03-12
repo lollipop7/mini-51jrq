@@ -176,6 +176,9 @@
     methods = {
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
+            wx.showLoading({
+                title: '加载中',
+            })
             if(this.workid != "undefined"){
                 e.detail.value.workid = this.workid;
             }
@@ -196,6 +199,7 @@
                 }else{
                     console.log(data)
                 }
+                wx.hideLoading()
             })
         },
         bindDateChange1: function(e) {

@@ -75,6 +75,9 @@ export default class CollectionPage extends wepy.page {
     }
 
     async getCollectJob(token,tokenKey,currentPage) {
+        wx.showLoading({
+            title: '加载中',
+        })
         const that = this;
         const json = await api.getCollectJob({
             query: {
@@ -102,7 +105,8 @@ export default class CollectionPage extends wepy.page {
             that.collectStatus = false;
             that.warningWord = json.data.returnMsg;
             that.$apply();
-        } 
+        }
+        wx.hideLoading() 
     }
 }
 </script>

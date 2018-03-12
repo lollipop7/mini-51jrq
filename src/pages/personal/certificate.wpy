@@ -147,6 +147,9 @@
     methods = {
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
+            wx.showLoading({
+                title: '加载中',
+            })
             if(this.certid != "undefined"){
                 e.detail.value.certid = this.certid;
             }
@@ -167,6 +170,7 @@
                 }else{
                     console.log(data)
                 }
+                wx.hideLoading()
             })
         },
         bindDateChange1: function(e) {

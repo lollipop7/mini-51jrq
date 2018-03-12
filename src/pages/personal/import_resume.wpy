@@ -145,6 +145,7 @@ export default class LoginPage extends wepy.page {
 
     onLoad () {
         // 获取登录信息
+        
       const that = this;
       wx.getStorage({
           key: 'loginData',
@@ -180,6 +181,7 @@ export default class LoginPage extends wepy.page {
                     this.warnword = data.data.returnMsg;
                     this.$apply();
                 }
+                wx.hideLoading()
             })
         },
         // 切换公司
@@ -191,6 +193,9 @@ export default class LoginPage extends wepy.page {
 
     //导入简历
   async importResume(type,username,password) {
+    wx.showLoading({
+        title: '加载中',
+    })
     const json = await api.importResume({
     query: {
             head: {

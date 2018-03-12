@@ -115,9 +115,9 @@
     </view>
     <view class="gray-blank"></view>
     <view class="corp-address">
-        <view class="title">公司简介</view>
+        <view class="title">公司地址</view>
         <view class="gray-line"></view>
-        <view class="address">
+        <view class="address" bindtap="goMap({{corpInfo.address}})">
             <image src="/images/icons/location_blue.png"></image>
             <view class="addr-info">{{corpInfo.address}}</view>
         </view>
@@ -208,11 +208,26 @@ export default class CorpDatailsView extends wepy.page {
             wepy.navigateTo({
                 url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
             })
+        },
+        // 查看地图
+        goMap(address){
+            this.getAddress(address).then(data=>{
+                console.log(data)
+            });
+            wx.openLocation({  
+                latitude: 1,  
+                longitude: 1,  
+                scale: 18,  
+                address: address
+            }) 
         }
     }
 
 //获取公司详情数据
   async getCorpView(companyid) {
+    wx.showLoading({
+        title: '加载中',
+    })
     const that = this;
     const json = await api.getCompanyList({
       query: {
@@ -233,7 +248,18 @@ export default class CorpDatailsView extends wepy.page {
     } else {
       tip.error(json.returnMsg);
     }
-  }  
+    wx.hideLoading()
+  }
+  
+  //获取数据字典
+    async getAddress(code) {
+        const json = await api.getCityName({
+        query: {
+                methods: "GET"
+            }
+        })
+        return json;
+    }
 }
 
 </script>
