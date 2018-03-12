@@ -64,9 +64,6 @@ export default class HomePage extends wepy.page {
   }
 
   onLoad (options) { 
-<<<<<<< HEAD
-    this.getCompanyjob()
-=======
     //绑定数据记得去掉，这里做调试
     // this.hunterjobList = postData.hunterjobList.list;
     this.getCompanyjob();
@@ -91,7 +88,6 @@ export default class HomePage extends wepy.page {
         url: 'home',
       })
     }
->>>>>>> cb08573b00709b9f86ad9e906d80f135fe41cb10
   }
 
   // 转发分享
