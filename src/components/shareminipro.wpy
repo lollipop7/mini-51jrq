@@ -227,15 +227,15 @@ export default class ShareMiniPro extends wepy.component {
     }  
 
     loadResources() { //将在线路径转为本地临时路径
-        let {mlogo} = this.corpInfo;
-        if(mlogo != undefined) {
-            mlogo = mlogo.replace(/http/, 'https'); 
-        }else {
-            mlogo = `/images/test/mlogo_test.png`;
-        }
+        // let {mlogo} = this.corpInfo;
+        // if(mlogo != undefined) {
+        //     mlogo = mlogo.replace(/http/, 'https'); 
+        // }else {
+        //     mlogo = `/images/test/mlogo_test.png`;
+        // }
         
         // 绑定数据记得去掉，这里做调试
-        // let mlogo = `/images/test/mlogo_test.png`;
+        let mlogo = `/images/test/mlogo_test.png`;
         const {qrcodePath, mlogoPath} = this.data;
         let len = (this.currentUrl + '?').length;
         let args = this.urlWithArgs.slice(len).split('&');  //corpid=990003&jobid=1040013 || companyid=1010527
@@ -254,6 +254,7 @@ export default class ShareMiniPro extends wepy.component {
         }
         let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/home/home`,width: 180, scene:`${sceneArgs}`}});
         let wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
+        console.log(wxacodeurl)
         const getWxaCode = (src) => {
             return new Promise(function(resolve, reject) {
                 wx.getImageInfo({
@@ -374,8 +375,7 @@ export default class ShareMiniPro extends wepy.component {
         ctx.drawImage(mlogoPath,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
         ctx.restore()
 
-        setTimeout(() => {
-            ctx.draw();
+        ctx.draw(true, function(){
             setTimeout(() => {
                 wx.canvasToTempFilePath({
                     canvasId: 'myCanvas',
@@ -390,7 +390,8 @@ export default class ShareMiniPro extends wepy.component {
                     }
                 }, that)
             }, 300);
-        }, 800)
+        });
+        
     }
 
     generatePublicAccountImage(resources){//生成公众号文章分享图
@@ -479,8 +480,7 @@ export default class ShareMiniPro extends wepy.component {
         ctx.drawImage(mlogoPath,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
         ctx.restore()
 
-        setTimeout(() => {
-            ctx.draw();
+        ctx.draw(true, function() {
             setTimeout(() => {
                 wx.canvasToTempFilePath({
                     canvasId: 'pubCanvas',
@@ -495,7 +495,7 @@ export default class ShareMiniPro extends wepy.component {
                     }
                 }, that)
             }, 300)
-        }, 800)
+        });
     }
 
     //小程序中没提供获文本宽度的方法 判断各种字符宽度 返回字符串总宽度
