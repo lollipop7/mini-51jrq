@@ -212,14 +212,18 @@ export default class CorpDatailsView extends wepy.page {
         // 查看地图
         goMap(address){
             this.getAddress(address).then(data=>{
-                console.log(data)
+                if(data.data.status==0){
+                    let addr = data.data.result.location;
+                    wx.openLocation({  
+                        latitude: addr.lat,  
+                        longitude: addr.lng,  
+                        scale: 18,  
+                        address: address
+                    })
+                }else{
+                    console.log(data.data.message)
+                }
             });
-            wx.openLocation({  
-                latitude: 1,  
-                longitude: 1,  
-                scale: 18,  
-                address: address
-            }) 
         }
     }
 
@@ -251,12 +255,11 @@ export default class CorpDatailsView extends wepy.page {
     wx.hideLoading() //隐藏loading效果
   }
   
-  //获取数据字典
-    async getAddress(code) {
+  // 打开地图
+    async getAddress(address) {
         const json = await api.getCityName({
-        query: {
-                methods: "GET"
-            }
+            method: "GET",
+            address: address
         })
         return json;
     }

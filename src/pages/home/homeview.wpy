@@ -216,7 +216,7 @@
       <view class="corp-address">
         <view class="title">工作地址</view>
         <view class="gray-line"></view>
-        <view class="address">
+        <view class="address" bindtap="goMap({{corpInfo.address}})">
             <image src="/images/icons/location_pink.png"></image>
             <text class="addr-info">{{corpInfo.address}}</text>
         </view>
@@ -342,6 +342,22 @@
           wx.navigateTo({
             url: `/pages/corporation/corpview?companyid=${companyid}`
           })
+        },
+        // 查看地图
+        goMap(address){
+            this.getAddress(address).then(data=>{
+                if(data.data.status==0){
+                    let addr = data.data.result.location;
+                    wx.openLocation({  
+                        latitude: addr.lat,  
+                        longitude: addr.lng,  
+                        scale: 18,  
+                        address: address
+                    })
+                }else{
+                    console.log(data.data.message)
+                }
+            });
         }
       }
 
@@ -423,7 +439,16 @@
           tip.error(json.data.returnMsg);
         }
       }
+
+    // 打开地图
+    async getAddress(address) {
+      const json = await api.getCityName({
+          method: "GET",
+          address: address
+      })
+      return json;
     }
+  }
 
     
    

@@ -3,9 +3,9 @@ import {
 } from '../utils/wxrequest'; 
 
 // const apimall = 'http://192.168.1.251:8089/mobile';
-// const apimall = 'http://192.168.1.226:8080/mobile';
+// const apimall = 'http://192.168.1.226:8080/mobile';[]
 const apimall = 'https://m.51jrq.com/mobile2'; 
-const apiGps = 'http://apis.map.qq.com/ws/geocoder/v1';
+const apiGps = 'https://apis.map.qq.com/ws/geocoder/v1';
 
 //得到首页banner图片列表
 const getMobileHomeBanner = (params) => wxRequest(params, apimall + '/api/ad_show/getMobileHomeBanner');
@@ -19,8 +19,8 @@ const  getCompanyList = (params) => wxRequest(params, apimall + '/api/company');
 //查找公司
 const  searchCorp = (params) => wxRequest(params, apimall + '/api/imain');
 
-//逆地址解析
-const getCityName = (params) => wxRequest(params, apiGps);
+//地址解析
+const getCityName = (params) => wxRequest(params, apiGps + `/?address=${params.address}&key=RULBZ-ZPFRX-4XV4F-7NALT-RMEQV-Y3BVT`);
 
 //获取小程序码
 const getWxaCode = (params) => wxRequest(params, apimall + '/wx/createwxaqrcode');
