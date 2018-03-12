@@ -247,7 +247,7 @@ import CommPosi from '../../components/commposi';
 import CorpList from '../../components/corplist';
 import BottomLoadMore from "../../components/bottomloadmore";
 import PlaceHolder from "../../components/placeholder";
-import {uniq, filter} from 'lodash';
+import {filter} from 'lodash';
 const peoSearch = require('../../data/peosearch-data.js');
 const  regions = require('../../utils/regions');
 

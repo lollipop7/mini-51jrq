@@ -65,7 +65,6 @@
 <script>
   import wepy from 'wepy';  
   import api from '../api/api';
-  import {map} from 'lodash';
 
   export default class BannerSearch extends wepy.component {
 
