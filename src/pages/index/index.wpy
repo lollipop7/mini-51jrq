@@ -10,6 +10,7 @@
 import wepy from 'wepy';
 export default class IndexPage extends wepy.page {
   onLoad(options) {
+      console.log(options)
       // options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
     let sceneArgs = decodeURIComponent(options.scene);
     if (sceneArgs != 'undefined') {  //hv*cid=42&jid=1180015
