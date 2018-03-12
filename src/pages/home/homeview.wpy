@@ -191,7 +191,7 @@
           </repeat>
         </view>
         <view class="gray-line"></view>
-        <view class="corp-brief">
+        <view class="corp-brief" bindtap="goCorpView({{corpInfo.corpid}})">
           <view class="corp-content">
             <image class="logo" src="{{corpInfo.mlogo}}"></image>
             <view class="corp-info">
@@ -336,6 +336,12 @@
           utils.goLogin()
           const that = this;
           that.deliverJob(that.jobId, that.loginInfo.resumeid)
+        },
+        // 跳转公司详情页
+        goCorpView(companyid){
+          wx.navigateTo({
+            url: `/pages/corporation/corpview?companyid=${companyid}`
+          })
         }
       }
 
@@ -361,6 +367,7 @@
           that.relatedJobs = json.data.data.relatedJobs;
           that.isFav = json.data.data.isFav;
           that.isDelivery = json.data.data.isDelivery;
+          console.log(that.corpInfo)
           that.$apply();
         } else {
           tip.error(json.data.returnMsg);
