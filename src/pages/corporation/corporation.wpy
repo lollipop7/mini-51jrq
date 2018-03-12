@@ -70,6 +70,12 @@ export default class CorpPage extends wepy.page {
       }
   }
 
+  // 下拉刷新
+  onPullDownRefresh(){
+    wx.showNavigationBarLoading()
+    this.onLoad()
+  }
+
   async getCorpList(currentPage) {
     wx.showLoading({
         title: '加载中',
@@ -95,7 +101,9 @@ export default class CorpPage extends wepy.page {
     } else {
       tip.error(json.returnMsg);
     }
-    wx.hideLoading()
+    wx.hideLoading() //隐藏loading效果
+    wx.hideNavigationBarLoading() //完成停止加载
+    wx.stopPullDownRefresh() //停止下拉刷新
     that.$apply();
     that.showLoading = false
   }  

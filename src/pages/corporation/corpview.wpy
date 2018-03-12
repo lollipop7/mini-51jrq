@@ -248,7 +248,7 @@ export default class CorpDatailsView extends wepy.page {
     } else {
       tip.error(json.returnMsg);
     }
-    wx.hideLoading()
+    wx.hideLoading() //隐藏loading效果
   }
   
   //获取数据字典
