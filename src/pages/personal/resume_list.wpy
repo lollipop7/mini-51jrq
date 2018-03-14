@@ -233,10 +233,11 @@ export default class CorpPage extends wepy.page {
               that.getResumeList().then(data=>{
                   if(data.data.returnCode == "AAAAAAA") {
                       var resumeArr = data.data.data;
+                      console.log(resumeArr)
                       if(resumeArr.length>0){
                         that.no_resume = false;
                         resumeArr.forEach(element => {
-                          element.updatedate = utils.date('Y-m-d',element.updatedate)
+                          element.updatedate = utils.date('Y-m-d',(element.createdate)/1000)
                         });
                         that.resumelist = resumeArr;
                         that.$apply();
