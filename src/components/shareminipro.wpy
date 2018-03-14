@@ -228,12 +228,11 @@ export default class ShareMiniPro extends wepy.component {
 
     loadResources() { //将在线路径转为本地临时路径
         let {mlogo} = this.corpInfo;
-        if(mlogo != undefined) {
+        if(mlogo != "") {
             mlogo = mlogo.replace(/http/, 'https'); 
         }else {
             mlogo = `/images/test/mlogo_test.png`;
         }
-        
         // 绑定数据记得去掉，这里做调试
         // let mlogo = `/images/test/mlogo_test.png`;
         const {qrcodePath, mlogoPath} = this.data;
@@ -254,7 +253,6 @@ export default class ShareMiniPro extends wepy.component {
         }
         let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/home/home`,width: 180, scene:`${sceneArgs}`}});
         let wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
-        console.log(wxacodeurl)
         const getWxaCode = (src) => {
             return new Promise(function(resolve, reject) {
                 wx.getImageInfo({
