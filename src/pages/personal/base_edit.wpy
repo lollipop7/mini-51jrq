@@ -206,7 +206,6 @@ export default class BaseEdit extends wepy.page {
    methods = {
        changePortrait(){
            const that = this;
-           that.showPortraitStatus = true;
            that.choosePortrait();
        },
        bindSexChange (event) {
@@ -234,6 +233,7 @@ export default class BaseEdit extends wepy.page {
                 }else{
                     tip.error(json.data.returnMsg);
                 }
+                wx.hideLoading()
            })
        }
    }
@@ -245,6 +245,7 @@ export default class BaseEdit extends wepy.page {
             sizeType: ['original'],     // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'],        // 可以指定来源是相册还是相机，默认二者都有
             success(res) {
+                that.showPortraitStatus = true;
                 that.tempPortraitFilePath = res.tempFilePaths[0];  
                 that.$apply()     // 返回选定照片的本地文件路径列表
                 that.uploadImgFile(that, res.tempFilePaths[0])
@@ -276,6 +277,9 @@ export default class BaseEdit extends wepy.page {
 
    //修改个人信息
     async editPersonalInfo() {
+        wx.showLoading({
+            title: '加载中',
+        })
         const that = this;
         const json = await api.changeHeadImg({
             query: {
@@ -315,6 +319,11 @@ export default class BaseEdit extends wepy.page {
                 }
         })
         if(json.data.returnCode == 'AAAAAAA') {
+            if(json.data.data.headimg){
+               that.showPortraitStatus = true; 
+            }else{
+                that.showPortraitStatus = false;
+            }
             that.tempPortraitFilePath = json.data.data.headimg;
             that.username = json.data.data.username;
             that.u_sex = json.data.data.sex;

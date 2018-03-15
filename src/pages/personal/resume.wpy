@@ -132,8 +132,10 @@
         <view class="resume-gray-line"></view>
         <view class="name-container">
           <view class="name">{{baseInfo.username}}</view>
-          <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
-          <image src="/images/icons/female.png" wx:else="{{sex}}"></image>
+          <view hidden="{{sexStatus}}">
+            <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
+            <image src="/images/icons/female.png" wx:else="{{sex}}"></image>
+          </view>
         </view>
         <view class="small-info">{{baseInfo.livecityid}} <text wx:if="{{baseInfo.livecityid}}">|</text> {{baseInfo.workyears}}</view>
         <view class="intro-container">
@@ -303,7 +305,8 @@ export default class resumePage extends wepy.page {
     tokenKey: '',
     headimg: '',
     resumeid: '',
-    operateShow: false
+    operateShow: false,
+    sexStatus: false
   }
 
   onLoad(options) { 
@@ -333,6 +336,11 @@ export default class resumePage extends wepy.page {
                   if (json.data.returnCode == "AAAAAAA") {
                     that.baseInfo = JSON.parse(json.data.data);
                     that.sex = (that.baseInfo.sex == "男");
+                    if(!that.baseInfo.sex){
+                      that.sexStatus = true
+                    }else{
+                      that.sexStatus = false
+                    }
                     that.$apply();
                   } else {
                     tip.error(json.returnMsg);

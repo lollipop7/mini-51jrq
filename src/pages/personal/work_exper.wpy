@@ -110,7 +110,7 @@
     </view>
     <view class="big">
         <view class="section">
-            <textarea name="workremark" value="{{workremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
+            <textarea maxlength="-1" name="workremark" value="{{workremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
         </view>
     </view>
     <view class="btn-box">
