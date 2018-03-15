@@ -119,8 +119,8 @@
 <template>
   <view class="resume-container">
       <view class="head">
-        <image src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
-        <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
+        <image mode="aspectFill" src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
+        <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
         <view>{{baseInfo.username}}</view>
       </view>
       <!-- 基本信息 -->

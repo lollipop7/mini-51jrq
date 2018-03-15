@@ -161,8 +161,8 @@
 <template>
   <view class="personal-container">
       <view class="personal-info">
-            <image src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
-            <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
+            <image mode="aspectFill" src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
+            <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
             <view class="name-intro" wx:if="{{loginStatus}}" @tap.stop="goBaseEdit">
                 <view class="name-intro-bd">
                     <view class="name">{{username}}</view>
