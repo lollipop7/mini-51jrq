@@ -72,7 +72,7 @@ export default class HomePage extends wepy.page {
     wx.showNavigationBarLoading()
     this.onLoad()
   }
-
+s
   // 转发分享
   onShareAppMessage() {
       var pages = getCurrentPages()    //获取加载的页面

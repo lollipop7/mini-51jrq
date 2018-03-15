@@ -245,7 +245,11 @@
             :jobInfo.sync="jobInfo"
             :corpInfo.sync="corpInfo"
             :dataOrg="dataOrg"></shareminipro>
-      <selresumeorg></selresumeorg>      
+      <selresumeorg
+       :isShowSelContainer.sync="isShowSelContainer"
+       :jobId.sync="jobId"
+       :isDelivery.sync="isDelivery"
+      ></selresumeorg>      
   </view>
 </template>
 
@@ -286,7 +290,8 @@
         urlWithArgs: "",
         currentUrl: "",
         showShareBtn: false,
-        dataOrg: "homeview"
+        dataOrg: "homeview",
+        isShowSelContainer: false
       }
 
       onLoad(options){
@@ -338,8 +343,8 @@
         onDeliverFn(){
           // 未登录跳转登录页
           utils.goLogin()
-          const that = this;
-          that.deliverJob(that.jobId, that.loginInfo.resumeid)
+          this.isShowSelContainer = true;
+          this.$apply();
         },
         // 跳转公司详情页
         goCorpView(companyid){
@@ -417,31 +422,6 @@
           tip.error(json.data.returnMsg);
         }
       }  
-
-      async deliverJob(jobid, resumeid) {//企业职位申请
-        const that = this;
-        const json = await api.getCompanyjob({
-          query: {
-            head: {
-                "transcode": "Q0003", 
-                "type": "h"
-            },
-            data: {
-                "token": that.loginInfo.token,
-                "tokenKey": that.loginInfo.tokenKey, 
-                "jobid": jobid,
-                "resumeid": resumeid
-            }
-          }
-        })
-        if (json.data.returnCode == "AAAAAAA") {
-          that.isDelivery = !that.isDelivery;
-          tip.success("投递成功");
-          that.$apply();
-        } else {
-          tip.error(json.data.returnMsg);
-        }
-      }
 
     // 打开地图
     async getAddress(address) {

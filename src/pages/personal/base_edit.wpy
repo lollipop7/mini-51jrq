@@ -151,6 +151,7 @@ export default class BaseEdit extends wepy.page {
 
    onLoad(){
        this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+       console.log(this.loginInfo)
        this.getPimg();
        // 获取数据字典
        const that = this;
@@ -221,8 +222,19 @@ export default class BaseEdit extends wepy.page {
            this.workyearsStatus = false;
            this.indexWorkYearsStatus = event.detail.value;
        },
-       formSubmit(){
-           
+       baseEditSubmit(e){
+           this.username = e.detail.value.username;
+           this.email = e.detail.value.email;
+           this.editPersonalInfo().then(json => {
+               if(json.data.returnCode == 'AAAAAAA') {
+                    tip.success("操作成功");
+                    wx.switchTab({  
+                        url: '../personal/personal',
+                    })
+                }else{
+                    tip.error(json.data.returnMsg);
+                }
+           })
        }
    }
 
@@ -253,7 +265,7 @@ export default class BaseEdit extends wepy.page {
             success: function(res){
                 //do something
                 if(JSON.parse(res.data).result) {
-                    that.base64Img = res.data.msg;
+                    that.base64Img = JSON.parse(res.data).msg;
                     that.$apply();
                 } else {
                     console.log(res.data)
@@ -265,7 +277,7 @@ export default class BaseEdit extends wepy.page {
    //修改个人信息
     async editPersonalInfo() {
         const that = this;
-        const json = await api.getResumeInfo({
+        const json = await api.changeHeadImg({
             query: {
                 head:{
                     type: "h",
@@ -274,15 +286,17 @@ export default class BaseEdit extends wepy.page {
                 data:{
                     tokenKey: that.loginInfo.tokenKey,
                     token: that.loginInfo.token,
+                    sex: that.sex[that.indexSex],
+                    city: that.city[that.indexLiveCity],
+                    workinglife: that.workyears[that.indexWorkYearsStatus],
+                    username: that.username,
+                    email: that.email,
                     imgsrc: that.base64Img,
-                    imgtype: "png",
-                    sex: that.sex[indexSex],
-                    city: that.city[indexLiveCity],
-                    workinglife: that.workyears[indexWorkYearsStatus]
+                    imgtype: "png"
                 }
             }
         })
-        console.log(json)
+        return json;
     }
 
     //获取个人信息
@@ -301,12 +315,15 @@ export default class BaseEdit extends wepy.page {
                 }
         })
         if(json.data.returnCode == 'AAAAAAA') {
+            that.tempPortraitFilePath = json.data.data.headimg;
             that.username = json.data.data.username;
             that.u_sex = json.data.data.sex;
             that.email = json.data.data.email;
             that.u_city = json.data.data.city;
-            that.u_workyears = json.data.workinglife;
+            that.u_workyears = json.data.data.workinglife;
             that.$apply();
+        }else{
+            tip.error(json.data.returnMsg);
         }
     }
 

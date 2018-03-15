@@ -14,7 +14,7 @@
         justify-content: center;
     }
     .sel-box {
-        height: 460rpx;
+        // height: 460rpx;
         width: 560rpx;
         padding: 0 32rpx;
         background-color: #fff;
@@ -26,6 +26,7 @@
             justify-content: space-between;
             height: 120rpx;
             border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
             text {
                 font-size: 32rpx;
                 color: #333;
@@ -62,10 +63,14 @@
                 flex-grow: 1;
             }
             .btn-cancel {
+                width: 50%;
+                text-align: center;
                 color: #a0a0a0;
                 border-right: 1px solid #f1f1f1;
             }
             .btn-confirm {
+                width: 50%;
+                text-align: center;
                 color: #ff9e00;
             }
         }
@@ -79,27 +84,15 @@
         <view wx:if="{{isShowSelContainer}}" class="bomb-screen">
             <view class="sel-box">
                 <view class="lists">
-                    <view class="list-item" @tap.stop="chooseResume(0, 'my')">
-                        <text>我的简历</text>
-                        <view class="seled-check">
-                            <image src="/images/icons/no-sel.png" class="icon-sel"></image>
-                            <image wx:if="{{selIndex==0}}" src="/images/icons/sel.png" class="icon-gou"></image>
+                    <repeat for="{{resumeList}}" key="index" index="index" item="item">
+                        <view class="list-item" @tap.stop="chooseResume({{index}}, {{item.resumeid}})">
+                            <text>{{item.resumename}}</text>
+                            <view class="seled-check">
+                                <image src="/images/icons/no-sel.png" class="icon-sel"></image>
+                                <image wx:if="{{selIndex==index}}" src="/images/icons/sel.png" class="icon-gou"></image>
+                            </view>
                         </view>
-                    </view>
-                    <view class="list-item" @tap.stop="chooseResume(1, 'my51job')">
-                        <text>来自51job的简历</text>
-                        <view class="seled-check">
-                            <image src="/images/icons/no-sel.png" class="icon-sel"></image>
-                            <image wx:if="{{selIndex==1}}" src="/images/icons/sel.png" class="icon-gou"></image>
-                        </view>
-                    </view>
-                    <view class="list-item" @tap.stop="chooseResume(3, 'my')">
-                        <text>理财师工作用的简历</text>
-                        <view class="seled-check">
-                            <image src="/images/icons/no-sel.png" class="icon-sel"></image>
-                            <image wx:if="{{selIndex==2}}" src="/images/icons/sel.png" class="icon-gou"></image>
-                        </view>
-                    </view>
+                    </repeat>
                 </view>
                 <view class="confirm-box">
                     <view class="btn-cancel" @tap.stop="cancelFn">取消</view>
@@ -115,31 +108,56 @@
 <script>
     import wepy from 'wepy';
     import api from '../api/api';
+    import tip from '.././utils/tip';
     import {
       LOGIN_INFO
     } from '../utils/constants';
 
     export default class SelResumeOrg extends wepy.component {
         props = {
-            
+            isShowSelContainer: {
+                type: Boolean,
+                default: false,
+                twoWay: true
+            },
+            jobId: {
+                type: String,
+                default: ''
+            },
+            isDelivery: {
+                type: Boolean,
+                default: false,
+                twoWay: true
+            }
         }
 
         data = {
-            isShowSelContainer: true,
-            selIndex: 0
+            isShowSelContainer: false,
+            selIndex: 0,
+            resumeList: [],
+            resumeid: '',
+            isDelivery: false
         }
 
         onLoad(){
             this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
-            this.viewCompanyjob();
+            // 获取简历列表
+            this.getResumeList();
+            // this.viewCompanyjob();
         }
 
         methods = {
+            chooseResume(selIndex, resumeid) {// 切换简历
+                this.selIndex = selIndex;
+                this.resumeid = resumeid;
+                this.$apply();
+            },
             cancelFn(){//取消
                 this.isShowSelContainer = false;
+                this.$apply();
             },
             confirmFn(event){//确认
-
+                this.deliverJob(this.jobId, this.resumeid)
             }
         }
 
@@ -165,16 +183,45 @@
                 if (json.data.data.length > 0) {
                     that.no_resume = false;
                     that.resumeList = json.data.data;
+                    that.resumeid = json.data.data[0].resumeid;
                     that.$apply();
                 }else{
                     that.no_resume = true;
                     that.$apply();
                 }
-              }else{
-                  that.no_resume = true;
-                  that.$apply();
-              }
-              wx.hideLoading()
+            }else{
+                that.no_resume = true;
+                that.$apply();
+            }
+            wx.hideLoading()
+        }
+
+        //企业职位申请
+        async deliverJob(jobid, resumeid) {
+            const that = this;
+            this.isShowSelContainer = false;
+            const json = await api.getCompanyjob({
+                query: {
+                    head: {
+                        "transcode": "Q0003", 
+                        "type": "h"
+                    },
+                    data: {
+                        "token": that.loginInfo.token,
+                        "tokenKey": that.loginInfo.tokenKey, 
+                        "jobid": jobid,
+                        "resumeid": resumeid
+                    }
+                }
+            })
+            if (json.data.returnCode == "AAAAAAA") {
+                that.isDelivery = !that.isDelivery;
+                tip.success("投递成功");
+                that.$apply();
+            } else {
+                tip.error(json.data.returnMsg);
+            }
+            that.$apply();
         }
     }
 </script>
