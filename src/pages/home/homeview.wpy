@@ -1,6 +1,7 @@
 <style lang="scss">
   .homeview-container {
     padding-bottom: 160rpx;
+    position: relative;
     .jobbrief-container {
       padding: 16rpx 28rpx;
       background-color: #fff; 
@@ -193,7 +194,7 @@
         <view class="gray-line"></view>
         <view class="corp-brief" bindtap="goCorpView({{corpInfo.corpid}})">
           <view class="corp-content">
-            <image class="logo" src="{{corpInfo.mlogo}}"></image>
+            <image class="logo" src="{{corpInfo.mlogo ? corpInfo.mlogo : 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}"></image>
             <view class="corp-info">
                 <text class="corp-name">{{corpInfo.corpname}}</text>
                 <view class="corp-size-type">
@@ -244,6 +245,7 @@
             :jobInfo.sync="jobInfo"
             :corpInfo.sync="corpInfo"
             :dataOrg="dataOrg"></shareminipro>
+      <selresumeorg></selresumeorg>      
   </view>
 </template>
 
@@ -257,6 +259,7 @@
     import PosiNameDuty from '../../components/posinameduty';
     import RelatedJob from '../../components/relatedjob';
     import ShareMiniPro from '../../components/shareminipro';
+    import SelResumeOrg from '../../components/selresumeorg';
     import utils from '../../utils/utils';
 
     export default class HomeView extends wepy.page {
@@ -267,7 +270,8 @@
       components = {
         posinameduty: PosiNameDuty,
         relatedjob: RelatedJob,
-        shareminipro: ShareMiniPro
+        shareminipro: ShareMiniPro,
+        selresumeorg: SelResumeOrg
       }
 
       data = {
@@ -383,7 +387,6 @@
           that.relatedJobs = json.data.data.relatedJobs;
           that.isFav = json.data.data.isFav;
           that.isDelivery = json.data.data.isDelivery;
-          console.log(that.corpInfo)
           that.$apply();
         } else {
           tip.error(json.data.returnMsg);

@@ -17,7 +17,12 @@
                     height: 80rpx;
                 }
                 .name-intro {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
                     margin-left: 20rpx;
+                    align-items:center;
+                    width:100%;
                     .name {
                         font-size: 36rpx;
                         color: #333333;
@@ -32,6 +37,10 @@
                         margin-top: 6rpx;
                         font-size: 32rpx;
                         color: #888888;
+                    }
+                    .arrow_right {
+                        width: 10rpx;
+                        height: 16rpx;
                     }
                 }
             }
@@ -152,15 +161,18 @@
 <template>
   <view class="personal-container">
       <view class="personal-info">
-          <image src="{{headimg}}" wx:if="{{headimgStatus}}"></image>
-          <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
-          <view class="name-intro" wx:if="{{loginStatus}}">
-              <view class="name">{{username}}</view>
-              <view class="intro">{{jobname}}</view>
-          </view>
-          <view class="name-intro" wx:else="{{loginStatus}}">
-              <view class="intro2"><text bindtap="goLoginPage">登录</text>  / <text bindtap="goRegistPage">注册</text> </view>
-          </view>
+            <image src="{{headimg}}" wx:if="{{headimgStatus}}"></image>
+            <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
+            <view class="name-intro" wx:if="{{loginStatus}}" @tap.stop="goBaseEdit">
+                <view class="name-intro-bd">
+                    <view class="name">{{username}}</view>
+                    <view class="intro">{{jobname}}</view>
+                </view>
+                <image src="/images/icons/arrow_right.png" class="arrow_right"></image>
+            </view>
+            <view class="name-intro" wx:else="{{loginStatus}}">
+                <view class="intro2"><text bindtap="goLoginPage">登录</text>  / <text bindtap="goRegistPage">注册</text> </view>
+            </view>
       </view>
       <view class="my-function">
           <view class="fun-line" bindtap="goResumeList">
@@ -314,9 +326,7 @@ export default class PersPage extends wepy.page {
         })
     }
     methods = {
-
-        // 跳转我的简历
-        goResumeList () {
+        goResumeList () {// 跳转我的简历
             // 未登录跳转登录页
             utils.goLogin()
             if(this.loginStatus){
@@ -325,9 +335,7 @@ export default class PersPage extends wepy.page {
                 })
             }
         },
-
-        // 跳转我的简历
-        // goResumePage () {
+        // goResumePage () {// 跳转我的简历
         //     // 未登录跳转登录页
         //     utils.goLogin()
         //     if(this.loginStatus){
@@ -336,9 +344,7 @@ export default class PersPage extends wepy.page {
         //         })
         //     }
         // },
-
-        // 跳转投递状态
-        goDeliveryPage () {
+        goDeliveryPage () {// 跳转投递状态
             // 未登录跳转登录页
             utils.goLogin()
             if(this.loginStatus){
@@ -347,9 +353,7 @@ export default class PersPage extends wepy.page {
                 })
             }
         },
-
-        // 跳转我的收藏
-        goCollectionPage () {
+        goCollectionPage () {// 跳转我的收藏
             // 未登录跳转登录页
             utils.goLogin()
             if(this.loginStatus){
@@ -358,19 +362,13 @@ export default class PersPage extends wepy.page {
                 })
             }
         },
-
-        // 退出登录
-        logout () {
+        logout () {// 退出登录
             this.showbox = true;
         },
-
-        // 取消
-        cancel () {
+        cancel () {// 取消
             this.showbox = false;
         },
-
-        // 确定
-        yes () {
+        yes () {// 确定
             // 清空本地信息
             wx.clearStorage()
             // 跳转登录页
@@ -378,18 +376,21 @@ export default class PersPage extends wepy.page {
                 url: `/pages/login/login`
             })
         },
-
-        // 跳转登录页
-        goLoginPage () {
+        goLoginPage () {// 跳转登录页
             wx.navigateTo({
                 url: `/pages/login/login`
             })
         },
-
-        // 跳转注册页
-        goRegistPage () {
+        goRegistPage () {// 跳转注册页
             wx.navigateTo({
                 url: `/pages/login/regist`
+            })
+        },
+        goBaseEdit() { //跳转个人信息编辑
+            // 未登录跳转登录页
+            utils.goLogin()
+            wx.navigateTo({
+                url: `base_edit`
             })
         }
 

@@ -18,6 +18,7 @@ export default class extends wepy.app {
       'pages/home/home',    
       'pages/personal/import_resume',
       'pages/personal/resume_list',
+      'pages/personal/base_edit',
       'pages/login/login',
       'pages/personal/personal', 
       'pages/login/regist',

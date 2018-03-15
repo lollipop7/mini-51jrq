@@ -34,7 +34,8 @@ export default class IndexPage extends wepy.page {
         wx.redirectTo({ url: `../corptions/corpview?${param}`});  
       }
     }else{
-      wx.switchTab({
+      console.log('进入首页')
+      wx.switchTab({  
         url: '../home/home',
       })
     }

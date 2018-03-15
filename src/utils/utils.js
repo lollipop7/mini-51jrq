@@ -3,7 +3,7 @@ const goLogin = function(){
     wx.getStorage({
         key: 'loginData',
         success: function(res){
-            console.log(res)
+            // console.log(res)
         },
         fail: function(){
             wx.navigateTo({

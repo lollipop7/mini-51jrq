@@ -262,72 +262,65 @@ export default class CorpPage extends wepy.page {
   }
 
   methods = {
-      // 删除我的简历
-      deleteResume () {
+      deleteResume () {// 删除我的简历
         this.showbox = true;
         
       },
-      // 编辑我的简历
-      editResume (resumeid) {
+      editResume (resumeid) {// 编辑我的简历
           wx.navigateTo({
               url: `resume?resumeid=${resumeid}`
           })
       },
-      // 添加简历
-      addResume() {
+      addResume() {// 添加简历
         wx.navigateTo({
             url: `resume`
         })
       },
-    //   取消删除
-    cancel() {
-        this.showbox = false;
-        this.$apply();
-    },
-    // 确认删除
-    yes(resumeid) {
-      wx.showLoading({
-          title: '加载中',
-      })
-      this.deleteMyResume(resumeid).then(data => {
-        this.showbox = false;
-        // 获取简历列表
-        this.getResumeList().then(data=>{
-            if(data.data.returnCode == "AAAAAAA") {
-                var resumeArr = data.data.data;
-                if(resumeArr.length>0){
-                  this.no_resume = false;
-                  resumeArr.forEach(element => {
-                    element.updatedate = utils.date('Y-m-d',element.updatedate)
-                  });
-                  this.resumelist = resumeArr
-                  this.$apply();
-                }else{
+      cancel() {//取消删除
+          this.showbox = false;
+          this.$apply();
+      },
+      yes(resumeid) {// 确认删除
+        wx.showLoading({
+            title: '加载中',
+        })
+        this.deleteMyResume(resumeid).then(data => {
+          this.showbox = false;
+          // 获取简历列表
+          this.getResumeList().then(data=>{
+              if(data.data.returnCode == "AAAAAAA") {
+                  var resumeArr = data.data.data;
+                  if(resumeArr.length>0){
+                    this.no_resume = false;
+                    resumeArr.forEach(element => {
+                      element.updatedate = utils.date('Y-m-d',element.updatedate)
+                    });
+                    this.resumelist = resumeArr
+                    this.$apply();
+                  }else{
+                    this.no_resume = true;
+                    this.$apply();
+                  }
+              }else{
                   this.no_resume = true;
                   this.$apply();
-                }
-            }else{
-                this.no_resume = true;
-                this.$apply();
-            }
-            wx.hideLoading()
+              }
+              wx.hideLoading()
+          })
+        }).catch(err => {
+          console.log(err)
         })
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    // 预览简历
-    goLook (resumeid) {
+      },
+      goLook (resumeid) {// 预览简历
+          wx.navigateTo({
+              url: `resume?resumeid=${resumeid}&look=just`
+          })
+      },
+      importResume() {// 导入简历
         wx.navigateTo({
-            url: `resume?resumeid=${resumeid}&look=just`
+            url: `import_resume`
         })
-    },
-    // 导入简历
-    importResume() {
-      wx.navigateTo({
-          url: `import_resume`
-      })
-    }
+      }
   }
 
   //获取简历列表

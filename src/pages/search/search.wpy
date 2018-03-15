@@ -27,6 +27,10 @@
             color: #353535;
             font-size: 28rpx;
         }  
+        .cancel-box {
+            width: 50rpx;
+            text-align: center;
+        }
         .cancel-img {
             width: 16rpx;
             height: 16rpx;
@@ -105,6 +109,29 @@
             }
         }
     }
+    .empty-placeholder {
+        margin-top:150rpx;
+        width: 100%;
+        text-align: center;
+        text {
+            color: #666;
+            font-size: 40rpx;
+            margin-left: 30rpx;
+        }
+    }
+
+    .icon-xl {
+        width: 176rpx;
+        height: 220rpx;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .txt {
+        font-size: 26rpx;
+        color: #888888;
+        margin-top: 36rpx;
+    }
 </style>
 
 <template>
@@ -141,7 +168,9 @@
                                 <view @tap="selHisKeyWordFn" data-his="{{item}}" class="jrq-bd">
                                     <text>{{item}}</text>
                                 </view>
-                                <image @tap="delHisCellFn" data-del="{{item}}" class='cancel-img' src="/images/icons/cancel.png"></image>
+                                <view class="cancel-box" @tap="delHisCellFn" data-del="{{item}}">
+                                    <image class='cancel-img' src="/images/icons/cancel.png"></image>
+                                </view>
                             </view>
                         </repeat>
                     </view>
@@ -189,7 +218,10 @@
                             <commposi :syncPosidata.sync="item"></commposi>  
                         </repeat>
                         <!--暂无数据显示-->
-                        <placeholder :syncJobShow.sync="isJobEmpty" message="暂无发现数据"></placeholder>
+                        <view class="empty-placeholder row-center" wx:if="{{isJobEmpty}}">
+                            <image class="icon-xl" src="/images/icons/no_delivery.png" />
+                            <view class="txt">暂无发现数据</view>
+                        </view>
                     </view>
                     <view wx:if="{{isShowCorpList}}">
                         <view class="select-area">
@@ -219,7 +251,10 @@
                             <corplist :syncCorpdata.sync="item"></corplist>
                         </repeat>
                         <!--暂无数据显示-->
-                        <placeholder :syncCorpShow.sync="isCorpEmpty" message="暂无发现数据"></placeholder>
+                        <view class="empty-placeholder row-center" wx:if="{{isCorpEmpty}}">
+                            <image class="icon-xl" src="/images/icons/no_delivery.png" />
+                            <view class="txt">暂无发现数据</view>
+                        </view>
                     </view>
                     <!--加载更多时动画-->
                     <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
@@ -246,7 +281,6 @@ import CityList from '../../components/citylist';
 import CommPosi from '../../components/commposi';
 import CorpList from '../../components/corplist';
 import BottomLoadMore from "../../components/bottomloadmore";
-import PlaceHolder from "../../components/placeholder";
 import {filter} from 'lodash';
 const peoSearch = require('../../data/peosearch-data.js');
 const  regions = require('../../utils/regions');
@@ -291,8 +325,8 @@ export default class SearchPage extends wepy.page {
         natureStatus: true,
         isShowCityName: true,
         loginInfo: {},
-        jobNum: "",
-        corpNum: ""
+        jobNum: 0,
+        corpNum: 0
     }
 
     components = {
@@ -301,7 +335,6 @@ export default class SearchPage extends wepy.page {
         commposi: CommPosi,
         corplist: CorpList,
         bottomloadmore: BottomLoadMore,
-        placeholder: PlaceHolder
     }
 
     onLoad (options) {
@@ -309,6 +342,8 @@ export default class SearchPage extends wepy.page {
         let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
         if (userSpecialInfo.city) {
             this.city = userSpecialInfo.city;
+        } else {
+            this.city = '全国';
         }
         if(userSpecialInfo.keywordhisList) {
             this.keywordhisList = userSpecialInfo.keywordhisList;
@@ -525,8 +560,9 @@ export default class SearchPage extends wepy.page {
         })
         if (json.data.returnCode == "AAAAAAA") {
             if (json.data.data.num == 0) {
-                tip.toast('搜索结果为空');
+                // tip.toast('搜索结果为空');
                 that.isJobEmpty = true;  //暂无数据
+                that.jobNum = 0;
             } else {
                 let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
                 if(that.keywordhisList.indexOf(keyword) == -1) {
@@ -538,7 +574,7 @@ export default class SearchPage extends wepy.page {
                 that.jobNum = json.data.data.num;
                 that.totalJobPage =parseInt(json.data.data.num / 10);
                 that.isJobEmpty = false;
-                // console.log("isShowCorpList", that.isShowCorpList, "isShowJobList", that.isShowJobList, "isJobEmpty", that.isJobEmpty, "isShowCityName", that.isShowCityName);
+                // console.log("查找职位", "isShowCorpList", that.isShowCorpList, "isShowJobList", that.isShowJobList, "isJobEmpty", that.isJobEmpty, "isCorpEmpty", that.isCorpEmpty);
             }
             that.$apply();
             that.showLoading = false;
@@ -575,8 +611,9 @@ export default class SearchPage extends wepy.page {
         })
         if (json.data.returnCode == "AAAAAAA") {
             if (json.data.data.num == 0) {
-                tip.toast('搜索结果为空');
+                // tip.toast('搜索结果为空');
                 that.isCorpEmpty = true;  //暂无数据
+                that.corpNum = 0;
             } else {
                 let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
                 if(that.keywordhisList.indexOf(keyword) == -1) {
@@ -588,7 +625,7 @@ export default class SearchPage extends wepy.page {
                 that.corpNum = json.data.data.num;
                 that.totalCorpPage =parseInt(json.data.data.num / 10);
                 that.isCorpEmpty = false;
-                // console.log("isShowCorpList", that.isShowCorpList, "isShowJobList", that.isShowJobList, "isCorpEmpty", that.isCorpEmpty, "isShowCityName", that.isShowCityName);
+                // console.log("查找公司", "isShowCorpList", that.isShowCorpList, "isShowJobList", that.isShowJobList, "isCorpEmpty", that.isCorpEmpty, "isJobEmpty", that.isJobEmpty);
             }
             that.$apply();
             that.showLoading = false;

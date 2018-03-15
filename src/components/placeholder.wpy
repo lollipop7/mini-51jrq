@@ -24,21 +24,10 @@ margin-top:150rpx;
 }
 </style>
 <template>
-    <view>
-        <view class="empty-placeholder row-center" wx:if="{{syncShow}}">
-            <image class="icon-xl" src="/images/icons/no_delivery.png" />
-            <view class="txt">{{message}}</view>
-        </view>
-        <view class="empty-placeholder row-center" wx:if="{{syncJobShow}}">
-            <image class="icon-xl" src="/images/icons/no_delivery.png" />
-            <view class="txt">{{message}}</view>
-        </view>
-        <view class="empty-placeholder row-center" wx:if="{{syncCorpShow}}">
-            <image class="icon-xl" src="/images/icons/no_delivery.png" />
-            <view class="txt">{{message}}</view>
-        </view>
+    <view class="empty-placeholder row-center" wx:if="{{syncShow}}">
+        <image class="icon-xl" src="/images/icons/no_delivery.png" />
+        <view class="txt">{{message}}</view>
     </view>
-    
 </template>
 <script>
 import wepy from 'wepy'
@@ -47,14 +36,6 @@ export default class PlaceHolder extends wepy.component {
         syncShow: {
            type: Boolean,
            default: false 
-        },
-        syncJobShow: {
-            type: Boolean,
-            default: false
-        },
-        syncCorpShow: {
-            type: Boolean,
-            default: false
         },
         message: {
             default: '没有相关信息'

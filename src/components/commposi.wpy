@@ -92,7 +92,7 @@
     </view>
       <view class="corp-brief">
           <view class="logo">
-              <image mode="aspectFit" src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/home/logo1.png'}}"></image>
+              <image mode="aspectFit" src="{{syncPosidata.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : syncPosidata.mlogo}}"></image>
           </view>
           <view class="corp-info">
               <text class="corp-name">{{syncPosidata.corpname}}</text>

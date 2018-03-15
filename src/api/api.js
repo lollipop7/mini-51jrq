@@ -25,10 +25,16 @@ const getCityName = (params) => wxRequest(params, apiGps + `/?address=${params.a
 //获取小程序码
 const getWxaCode = (params) => wxRequest(params, apimall + '/wx/createwxaqrcode');
 
+//获取个人信息
+const getPimg = (params) => wxRequest(params, apimall + '/api/pimg');
+
+//图片转base64
+const trBase64 = (params) => wxRequest(params, apimall + '/img/index');
+
 //获取access_token
 var getAccessToken = (params) => wxRequest(params, apimall + '/wx/get');
 
-//  获取我的收藏及投递记录 
+//获取我的收藏及投递记录 
 const  getCollectJob = (params) => wxRequest(params, apimall + '/api/persoanl');
 
 // 获取简历信息
@@ -57,6 +63,8 @@ module.exports = {
     getCompanyList,
     getCityName,
     getWxaCode,
+    getPimg,
+    trBase64,
     getAccessToken,
     getCollectJob,
     getResumeInfo,

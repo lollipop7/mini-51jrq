@@ -183,7 +183,7 @@ export default class ShareMiniPro extends wepy.component {
                 wx.hideLoading();
             }).catch(err => {
                 console.log(err);
-                // tip.error(err);
+                // tip.error('图片获取失败');
                 that.isShowMyCanvasScreen = false;
                 that.$apply();
                 wx.hideLoading();
@@ -203,7 +203,7 @@ export default class ShareMiniPro extends wepy.component {
                 wx.hideLoading();
             }).catch(err => {
                 console.log(err);
-                // tip.error(err);
+                // tip.error('图片获取失败');
                 that.isShowPubCanvasScreen = false;
                 that.$apply();
                 wx.hideLoading();
@@ -228,13 +228,14 @@ export default class ShareMiniPro extends wepy.component {
 
     loadResources() { //将在线路径转为本地临时路径
         let {mlogo} = this.corpInfo;
-        if(mlogo != "") {
-            mlogo = mlogo.replace(/http/, 'https'); 
+        console.log(mlogo)
+        if(mlogo == "") {
+            mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
         }else {
-            mlogo = `/images/test/mlogo_test.png`;
+            mlogo = mlogo.replace(/http/, 'https');             
         }
         // 绑定数据记得去掉，这里做调试
-        // let mlogo = `/images/test/mlogo_test.png`;
+        // let mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
         const {qrcodePath, mlogoPath} = this.data;
         let len = (this.currentUrl + '?').length;
         let args = this.urlWithArgs.slice(len).split('&');  //corpid=990003&jobid=1040013 || companyid=1010527
@@ -251,7 +252,7 @@ export default class ShareMiniPro extends wepy.component {
                 sceneArgs = `cv*cpid=${objs["companyid"]}`;
                 break;    
         }
-        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/home/home`,width: 180, scene:`${sceneArgs}`}});
+        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/index/index`,width: 180, scene:`${sceneArgs}`}});
         let wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
         const getWxaCode = (src) => {
             return new Promise(function(resolve, reject) {
@@ -370,6 +371,7 @@ export default class ShareMiniPro extends wepy.component {
         ctx.closePath() 
         ctx.fill()
         ctx.clip()
+        console.log(mlogoPath)
         ctx.drawImage(mlogoPath,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
         ctx.restore()
 
@@ -378,7 +380,7 @@ export default class ShareMiniPro extends wepy.component {
                 wx.canvasToTempFilePath({
                     canvasId: 'myCanvas',
                     success: function(res) {
-                        console.log(res.tempFilePath);
+                        // console.log(res.tempFilePath);
                         that.previewMyCanvasImage(res.tempFilePath);
                         that.isShowMyCanvasScreen = false;
                         that.$apply();

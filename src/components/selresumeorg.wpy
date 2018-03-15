@@ -1,0 +1,182 @@
+<style lang="scss">
+.sel-resume-container {
+    .bomb-screen {
+        background-color: rgba(0, 0, 0, 0.4);
+        position: fixed;
+        z-index: 1800;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: columns;
+        align-items:center;/*垂直居中*/
+        justify-content: center;
+    }
+    .sel-box {
+        height: 460rpx;
+        width: 560rpx;
+        padding: 0 32rpx;
+        background-color: #fff;
+        border-radius: 8rpx;
+        .list-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            height: 120rpx;
+            border-bottom: 1px solid #f1f1f1;
+            text {
+                font-size: 32rpx;
+                color: #333;
+            }
+            .seled-check {
+                width: 40rpx;
+                height: 40rpx;
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+            .icon-sel {
+                width: 40rpx;
+                height: 40rpx;
+            }
+            .icon-gou {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
+                width: 40rpx;
+                height: 40rpx;
+            }
+        }
+        .confirm-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 100rpx;
+            text {
+                text-align: center;
+                flex-grow: 1;
+            }
+            .btn-cancel {
+                color: #a0a0a0;
+                border-right: 1px solid #f1f1f1;
+            }
+            .btn-confirm {
+                color: #ff9e00;
+            }
+        }
+    }
+}
+    
+</style>
+
+<template>
+    <view class="sel-resume-container">
+        <view wx:if="{{isShowSelContainer}}" class="bomb-screen">
+            <view class="sel-box">
+                <view class="lists">
+                    <view class="list-item" @tap.stop="chooseResume(0, 'my')">
+                        <text>我的简历</text>
+                        <view class="seled-check">
+                            <image src="/images/icons/no-sel.png" class="icon-sel"></image>
+                            <image wx:if="{{selIndex==0}}" src="/images/icons/sel.png" class="icon-gou"></image>
+                        </view>
+                    </view>
+                    <view class="list-item" @tap.stop="chooseResume(1, 'my51job')">
+                        <text>来自51job的简历</text>
+                        <view class="seled-check">
+                            <image src="/images/icons/no-sel.png" class="icon-sel"></image>
+                            <image wx:if="{{selIndex==1}}" src="/images/icons/sel.png" class="icon-gou"></image>
+                        </view>
+                    </view>
+                    <view class="list-item" @tap.stop="chooseResume(3, 'my')">
+                        <text>理财师工作用的简历</text>
+                        <view class="seled-check">
+                            <image src="/images/icons/no-sel.png" class="icon-sel"></image>
+                            <image wx:if="{{selIndex==2}}" src="/images/icons/sel.png" class="icon-gou"></image>
+                        </view>
+                    </view>
+                </view>
+                <view class="confirm-box">
+                    <view class="btn-cancel" @tap.stop="cancelFn">取消</view>
+                    <view class="btn-confirm" @tap.stop="confirmFn">确认</view>
+                </view>
+            </view>
+        </view>
+    </view>
+        
+    
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from '../api/api';
+    import {
+      LOGIN_INFO
+    } from '../utils/constants';
+
+    export default class SelResumeOrg extends wepy.component {
+        props = {
+            
+        }
+
+        data = {
+            isShowSelContainer: true,
+            selIndex: 0
+        }
+
+        onLoad(){
+            this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+            this.viewCompanyjob();
+        }
+
+        methods = {
+            cancelFn(){//取消
+                this.isShowSelContainer = false;
+            },
+            confirmFn(event){//确认
+
+            }
+        }
+
+        //获取简历列表
+        async getResumeList() {
+            const that = this;
+            wx.showLoading({
+                title: '加载中',
+            })
+            const json = await api.getCollectJob({
+            query: {
+                    head: {
+                        "transcode": "P0001",
+                        "type": "h"
+                    },
+                    data: {
+                        "token": that.loginInfo.token,
+                        "tokenKey": that.loginInfo.tokenKey
+                    }
+                }
+            })
+            if(json.data.returnCode == "AAAAAAA") {
+                if (json.data.data.length > 0) {
+                    that.no_resume = false;
+                    that.resumeList = json.data.data;
+                    that.$apply();
+                }else{
+                    that.no_resume = true;
+                    that.$apply();
+                }
+              }else{
+                  that.no_resume = true;
+                  that.$apply();
+              }
+              wx.hideLoading()
+        }
+    }
+</script>
+
+

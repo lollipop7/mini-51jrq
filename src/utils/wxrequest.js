@@ -4,7 +4,6 @@ import tip from './tip'
 const wxRequest = (params = {}, url) => {
     return new Promise(function (resolve, reject) {
         let data = params.query || {};
-        console.log(params)
         wepy.request({
             url: url,
             method: params.method || 'POST',
