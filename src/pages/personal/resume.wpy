@@ -119,8 +119,8 @@
 <template>
   <view class="resume-container">
       <view class="head">
-        <image src="{{headimg}}" wx:if="{{headimg != (''||undefined)}}"></image>
-        <image src="/images/icons/upload_head.png" wx:else="{{headimg != (''||undefined)}}"></image>
+        <image src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
+        <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
         <view>{{baseInfo.username}}</view>
       </view>
       <!-- 基本信息 -->
@@ -306,7 +306,9 @@ export default class resumePage extends wepy.page {
     headimg: '',
     resumeid: '',
     operateShow: false,
-    sexStatus: false
+    sexStatus: false,
+    tempPortraitFilePath: '',
+    headimgStatus:false,
   }
 
   onLoad(options) { 
@@ -325,6 +327,7 @@ export default class resumePage extends wepy.page {
             that.token = res.data.token;
             that.tokenKey = res.data.tokenKey;
             that.headimg = res.data.data.headimg;
+            that.getPimg();
             that.$apply();
             // 获取简历信息
             const arr = ["M0003","M0004","M0005","M0006","M0008","M0010"]
@@ -399,6 +402,9 @@ export default class resumePage extends wepy.page {
                 break;
               }
             });
+        },
+        fail:function(json){
+          tip.error(json.data.returnMsg);
         } 
     })
   }
@@ -444,23 +450,7 @@ export default class resumePage extends wepy.page {
             wx.navigateTo({
                 url: `certificate?certid=${certid}&resumeid=${resumeid}`
             })
-        },
-
-        // 修改头像
-        changeHeadPic () {  
-          var that = this;  
-          wx.chooseImage({  
-            count: 9, // 默认9  
-            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有  
-            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有  
-            success: function (res) {  
-              var imgsrc = res.tempFilePaths[0];
-              that.changPic(that.token,that.tokenKey,imgsrc).then(data => {
-                console.log(22121211,data)
-              })
-            }  
-          })  
-        }  
+        } 
 
     };
   
@@ -500,6 +490,32 @@ export default class resumePage extends wepy.page {
     })
     return json;
   }
-
+  //获取个人信息
+  async getPimg() {
+      const that = this;
+      const json = await api.getPimg({
+          query: {
+                  head: {
+                      "transcode": "P0040",
+                      "type": "h"
+                  },
+                  data: {
+                      "tokenKey": that.tokenKey,
+                      "token": that.token,
+                  }
+              }
+      })
+      if(json.data.returnCode == 'AAAAAAA') {
+          if(json.data.data.headimg){
+              that.headimgStatus = true;
+          }else{
+              that.headimgStatus = false;
+          }
+          that.tempPortraitFilePath = json.data.data.headimg;
+          that.$apply();
+      }else{
+          tip.error(json.data.returnMsg);
+      }
+  }
 }
 </script>

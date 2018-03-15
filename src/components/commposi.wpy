@@ -127,7 +127,6 @@
 
         methods = {
             goToHomeView(corpid, jobid) {
-                // console.log("jobid===" + jobid + "corpid===" + corpid);
                 if (jobid.length && corpid.length == 0) {
                     return;
                 }

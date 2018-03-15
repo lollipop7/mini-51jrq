@@ -228,7 +228,6 @@ export default class ShareMiniPro extends wepy.component {
 
     loadResources() { //将在线路径转为本地临时路径
         let {mlogo} = this.corpInfo;
-        console.log(mlogo)
         if(mlogo == "") {
             mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
         }else {
@@ -254,6 +253,7 @@ export default class ShareMiniPro extends wepy.component {
         }
         let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/index/index`,width: 180, scene:`${sceneArgs}`}});
         let wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
+        console.log('获取小程序码', wxacodeurl);
         const getWxaCode = (src) => {
             return new Promise(function(resolve, reject) {
                 wx.getImageInfo({

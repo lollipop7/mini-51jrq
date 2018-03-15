@@ -95,7 +95,6 @@ export default class CollectionPage extends wepy.page {
         if (json.data.returnCode == "AAAAAAA") {
             that.collectStatus = true;
             that.collectData = JSON.parse(json.data.data);
-            console.log(11111,that.collectData)
             if(that.collectData.length==0){
                 that.collectStatus = false;
                 that.warningWord = "还没有收藏过职位哦";

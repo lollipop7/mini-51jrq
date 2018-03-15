@@ -201,7 +201,6 @@ export default class RegistPage extends wepy.page {
 
     //新用户获取验证码及注册
     async getCode(data,code) {
-        console.log(data)
         const json = await api.getVerifyCode({
         query: {
                 "head": {

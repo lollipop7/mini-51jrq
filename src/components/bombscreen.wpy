@@ -30,7 +30,6 @@
         methods = {
             close() {
                 this.isShow = false;
-                console.log('关闭遮罩')
             }
         }
 

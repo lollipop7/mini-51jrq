@@ -233,7 +233,6 @@ export default class CorpPage extends wepy.page {
               that.getResumeList().then(data=>{
                   if(data.data.returnCode == "AAAAAAA") {
                       var resumeArr = data.data.data;
-                      console.log(resumeArr)
                       if(resumeArr.length>0){
                         that.no_resume = false;
                         resumeArr.forEach(element => {
@@ -309,7 +308,7 @@ export default class CorpPage extends wepy.page {
               wx.hideLoading()
           })
         }).catch(err => {
-          console.log(err)
+          tip.error(json.data.returnMsg);
         })
       },
       goLook (resumeid) {// 预览简历

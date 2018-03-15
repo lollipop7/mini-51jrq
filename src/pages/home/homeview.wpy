@@ -318,7 +318,6 @@
         let title = `${corpname}正在招聘 ${jobname}`;
         if (res.from === 'button') {
           // 来自页面内转发按钮
-          console.log(res.target)
         }
         return {
           title: title.length > 30 ? title.slice(0, 29)+'...' : title,

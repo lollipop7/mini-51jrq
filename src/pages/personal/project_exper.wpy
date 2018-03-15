@@ -158,7 +158,6 @@
                     if (json.data.returnCode == "AAAAAAA") {
                         var jobExper = JSON.parse(json.data.data);
                         let resultArr = jobExper.find(item => item.projectid == options.projectid)
-                        console.log('resultArr',resultArr)
                         that.projectname = resultArr.projectname;
                         that.companyname = resultArr.companyname;
                         that.starttime = resultArr.starttime;
@@ -166,7 +165,7 @@
                         that.projectremark = resultArr.projectremark;
                         that.$apply();
                     } else {
-                        tip.error(json.returnMsg);
+                        tip.error(json.data.returnMsg);
                     }
                 })
             } 

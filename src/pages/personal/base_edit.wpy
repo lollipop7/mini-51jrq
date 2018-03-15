@@ -151,7 +151,6 @@ export default class BaseEdit extends wepy.page {
 
    onLoad(){
        this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
-       console.log(this.loginInfo)
        this.getPimg();
        // 获取数据字典
        const that = this;
@@ -217,7 +216,6 @@ export default class BaseEdit extends wepy.page {
            this.indexLiveCity = event.detail.value;
        },
        bindWorkYearsChange(event) {
-           console.log(event)
            this.workyearsStatus = false;
            this.indexWorkYearsStatus = event.detail.value;
        },

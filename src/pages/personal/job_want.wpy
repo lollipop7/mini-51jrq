@@ -314,7 +314,7 @@
                         url: `resume?resumeid=${that.resumeid}`
                     })
                 }else{
-                    console.log('err',data)
+                    tip.error(data.data.returnMsg);
                 }
                 wx.hideLoading()
             })
