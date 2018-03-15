@@ -3,7 +3,7 @@ import {
 } from '../utils/wxrequest'; 
 
 // const apimall = 'http://192.168.1.251:8089/mobile';
-// const apimall = 'http://192.168.1.226:8080/mobile';[]
+// const apimall = 'http://192.168.1.226:8080/mobile';
 const apimall = 'https://m.51jrq.com/mobile2'; 
 const apiGps = 'https://apis.map.qq.com/ws/geocoder/v1';
 
@@ -71,6 +71,7 @@ module.exports = {
     getDictData,
     loginIn,
     getVerifyCode,
-    importResume
+    importResume,
+    changeHeadImg
 }
   
