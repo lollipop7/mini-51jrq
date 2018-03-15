@@ -142,6 +142,9 @@ export default class RegistPage extends wepy.page {
     methods = {
         // 提交表单
         formSubmit (e) {
+            wx.showLoading({
+                title: '注册中',
+            })
             const that = this;
             let data = {
                 "phone": e.detail.value.phone,
@@ -158,6 +161,7 @@ export default class RegistPage extends wepy.page {
                     that.warnword = data.data.returnMsg;
                     that.$apply();
                 }
+                wx.hideLoading()
             })
         },
         // 设置密码

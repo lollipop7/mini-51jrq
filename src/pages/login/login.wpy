@@ -170,6 +170,9 @@ export default class LoginPage extends wepy.page {
 
         // 提交表单
         formSubmit (e) {
+            wx.showLoading({
+                title: '登录中',
+            })
             const that = this;
             let data = {
                 "username": e.detail.value.username,
@@ -177,7 +180,6 @@ export default class LoginPage extends wepy.page {
             }
             this.login(data).then(data=>{
                 if(data.data.returnCode == "AAAAAAA") {
-
                     // 存储信息到本地
                     let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
                     loginInfo.tokenKey = data.data.tokenKey;
@@ -189,8 +191,6 @@ export default class LoginPage extends wepy.page {
                         key:'loginData', 
                         data:data.data
                     });
-
-
                     // 跳转到home页
                     wx.switchTab({
                         url: '../personal/personal'
@@ -200,6 +200,7 @@ export default class LoginPage extends wepy.page {
                     that.warnword = data.data.returnMsg;
                     that.$apply();
                 }
+                wx.hideLoading()
             })
         },
 

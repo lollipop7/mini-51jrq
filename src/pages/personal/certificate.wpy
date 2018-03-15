@@ -17,12 +17,13 @@
                 border-bottom: #f1f1f1 solid 2rpx;
                 .title {
                     color: #353535;
+                    width: 35%;
                 }
                 .input {
+                    width: 65%;
                     input {
                         text-align: right;
                         color: #888888;
-                        width: 100%;
                     }
                     .phcolor {
                         color: #888888;
