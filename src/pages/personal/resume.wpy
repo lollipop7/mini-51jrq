@@ -346,6 +346,8 @@ export default class resumePage extends wepy.page {
                     }
                     that.$apply();
                   } else {
+                    that.sexStatus = true;
+                    that.$apply();
                     tip.error(json.returnMsg);
                   }
                 })

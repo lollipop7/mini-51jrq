@@ -159,9 +159,13 @@ export default class LoginPage extends wepy.page {
         // 获取用户信息
         wx.getUserInfo({
             success: function(res) {
+                console.log(res)
                 that.nickname = res.userInfo.nickName;
                 that.headimg = res.userInfo.avatarUrl;
                 that.$apply();
+            },
+            fail: function(res){
+                console.log(res)
             }
         })
     }

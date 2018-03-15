@@ -286,24 +286,25 @@ export default class CorpPage extends wepy.page {
         })
         this.deleteMyResume(resumeid).then(data => {
           this.showbox = false;
+          const that = this;
           // 获取简历列表
           this.getResumeList().then(data=>{
               if(data.data.returnCode == "AAAAAAA") {
                   var resumeArr = data.data.data;
                   if(resumeArr.length>0){
-                    this.no_resume = false;
+                    that.no_resume = false;
                     resumeArr.forEach(element => {
                       element.updatedate = utils.date('Y-m-d',element.updatedate)
                     });
-                    this.resumelist = resumeArr
-                    this.$apply();
+                    that.resumelist = resumeArr
+                    that.$apply();
                   }else{
-                    this.no_resume = true;
-                    this.$apply();
+                    that.no_resume = true;
+                    that.$apply();
                   }
               }else{
-                  this.no_resume = true;
-                  this.$apply();
+                  that.no_resume = true;
+                  that.$apply();
               }
               wx.hideLoading()
           })

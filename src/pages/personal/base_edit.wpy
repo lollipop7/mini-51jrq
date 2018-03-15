@@ -68,8 +68,8 @@
   <view class="base-edit-container">
       <form bindsubmit="baseEditSubmit">
             <view class="portrait-box" @tap.stop="changePortrait">
-                <image wx:if="{{showPortraitStatus}}" class="icon-upload" src="{{tempPortraitFilePath}}"></image>
-                <image wx:else="{{showPortraitStatus}}" class="icon-upload" src="/images/icons/upload_head.png"></image>
+                <image mode="aspectFill" wx:if="{{showPortraitStatus}}" class="icon-upload" src="{{tempPortraitFilePath}}"></image>
+                <image mode="aspectFill" wx:else="{{showPortraitStatus}}" class="icon-upload" src="/images/icons/upload_head.png"></image>
                 <text>点击更换头像</text>
             </view>
             <view class="list-container">
@@ -288,9 +288,9 @@ export default class BaseEdit extends wepy.page {
                 data:{
                     tokenKey: that.loginInfo.tokenKey,
                     token: that.loginInfo.token,
-                    sex: that.sex[that.indexSex],
-                    city: that.city[that.indexLiveCity],
-                    workinglife: that.workyears[that.indexWorkYearsStatus],
+                    sex: that.sex[that.indexSex] || that.u_sex,
+                    city: that.city[that.indexLiveCity] || that.u_city,
+                    workinglife: that.workyears[that.indexWorkYearsStatus] || that.u_workinglife,
                     username: that.username,
                     email: that.email,
                     imgsrc: that.base64Img,
