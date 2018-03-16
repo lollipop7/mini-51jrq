@@ -65,7 +65,7 @@
         // 跳转公司详情
         goCorpView (companyid) {
           wx.navigateTo({
-            url: `/pages/corporation/corpview?companyid=${companyid}`
+            url: `pages/corporation/corpview?companyid=${companyid}`
           })
         }
       };
