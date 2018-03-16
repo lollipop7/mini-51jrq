@@ -249,6 +249,7 @@
        :isShowSelContainer.sync="isShowSelContainer"
        :jobId.sync="jobId"
        :isDelivery.sync="isDelivery"
+       :haveResume.sync="haveResume"
       ></selresumeorg>      
   </view>
 </template>
@@ -291,7 +292,8 @@
         currentUrl: "",
         showShareBtn: false,
         dataOrg: "homeview",
-        isShowSelContainer: false
+        isShowSelContainer: false,
+        haveResume: true
       }
 
       onLoad(options){
@@ -309,6 +311,10 @@
 
       onReady(){
         this.showShareBtn = true;
+      }
+      
+      onHide(){
+        this.isShowSelContainer = false;
       }
 
       onShareAppMessage (res) {
@@ -342,7 +348,14 @@
         onDeliverFn(){
           // 未登录跳转登录页
           utils.goLogin()
-          this.isShowSelContainer = true;
+          if(this.haveResume){
+            this.isShowSelContainer = true;
+          }else{
+            wx.redirectTo({
+                url: `../personal/resume_list`
+            })
+          }
+          
           this.$apply();
         },
         // 跳转公司详情页

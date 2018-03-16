@@ -55,6 +55,9 @@ const  changeHeadImg = (params) => wxRequest(params, apimall + '/api/pimg');
 // 导入简历
 const  importResume = (params) => wxRequest(params, apimall + '/api/importResume');
 
+// 找回密码
+const  resetPassword = (params) => wxRequest(params, apimall + '/api/password_old');
+
 module.exports = {
     apimall,
     getMobileHomeBanner,
@@ -72,6 +75,7 @@ module.exports = {
     loginIn,
     getVerifyCode,
     importResume,
-    changeHeadImg
+    changeHeadImg,
+    resetPassword
 }
   

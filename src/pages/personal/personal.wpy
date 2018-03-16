@@ -171,7 +171,7 @@
                 <image src="/images/icons/arrow_right.png" class="arrow_right"></image>
             </view>
             <view class="name-intro" wx:else="{{loginStatus}}">
-                <view class="intro2"><text bindtap="goLoginPage">登录</text>  / <text bindtap="goRegistPage">注册</text> </view>
+                <view class="intro2" bindtap="goLoginPage"><text>登录</text>  / <text>注册</text> </view>
             </view>
       </view>
       <view class="my-function">
@@ -333,11 +333,6 @@ export default class PersPage extends wepy.page {
         goLoginPage () {// 跳转登录页
             wx.navigateTo({
                 url: `/pages/login/login`
-            })
-        },
-        goRegistPage () {// 跳转注册页
-            wx.navigateTo({
-                url: `/pages/login/regist`
             })
         },
         goBaseEdit() { //跳转个人信息编辑
