@@ -31,7 +31,7 @@ export default class IndexPage extends wepy.page {
           paramObj[params_arr[i].split('=')[0]] = params_arr[i].split('=')[1];
         }
         let param = `companyid=${paramObj["cpid"]}`;
-        wx.redirectTo({ url: `../corptions/corpview?${param}`});  
+        wx.redirectTo({ url: `../corporation/corpview?${param}`});  
       }
     }else{
       console.log('进入首页')
