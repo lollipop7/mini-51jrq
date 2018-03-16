@@ -249,6 +249,7 @@
        :isShowSelContainer.sync="isShowSelContainer"
        :jobId.sync="jobId"
        :isDelivery.sync="isDelivery"
+       :haveResume.sync="haveResume"
       ></selresumeorg>      
   </view>
 </template>
@@ -291,7 +292,8 @@
         currentUrl: "",
         showShareBtn: false,
         dataOrg: "homeview",
-        isShowSelContainer: false
+        isShowSelContainer: false,
+        haveResume: true
       }
 
       onLoad(options){
@@ -310,6 +312,10 @@
       onReady(){
         this.showShareBtn = true;
       }
+      
+      onHide(){
+        this.isShowSelContainer = false;
+      }
 
       onShareAppMessage (res) {
         const that = this;
@@ -318,7 +324,6 @@
         let title = `${corpname}正在招聘 ${jobname}`;
         if (res.from === 'button') {
           // 来自页面内转发按钮
-          console.log(res.target)
         }
         return {
           title: title.length > 30 ? title.slice(0, 29)+'...' : title,
@@ -343,7 +348,14 @@
         onDeliverFn(){
           // 未登录跳转登录页
           utils.goLogin()
-          this.isShowSelContainer = true;
+          if(this.haveResume){
+            this.isShowSelContainer = true;
+          }else{
+            wx.redirectTo({
+                url: `../personal/resume_list`
+            })
+          }
+          
           this.$apply();
         },
         // 跳转公司详情页
@@ -371,6 +383,9 @@
       }
 
       async viewCompanyjob(){//查看企业职位详细
+        wx.showLoading({
+            title: '加载中',
+        })
         const that = this;
         const json = await api.getCompanyjob({
           query: {
@@ -396,6 +411,7 @@
         } else {
           tip.error(json.data.returnMsg);
         }
+        wx.hideLoading()
       }
 
 

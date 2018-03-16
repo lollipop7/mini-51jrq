@@ -110,7 +110,7 @@
     </view>
     <view class="big">
         <view class="section">
-            <textarea name="workremark" value="{{workremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
+            <textarea maxlength="-1" name="workremark" value="{{workremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
         </view>
     </view>
     <view class="btn-box">
@@ -158,7 +158,6 @@
                     if (json.data.returnCode == "AAAAAAA") {
                         var jobExper = JSON.parse(json.data.data);
                         let resultArr = jobExper.find(item => item.workid == options.workid)
-                        console.log('resultArr',resultArr)
                         that.corpname = resultArr.corpname;
                         that.postcode = resultArr.postcode;
                         that.starttime = resultArr.starttime;

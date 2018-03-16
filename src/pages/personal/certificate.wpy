@@ -131,7 +131,6 @@
                     if (json.data.returnCode == "AAAAAAA") {
                         var jobExper = JSON.parse(json.data.data);
                         let resultArr = jobExper.find(item => item.certid == options.certid)
-                        console.log('resultArr',resultArr)
                         that.certname = resultArr.certname;
                         that.gaintime = resultArr.gaintime;
                         that.$apply();

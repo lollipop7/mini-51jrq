@@ -14,7 +14,8 @@ import api from './api/api';
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/home/home',    
+      'pages/home/home',  
+      'pages/login/forgot',    
       'pages/personal/base_edit',
       'pages/index/index',    
       'pages/personal/import_resume',

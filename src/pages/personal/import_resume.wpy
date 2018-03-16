@@ -154,8 +154,8 @@ export default class LoginPage extends wepy.page {
             that.tokenKey = res.data.tokenKey;
             
           },
-          fail: function(res) {
-              console.log(1111,res)
+          fail: function(json) {
+              tip.error(json.data.returnMsg);
           }
       })
     }
@@ -164,12 +164,10 @@ export default class LoginPage extends wepy.page {
         
         // 提交表单
         formSubmit (e) {
-            console.log(1111,e.detail.value)
             if(!e.detail.value.username || !e.detail.value.password){
                 this.warnword = "请先填写账号和密码！";
                 return;
             }
-            console.log(this.type,e.detail.value.username,e.detail.value.password)
             this.importResume(this.type,e.detail.value.username,e.detail.value.password).then(data=>{
                 if(data.data.returnCode == "AAAAAAA") {
                     this.warnword = '';

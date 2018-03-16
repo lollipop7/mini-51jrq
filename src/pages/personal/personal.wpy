@@ -161,8 +161,8 @@
 <template>
   <view class="personal-container">
       <view class="personal-info">
-            <image src="{{headimg}}" wx:if="{{headimgStatus}}"></image>
-            <image src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
+            <image mode="aspectFill" src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
+            <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
             <view class="name-intro" wx:if="{{loginStatus}}" @tap.stop="goBaseEdit">
                 <view class="name-intro-bd">
                     <view class="name">{{username}}</view>
@@ -171,7 +171,7 @@
                 <image src="/images/icons/arrow_right.png" class="arrow_right"></image>
             </view>
             <view class="name-intro" wx:else="{{loginStatus}}">
-                <view class="intro2"><text bindtap="goLoginPage">登录</text>  / <text bindtap="goRegistPage">注册</text> </view>
+                <view class="intro2" bindtap="goLoginPage"><text>登录</text>  / <text>注册</text> </view>
             </view>
       </view>
       <view class="my-function">
@@ -223,6 +223,7 @@
 <script>
 import wepy from 'wepy';
 import api from '../../api/api';
+import tip from '../../utils/tip';
 import {
     LOGIN_INFO
 } from '../../utils/constants';
@@ -242,7 +243,8 @@ export default class PersPage extends wepy.page {
         have: true,
         resumeid: '',
         showbox: false,
-        loginStatus: false
+        loginStatus: false,
+        tempPortraitFilePath: ''
     }
     onLoad() {
        
@@ -268,26 +270,21 @@ export default class PersPage extends wepy.page {
                 that.loginStatus = true;
                 that.token = res.data.token;
                 that.tokenKey = res.data.tokenKey;
-                that.username = res.data.data.username;
-                that.headimg = res.data.data.headimg;
-                that.jobname = res.data.data.jobname;
+                that.getPimg();
                 if(!res.data.data.companyname || !res.data.data.jobname){
                     that.have = false;
-                }
-                if(res.data.data.headimg){
-                    that.headimgStatus = true;
                 }
                 that.$apply();
             },
             fail: function(res) {
                 // 清空本地信息
                 wx.clearStorage()
-                that.headimgStatus=false;
                 that.have = false;
                 that.loginStatus = false;
                 that.$apply();
             }
         })
+      
     }
     methods = {
         goResumeList () {// 跳转我的简历
@@ -338,11 +335,6 @@ export default class PersPage extends wepy.page {
                 url: `/pages/login/login`
             })
         },
-        goRegistPage () {// 跳转注册页
-            wx.navigateTo({
-                url: `/pages/login/regist`
-            })
-        },
         goBaseEdit() { //跳转个人信息编辑
             // 未登录跳转登录页
             utils.goLogin()
@@ -372,6 +364,38 @@ export default class PersPage extends wepy.page {
             }
         })
         return json;
+    }
+
+    //获取个人信息
+    async getPimg() {
+        const that = this;
+        const json = await api.getPimg({
+            query: {
+                    head: {
+                        "transcode": "P0040",
+                        "type": "h"
+                    },
+                    data: {
+                        "tokenKey": that.tokenKey,
+                        "token": that.token,
+                    }
+                }
+        })
+        if(json.data.returnCode == 'AAAAAAA') {
+            if(json.data.data.headimg){
+               that.showPortraitStatus = true; 
+               that.headimgStatus = true;
+            }else{
+                that.showPortraitStatus = false;
+                that.headimgStatus = false;
+            }
+            that.tempPortraitFilePath = json.data.data.headimg;
+            that.username = json.data.data.username;
+            that.jobname = json.data.data.jobname;
+            that.$apply();
+        }else{
+            tip.error(json.data.returnMsg);
+        }
     }
 }
 </script>

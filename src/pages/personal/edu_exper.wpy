@@ -164,7 +164,6 @@
                     if (json.data.returnCode == "AAAAAAA") {
                         var jobExper = JSON.parse(json.data.data);
                         let resultArr = jobExper.find(item => item.educationid == options.educationid)
-                        console.log('resultArr',resultArr)
                         that.school = resultArr.school;
                         that.specialtyid = resultArr.specialtyid;
                         that.starttime = resultArr.starttime;
@@ -276,7 +275,6 @@
     async changeBaseInfo(obj,obj2) {
         let data = obj2
         let resultObj = Object.assign(data, obj);
-        console.log(1515151,resultObj)
         const json = await api.getResumeInfo({
         query: {
                 head: {

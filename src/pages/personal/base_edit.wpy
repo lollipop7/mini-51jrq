@@ -68,9 +68,9 @@
   <view class="base-edit-container">
       <form bindsubmit="baseEditSubmit">
             <view class="portrait-box" @tap.stop="changePortrait">
-                <image wx:if="{{showPortraitStatus}}" class="icon-upload" src="{{tempPortraitFilePath}}"></image>
-                <image wx:else="{{showPortraitStatus}}" class="icon-upload" src="/images/icons/upload_head.png"></image>
-                <text>点击更换头像</text>
+                <image mode="aspectFill" wx:if="{{showPortraitStatus}}" class="icon-upload" src="{{tempPortraitFilePath}}"></image>
+                <image mode="aspectFill" wx:else="{{showPortraitStatus}}" class="icon-upload" src="/images/icons/upload_head.png"></image>
+                <text>点击更换头像（图片大小不宜超过1M）</text>
             </view>
             <view class="list-container">
                 <view class="list-item">
@@ -151,7 +151,6 @@ export default class BaseEdit extends wepy.page {
 
    onLoad(){
        this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
-       console.log(this.loginInfo)
        this.getPimg();
        // 获取数据字典
        const that = this;
@@ -206,7 +205,6 @@ export default class BaseEdit extends wepy.page {
    methods = {
        changePortrait(){
            const that = this;
-           that.showPortraitStatus = true;
            that.choosePortrait();
        },
        bindSexChange (event) {
@@ -218,7 +216,6 @@ export default class BaseEdit extends wepy.page {
            this.indexLiveCity = event.detail.value;
        },
        bindWorkYearsChange(event) {
-           console.log(event)
            this.workyearsStatus = false;
            this.indexWorkYearsStatus = event.detail.value;
        },
@@ -231,9 +228,14 @@ export default class BaseEdit extends wepy.page {
                     wx.switchTab({  
                         url: '../personal/personal',
                     })
+                }else if(json.statusCode == 413){
+                    tip.error("图片文件过大");
                 }else{
                     tip.error(json.data.returnMsg);
                 }
+                wx.hideLoading()
+           }).catch(err=>{
+               tip.error(err.data.returnMsg);
            })
        }
    }
@@ -242,9 +244,14 @@ export default class BaseEdit extends wepy.page {
         const that = this;
         wx.chooseImage({
             count: 1,
-            sizeType: ['original'],     // 可以指定是原图还是压缩图，默认二者都有
+            sizeType: ['compressed'],     // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'],        // 可以指定来源是相册还是相机，默认二者都有
             success(res) {
+                if(res.tempFiles[0].size>1000000){
+                    tip.error("图片大小超出限制");
+                    return;
+                }
+                that.showPortraitStatus = true;
                 that.tempPortraitFilePath = res.tempFilePaths[0];  
                 that.$apply()     // 返回选定照片的本地文件路径列表
                 that.uploadImgFile(that, res.tempFilePaths[0])
@@ -270,12 +277,18 @@ export default class BaseEdit extends wepy.page {
                 } else {
                     console.log(res.data)
                 }
+            },
+            fail: function(res){
+                console.log(res)
             }
         })
     }
 
    //修改个人信息
     async editPersonalInfo() {
+        wx.showLoading({
+            title: '加载中',
+        })
         const that = this;
         const json = await api.changeHeadImg({
             query: {
@@ -286,9 +299,9 @@ export default class BaseEdit extends wepy.page {
                 data:{
                     tokenKey: that.loginInfo.tokenKey,
                     token: that.loginInfo.token,
-                    sex: that.sex[that.indexSex],
-                    city: that.city[that.indexLiveCity],
-                    workinglife: that.workyears[that.indexWorkYearsStatus],
+                    sex: that.sex[that.indexSex] || that.u_sex,
+                    city: that.city[that.indexLiveCity] || that.u_city,
+                    workinglife: that.workyears[that.indexWorkYearsStatus] || that.u_workinglife,
                     username: that.username,
                     email: that.email,
                     imgsrc: that.base64Img,
@@ -315,6 +328,11 @@ export default class BaseEdit extends wepy.page {
                 }
         })
         if(json.data.returnCode == 'AAAAAAA') {
+            if(json.data.data.headimg){
+               that.showPortraitStatus = true; 
+            }else{
+                that.showPortraitStatus = false;
+            }
             that.tempPortraitFilePath = json.data.data.headimg;
             that.username = json.data.data.username;
             that.u_sex = json.data.data.sex;

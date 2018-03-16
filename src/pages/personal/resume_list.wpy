@@ -174,16 +174,9 @@
             </view>
             <view class="line"></view>
             <view class="down">
-              <view class="delete" bindtap="deleteResume">删除简历</view>
+              <view class="delete" bindtap="deleteResume({{item.resumeid}})">删除简历</view>
               <view class="edit" bindtap="editResume({{item.resumeid}})">编辑简历</view>
             </view>
-          </view>
-        </view>
-        <view class="alert-box" wx:if = "{{showbox}}">
-          <view class="sure">删除后不可恢复，是否确认删除？</view>
-          <view class="yesno">
-              <view class="no" bindtap="cancel">取消</view>
-              <view class="yes" bindtap="yes({{item.resumeid}})">确定</view>
           </view>
         </view>
       </repeat>
@@ -191,6 +184,13 @@
     <view class="bottom-operate">
       <view class="add-resume" bindtap="addResume">添加简历</view>
       <view class="import-resume" bindtap="importResume">导入简历</view>
+    </view>
+    <view class="alert-box" wx:if = "{{showbox}}">
+      <view class="sure">删除后不可恢复，是否确认删除？</view>
+      <view class="yesno">
+          <view class="no" bindtap="cancel">取消</view>
+          <view class="yes" bindtap="yes">确定</view>
+      </view>
     </view>
   </view>
 </template>
@@ -207,7 +207,8 @@ export default class CorpPage extends wepy.page {
     resumelist: [],
     showbox: false,
     no_resume: false,
-    warnword: '暂无简历'
+    warnword: '暂无简历',
+    resumeid:''
   }
 
   onShow (options) { 
@@ -233,13 +234,13 @@ export default class CorpPage extends wepy.page {
               that.getResumeList().then(data=>{
                   if(data.data.returnCode == "AAAAAAA") {
                       var resumeArr = data.data.data;
-                      console.log(resumeArr)
                       if(resumeArr.length>0){
                         that.no_resume = false;
                         resumeArr.forEach(element => {
                           element.updatedate = utils.date('Y-m-d',(element.createdate)/1000)
                         });
                         that.resumelist = resumeArr;
+                        console.log(resumeArr)
                         that.$apply();
                       }else{
                         that.warnword = '暂无简历';
@@ -263,9 +264,10 @@ export default class CorpPage extends wepy.page {
   }
 
   methods = {
-      deleteResume () {// 删除我的简历
+      deleteResume (resumeid) {// 删除我的简历
         this.showbox = true;
-        
+        this.resumeid = resumeid;
+        this.$apply();
       },
       editResume (resumeid) {// 编辑我的简历
           wx.navigateTo({
@@ -281,35 +283,36 @@ export default class CorpPage extends wepy.page {
           this.showbox = false;
           this.$apply();
       },
-      yes(resumeid) {// 确认删除
+      yes() {// 确认删除
         wx.showLoading({
             title: '加载中',
         })
-        this.deleteMyResume(resumeid).then(data => {
+        this.deleteMyResume(this.resumeid).then(data => {
           this.showbox = false;
+          const that = this;
           // 获取简历列表
           this.getResumeList().then(data=>{
               if(data.data.returnCode == "AAAAAAA") {
                   var resumeArr = data.data.data;
                   if(resumeArr.length>0){
-                    this.no_resume = false;
+                    that.no_resume = false;
                     resumeArr.forEach(element => {
                       element.updatedate = utils.date('Y-m-d',element.updatedate)
                     });
-                    this.resumelist = resumeArr
-                    this.$apply();
+                    that.resumelist = resumeArr
+                    that.$apply();
                   }else{
-                    this.no_resume = true;
-                    this.$apply();
+                    that.no_resume = true;
+                    that.$apply();
                   }
               }else{
-                  this.no_resume = true;
-                  this.$apply();
+                  that.no_resume = true;
+                  that.$apply();
               }
               wx.hideLoading()
           })
         }).catch(err => {
-          console.log(err)
+          tip.error(json.data.returnMsg);
         })
       },
       goLook (resumeid) {// 预览简历

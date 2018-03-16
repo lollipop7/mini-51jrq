@@ -387,7 +387,6 @@
         },
         bindPickerChange6: function(e) {
             this.sexstatus = false;
-            console.log(e.detail.value)
             this.index6 = e.detail.value;
             this.$apply();
         }
@@ -437,7 +436,6 @@
             }
         }
         let resultObj = Object.assign(data, this.baseInfo, obj);
-        console.log('result',resultObj)
         const json = await api.getResumeInfo({
         query: {
                 head: {
