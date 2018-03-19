@@ -182,7 +182,7 @@ export default class RegistPage extends wepy.page {
                     that.warnword = data.data.returnMsg;
                 }else{
                     console.log(data)
-                    that.counttime(that.codeObj)
+                    that.counttime()
                 }
                 that.$apply();
             })
@@ -216,7 +216,7 @@ export default class RegistPage extends wepy.page {
         })
         return json;
     }
-    counttime(codeObj){
+    counttime(){
         const that = this
         var countdown = 60; 
         (function settime() { 
@@ -233,7 +233,7 @@ export default class RegistPage extends wepy.page {
                 that.$apply();
             } 
             setTimeout(function() { 
-                settime(codeObj) 
+                settime() 
             },1000) 
         })()
     }
