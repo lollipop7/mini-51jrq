@@ -327,7 +327,7 @@
         }
         return {
           title: title.length > 30 ? title.slice(0, 29)+'...' : title,
-          path: that.currentUrl,
+          path: `/${that.currentUrl}?corpid=${that.corpId}&jobid=${that.jobId}`,
           success: function(res) {
             // 转发成功
             res.shareTickets // 单聊是没有的，注意必须要在分享前调用wx.showShareMenu方法，否则是不会带分享票据

@@ -85,14 +85,17 @@
             </view>
             <view class="list_item">
                 <view class="title">户口所在地</view>
-                <picker name="address" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
+                <!-- <picker name="address" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
                     <view class="picker" wx:if="{{workcitystatus}}">
                         {{workcity?workcity:'请选择'}}
                     </view>
                     <view class="picker" wx:else="{{workcitystatus}}">
                         {{city[index4]}}
                     </view>
-                </picker>
+                </picker> -->
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="address" value="{{address}}" placeholder="请填写" >
+                </view>
             </view>
             <view class="list_item">
                 <view class="title">工作年限</view>
@@ -189,6 +192,7 @@
         city: [],
         sex: [],
         baseInfo:{},
+        address: '',
         // ============
         workcity:'',
         workcitystatus:true,
@@ -223,7 +227,7 @@
                         var baseInfo = JSON.parse(json.data.data);
                         that.baseInfo = {
                             "username": baseInfo.username,
-                            "resumename": baseInfo.resumename,
+                            "resumename": baseInfo.newresumename,
                             "borndate": baseInfo.borndate,
                             "address": baseInfo.address,
                             "workyears": baseInfo.workyears,
@@ -235,9 +239,9 @@
                             "sex": baseInfo.sex
                         }
                         that.username = baseInfo.username;
-                        that.resumename = baseInfo.resumename;
+                        that.resumename = baseInfo.newresumename;
                         that.borndate = baseInfo.borndate;
-                        that.workcity = baseInfo.address;
+                        that.address = baseInfo.address;
                         that.a_workyears = baseInfo.workyears;
                         that.a_jobstatus = baseInfo.jobstatus;
                         that.livecity = baseInfo.livecityid;

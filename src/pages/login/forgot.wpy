@@ -174,7 +174,6 @@ export default class RegistPage extends wepy.page {
         },
         // 发送验证码
         sendCode () {
-            console.log(696969)
             const that = this;
             this.getCode({"phone":this.phone},"A0001").then(data=>{
                 that.warnword = '';
