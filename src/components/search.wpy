@@ -140,7 +140,7 @@ export default class Search extends wepy.component {
         },
         goBackFn: function (event) {
             wepy.navigateTo({
-              url: "search"
+              url: "/pages/search/search"
             })
         }, 
         searchFn: function (event) { //完成“搜索”

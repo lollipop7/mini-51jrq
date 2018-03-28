@@ -129,7 +129,7 @@
             goToHomeView(corpid, jobid) {
                 if (jobid.length && corpid.length == 0) {
                     return;
-                }
+                } 
                 wepy.navigateTo({
                     url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
                 })
