@@ -346,6 +346,7 @@ export default class PersPage extends wepy.page {
     };
     onHide(){
         this.showbox = false;
+        this.headimgStatus = false;
     }
 
     //完整度查询
@@ -383,10 +384,8 @@ export default class PersPage extends wepy.page {
         })
         if(json.data.returnCode == 'AAAAAAA') {
             if(json.data.data.headimg){
-               that.showPortraitStatus = true; 
-               that.headimgStatus = true;
+                that.headimgStatus = true;
             }else{
-                that.showPortraitStatus = false;
                 that.headimgStatus = false;
             }
             that.tempPortraitFilePath = json.data.data.headimg;

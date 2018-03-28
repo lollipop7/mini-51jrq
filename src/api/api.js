@@ -58,6 +58,9 @@ const  importResume = (params) => wxRequest(params, apimall + '/api/importResume
 // 找回密码
 const  resetPassword = (params) => wxRequest(params, apimall + '/api/password_old');
 
+// 简历投递流程
+const  getProcessView = (params) => wxRequest(params, apimall + '/api/ai/deliveryprocess');
+
 module.exports = {
     apimall,
     getMobileHomeBanner,
@@ -76,6 +79,7 @@ module.exports = {
     getVerifyCode,
     importResume,
     changeHeadImg,
-    resetPassword
+    resetPassword,
+    getProcessView
 }
   

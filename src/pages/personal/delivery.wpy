@@ -1,7 +1,7 @@
 <style lang='scss'>
     .collection-container {
-        padding: 0 32rpx;
         .operate-container {
+            padding: 0 32rpx;
             display: flex;
             flex-direction: row;
             justify-content: space-around;
@@ -16,6 +16,7 @@
             }
         }
         .no-collect-container {
+            padding: 0 32rpx;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -37,10 +38,10 @@
 <template>
     <view class="collection-container">
         <view class="operate-container">
-            <view data-num="1" class="operate-btn {{_num==1?'operate-btn-active':''}}"  bindtap="menuClick">已投递</view>
-            <view data-num="2" data-status="1" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">待确认</view>
-            <!-- <view data-num="3" data-status="2" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">待面试</view>
-            <view data-num="4" data-status="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">已结束</view> -->
+            <view data-num="1" class="operate-btn {{_num==1?'operate-btn-active':''}}"  bindtap="menuClick">全部</view>
+            <view data-num="2" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">已查阅</view>
+            <view data-num="3" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">已储备</view>
+            <view data-num="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">面试邀约</view>
         </view>
         <view wx:if="{{collectStatus}}">
             <repeat for="{{collectData}}" key="index" index="index" item="item"> 
@@ -51,6 +52,8 @@
             <image src="/images/icons/no_delivery.png"></image>
             <view>{{warningWord}}</view>
         </view>
+        <!--加载更多时动画-->
+        <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
     </view>
 </template>
 
@@ -59,7 +62,9 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
+import utils from'../../utils/utils';
 import CommPosi from '../../components/commposi2';
+import BottomLoadMore from "../../components/bottomloadmore";
 
 export default class DeliveryPage extends wepy.page {
     config = {
@@ -70,12 +75,16 @@ export default class DeliveryPage extends wepy.page {
         collectData: [],
         warningWord:"",
         collectStatus: false,
+        showLoading: false,
+        totalPage: 0,    //总数
+        currentPage: 1,
         token:'',
         tokenKey:''
     }
 
     components = {
-        commposi: CommPosi 
+        commposi: CommPosi,
+        bottomloadmore: BottomLoadMore
     };
     onLoad() { 
         
@@ -98,9 +107,8 @@ export default class DeliveryPage extends wepy.page {
 
        // 点击切换投递状态
         menuClick (e) {
-            const _status = e.target.dataset.status;
             this._num = e.target.dataset.num;
-            this.getCollectJob(this.token, this.tokenKey, _status);
+            this.getCollectJob(this.token, this.tokenKey, this._num);
         }
 
     };
@@ -119,22 +127,18 @@ export default class DeliveryPage extends wepy.page {
                 data: {
                     "token": token,
                     "tokenKey": tokenKey,
+                    "type": status || "1",
                     "pageNo": currentPage || "1"
                 }
             }
         })
         if (json.data.returnCode == "AAAAAAA") {
             that.collectStatus = true;
-            var collectData = JSON.parse(json.data.data);
-            if(status){
-                var result = collectData.find(element => element.status == status);
-                if(!result){
-                    result = [];
-                }
-                that.collectData = result;
-            }else if(status == undefined){
-                that.collectData = collectData;
-            }
+            that.collectData = JSON.parse(json.data.data);
+            that.collectData.forEach(element => {
+                element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
+            });
+            that.totalPage =parseInt(json.data.datanum/ 10);
             if(that.collectData.length==0){
                 that.collectStatus = false;
                 that.warningWord = "暂未查到更多信息";
@@ -145,6 +149,26 @@ export default class DeliveryPage extends wepy.page {
         }
         wx.hideLoading()
         that.$apply();
+    }
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom(event) {
+        let that = this;
+        that.showLoading = true;
+        //判断总页数是否大于翻页数
+        if ((that.totalPage) > that.currentPage) {
+            //防止重复加载
+            if (that.preventRepeatReuqest) {
+            return true;
+            }
+            that.preventRepeatReuqest = true;
+            that.currentPage++;
+            that.getCollectJob(that.token, that.tokenKey, that._num,that.currentPage);
+            that.preventRepeatReuqest = false;
+        } else {
+            that.showLoading = false;
+        }
     }
 }
 </script>

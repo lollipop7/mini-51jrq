@@ -240,7 +240,6 @@ export default class CorpPage extends wepy.page {
                           element.updatedate = utils.date('Y-m-d',(element.createdate)/1000)
                         });
                         that.resumelist = resumeArr;
-                        console.log(resumeArr)
                         that.$apply();
                       }else{
                         that.warnword = '暂无简历';

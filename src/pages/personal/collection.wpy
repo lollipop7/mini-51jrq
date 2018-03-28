@@ -39,6 +39,7 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
+import utils from'../../utils/utils';
 import CommPosi from '../../components/commposi2';
 
 export default class CollectionPage extends wepy.page {
@@ -95,6 +96,9 @@ export default class CollectionPage extends wepy.page {
         if (json.data.returnCode == "AAAAAAA") {
             that.collectStatus = true;
             that.collectData = JSON.parse(json.data.data);
+            that.collectData.forEach(element => {
+                element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
+            });
             if(that.collectData.length==0){
                 that.collectStatus = false;
                 that.warningWord = "还没有收藏过职位哦";

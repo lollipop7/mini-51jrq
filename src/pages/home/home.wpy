@@ -64,6 +64,7 @@ export default class HomePage extends wepy.page {
   }
 
   onLoad (options) { 
+    tip.confirm()
     this.getCompanyjob()
   }
 
@@ -91,7 +92,6 @@ s
   onReachBottom(event) {
     let that = this;
     that.showLoading = true;
-    // console.log(that.totalPage + "===" + that.currentPage);
       //判断总页数是否大于翻页数
       if ((that.totalPage) > that.currentPage) {
         //防止重复加载
