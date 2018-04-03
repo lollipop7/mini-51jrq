@@ -65,7 +65,7 @@
         padding-top: 15rpx;       
         .weui-badge {
             margin-bottom: 10rpx;    
-            margin-left: 10rpx;            
+            margin-left: 15rpx;            
             background-color: #FFF;
             border: 1px solid $themeColor; 
             color: $themeColor; 

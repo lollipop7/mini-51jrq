@@ -1,15 +1,14 @@
 // 未登录跳转登录页
 const goLogin = function(){
-    wx.getStorage({
-        key: 'loginData',
-        success: function(res){
-            // console.log(res)
-        },
-        fail: function(){
+    return new Promise(function(resolve, reject){
+        let loginData = wx.getStorageSync('loginData'); 
+        if (loginData == null ||loginData == undefined ||loginData == '' ){
             wx.navigateTo({
                 url: '../login/login'
             });
-            return;
+            resolve()
+        } else {
+            reject()
         }
     })
 }

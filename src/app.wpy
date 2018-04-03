@@ -72,6 +72,8 @@ export default class extends wepy.app {
     appid: "wxd48d26a8a3f6938f",
     secret: 'ffd389347ef65447d93b82a332a59aad',
     access_token: '',
+    systemInfo: '',
+    isIpx: false
   }
 
   constructor () {
@@ -83,6 +85,11 @@ export default class extends wepy.app {
   onLaunch(options) {
     let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {}; 
     this.getAccessToken(); 
+    this.globalData.systemInfo = wx.getSystemInfoSync();
+    let model = wx.getSystemInfoSync().model;
+    if(model.indexOf('iPhone X') > -1) {
+      this.globalData.isIpx = true
+    }
   }
 
   // sleep (s) {

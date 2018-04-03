@@ -93,6 +93,16 @@
         color: rgba(136, 136, 136, 1);
         font-size: 28rpx;
       } 
+      .fold-block {
+        display: flex;
+        flex-direction: column;
+        margin: 20rpx 0;
+      }
+      .foldbtn {
+        text-align: center;
+        color: #ff9e00;
+        font-size: 24rpx;
+      }
     }
     .corp-address {
       margin: 12rpx 28rpx;
@@ -137,7 +147,7 @@
       border-top: 1px solid #E1E1E1;
       background-color: #fcfcfc;
       .tr-collect {
-        margin: 0 20rpx 0 40rpx;
+        margin: 0 40rpx 0 20rpx; 
         width: 52rpx;
         height: 50rpx;
         image {
@@ -154,6 +164,7 @@
           text-align: center;
           font-size: 36rpx;
           color: #fff;
+
         }
         .post-btn {
           background-color: #ff9e00;
@@ -161,9 +172,20 @@
         .posted-btn {
           background-color: #d8d8d8;
         }
-        
       }
+      &.fix-iphonex-button {
+          bottom:68rpx!important;
+      }
+      &.fix-iphonex-button::after {
+          content: ' ';
+          position: fixed;
+          bottom: 0!important;
+          height: 68rpx!important;
+          width: 100%;
+          background: #fff;
+      } 
     }
+    
   }
 </style>
 
@@ -211,7 +233,16 @@
       <view class="jobdec-container">
           <text class="dec-title">职位描述：</text>
           <view class="gray-line"></view>
-          <text class="dec-content" wx:if="{{jobInfo.jobdescription}}">{{jobInfo.jobdescription}}</text>
+          <text class="dec-content" wx:if="{{isFold}}">
+              {{jobdescriptionBrief}}
+          </text>
+          <text class="dec-content" wx:else="{{isFold}}">
+              {{jobInfo.jobdescription}}
+          </text>
+          <view class="fold-block"  wx:if="{{descFoldShow}}">
+            <text class="foldbtn"  @tap.stop="foldFn" wx:if="{{isFold}}">展开</text>
+            <text class="foldbtn"  @tap.stop="foldFn" wx:else>收起</text> 
+          </view>
       </view>
       <view class="gray-blank"></view>
       <view class="corp-address">
@@ -219,7 +250,7 @@
         <view class="gray-line"></view>
         <view class="address" bindtap="goMap({{corpInfo.address}})">
             <image src="/images/icons/location_pink.png"></image>
-            <text class="addr-info">{{corpInfo.address}}</text>
+            <text class="addr-info">{{corpInfo.address}}</text> 
         </view>
       </view>
       <view class="gray-blank"></view>
@@ -229,7 +260,7 @@
           <relatedjob :syncRelatedJob="item"></relatedjob>
         </repeat>
       </view>
-      <view class="fixed-foot-bar">
+      <view class="fixed-foot-bar {{isIpx?'fix-iphonex-button':''}}">
         <view class="tr-collect">
           <image wx:if="{{isFav}}" @tap.stop="onCollectionFn" src='/images/icons/like_hl.png'></image>
           <image wx:else @tap.stop="onCollectionFn" src='/images/icons/like.png'></image>
@@ -239,6 +270,7 @@
           <button wx:else @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
         </view>
       </view>
+      <navigationload :syncLoadShow.sync="showPageLoading"></navigationload>
       <shareminipro hidden="{{!showShareBtn}}"
             :urlWithArgs.sync="urlWithArgs" 
             :currentUrl.sync="currentUrl" 
@@ -265,6 +297,7 @@
     import RelatedJob from '../../components/relatedjob';
     import ShareMiniPro from '../../components/shareminipro';
     import SelResumeOrg from '../../components/selresumeorg';
+    import NavigationLoad from '../../components/navigationload';
     import utils from '../../utils/utils';
 
     export default class HomeView extends wepy.page {
@@ -276,7 +309,8 @@
         posinameduty: PosiNameDuty,
         relatedjob: RelatedJob,
         shareminipro: ShareMiniPro,
-        selresumeorg: SelResumeOrg
+        selresumeorg: SelResumeOrg,
+        navigationload: NavigationLoad
       }
 
       data = {
@@ -293,7 +327,12 @@
         showShareBtn: false,
         dataOrg: "homeview",
         isShowSelContainer: false,
-        haveResume: true
+        haveResume: true,
+        isFold: true,
+        jobdescriptionBrief: '',
+        showPageLoading: true,
+        descFoldShow: true,
+        isIpx: false
       }
 
       onLoad(options){
@@ -302,6 +341,7 @@
         this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
         this.urlWithArgs = utils.getCurrentPageUrlWithArgs();
         this.currentUrl = utils.getCurrentPageUrl();
+        this.isIpx = this.$parent.globalData.isIpx;
         this.$apply();
         this.viewCompanyjob();
       }
@@ -341,22 +381,26 @@
       methods={
         onCollectionFn(){
           // 未登录跳转登录页
-          utils.goLogin()
           const that = this;
-          that.collectJob(that.jobId);
+          utils.goLogin().catch(()=>{that.collectJob(that.jobId)})
+          ;
         },
         onDeliverFn(){
           // 未登录跳转登录页
-          utils.goLogin()
-          if(this.haveResume){
-            this.isShowSelContainer = true;
-          }else{
-            wx.redirectTo({
-                url: `../personal/resume_list`
-            })
-          }
+          const that = this;
+          utils.goLogin().then(function(){
+            console.log('不做操作')
+          }).catch(function(){
+            if(that.haveResume){
+              that.isShowSelContainer = true;
+            }else{
+              wx.redirectTo({
+                  url: `../personal/resume_list`
+              })
+            }
+            that.$apply();
+          })
           
-          this.$apply();
         },
         // 跳转公司详情页
         goCorpView(companyid){
@@ -379,14 +423,15 @@
                     console.log(data.data.message)
                 }
             });
+        },
+        foldFn(){//切换展开
+          this.isFold = !this.isFold;
         }
       }
 
       async viewCompanyjob(){//查看企业职位详细
-        wx.showLoading({
-            title: '加载中',
-        })
         const that = this;
+        that.showPageLoading = true;
         const json = await api.getCompanyjob({
           query: {
             "head": {
@@ -404,14 +449,21 @@
         if (json.data.returnCode == "AAAAAAA") {
           that.corpInfo = { ...that.corpInfo, ...json.data.data.corpInfo };
           that.jobInfo = { ...that.jobInfo, ...json.data.data.jobInfo };
+          if (that.jobInfo.jobdescription.length > 100) {
+            that.jobdescriptionBrief = that.jobInfo.jobdescription.substring(0, 100) + '......'
+            that.descFoldShow = true;
+          } else {
+            that.jobdescriptionBrief = that.jobInfo.jobdescription;
+            that.descFoldShow = false;
+          }
           that.relatedJobs = json.data.data.relatedJobs;
           that.isFav = json.data.data.isFav;
           that.isDelivery = json.data.data.isDelivery;
+          that.showPageLoading = false;
           that.$apply();
         } else {
           tip.error(json.data.returnMsg);
         }
-        wx.hideLoading()
       }
 
 
@@ -448,8 +500,6 @@
       return json;
     }
   }
-
-    
    
 </script>
 

@@ -139,8 +139,8 @@ export default class Search extends wepy.component {
             this.$emit('trUnderSearchFn', false);
         },
         goBackFn: function (event) {
-            wepy.navigateTo({
-              url: "/pages/search/search"
+            wepy.navigateBack({
+              delta: 1
             })
         }, 
         searchFn: function (event) { //完成“搜索”

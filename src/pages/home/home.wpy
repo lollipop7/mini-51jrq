@@ -1,4 +1,5 @@
 <style lang='scss'>
+
 .comm-posis-container {
   .header-container {
     padding: 12rpx 32rpx 17rpx 32rpx; 
@@ -28,6 +29,7 @@
       <repeat for="{{hunterjobList}}" key="index" index="index" item="item"> 
         <commposi :syncPosidata.sync="item"></commposi> 
       </repeat>
+      <navigationload :syncLoadShow.sync="showPageLoading"></navigationload>
       <!--加载更多时动画-->
       <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
       <!--暂无数据显示-->
@@ -40,18 +42,25 @@
 import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
+import utils from'../../utils/utils';
 import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
 import BottomLoadMore from "../../components/bottomloadmore";
 import PlaceHolder from "../../components/placeholder";
+import NavigationLoad from '../../components/navigationload';
 
 export default class HomePage extends wepy.page {
+
+  config = {
+      
+  }
   
   components = {
     bannersearch: BannerSearch,
     commposi: CommPosi,
     bottomloadmore: BottomLoadMore,
-    placeholder: PlaceHolder
+    placeholder: PlaceHolder,
+    navigationload: NavigationLoad
   }
 
   data ={
@@ -61,10 +70,11 @@ export default class HomePage extends wepy.page {
     isEmpty: false,
     currentPage: 1,   //当前页面
     totalPage: 0,    //总数
+    showPageLoading: true,
   }
 
   onLoad (options) { 
-    tip.confirm()
+    // tip.confirm()
     this.getCompanyjob()
   }
 
@@ -109,10 +119,8 @@ s
 
   async getCompanyjob(currentPage) {
     // 开启loading效果
-    wx.showLoading({
-        title: '加载中',
-    })
     const that = this;
+    that.showPageLoading = true;
     const json = await api.getCompanyjob({
       query: {
         head: {
@@ -122,18 +130,21 @@ s
         data: {
             pageNo: currentPage || 1  
         }
-      }
+      } 
     })
     if (json.data.returnCode == "AAAAAAA") {
-      that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
-      that.totalPage =parseInt(json.data.data.num / 10);
+      that.hunterjobList = [...that.hunterjobList, ...json.data.data.list]; 
+      that.hunterjobList.forEach(element => {
+          element.createdate = utils.date('Y/m/d',(element.createdate)/1000)
+      }); 
+      that.totalPage =parseInt(json.data.data.num / 10); 
       if(json.data.data.num == 0) {
         that.isEmpty = true;  //暂无数据
       }
+      that.showPageLoading = false;
     } else {
       tip.error(json.data.returnMsg);
     }
-    wx.hideLoading() //隐藏loading效果
     wx.hideNavigationBarLoading() //完成停止加载
     wx.stopPullDownRefresh() //停止下拉刷新
     that.$apply();

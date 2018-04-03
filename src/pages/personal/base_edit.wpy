@@ -9,6 +9,7 @@
             padding: 40rpx 0 10rpx;
             .icon-upload {
                 margin-bottom: 10rpx;
+                border-radius: 100%; 
                 width: 140rpx;
                 height: 140rpx;
             }

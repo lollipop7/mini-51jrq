@@ -239,6 +239,7 @@ export default class CorpPage extends wepy.page {
                         resumeArr.forEach(element => {
                           element.updatedate = utils.date('Y-m-d',(element.createdate)/1000)
                         });
+                        console.log(resumeArr)
                         that.resumelist = resumeArr;
                         that.$apply();
                       }else{

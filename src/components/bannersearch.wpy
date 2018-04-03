@@ -48,7 +48,9 @@
             >
                 <repeat for="{{bannerlist}}" key="index" item="item">
                     <swiper-item>
-                        <image src='{{item}}' mode="aspectFill"></image>
+                        <navigator url="{{item.link}}">
+                            <image src='{{item.src}}' mode="aspectFill"></image>
+                        </navigator>
                     </swiper-item>
                 </repeat>
             </swiper>
@@ -78,8 +80,7 @@
 
         //事件处理函数(集中保存在methods对象中)
         methods = {
-            onBindFocus (event) {
-            }
+            
         };
 
         async getMobileHomeBanner(startIndex, pageNum){//获取轮播广告图
@@ -98,14 +99,24 @@
             })
             if(json.data.returnCode == "AAAAAAA"){
                 that.bannerlist = json.data.data.map((item, index) => {
-                    let imglist = [];
-                    imglist.push(item.image_url);
+                    let imglist = {};
+                    imglist.src =item.image_url;
+                    let idx = item.hyperlinks.indexOf('company');
+                    imglist.link = `/pages/corporation/corpview?companyid=${item.hyperlinks.substr(idx+8)}`;
                     return imglist;
                 });
                 that.$apply();
             } else {
                 tip.error(json.data.returnMsg);
             }
+        }
+
+        find(str, char, num) {
+            let idx = str.indexOf(char);
+            for (let i = 0; i < num; i++) {
+                idx = str.indexOf(char, idx+1);
+            }
+            return idx;
         }
   }
 </script>

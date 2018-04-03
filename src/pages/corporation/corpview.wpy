@@ -1,24 +1,26 @@
 <style lang='scss'>
     .corp-view {
+        padding-bottom: 160rpx;
+        position: relative;
         .head {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
+            padding: 40rpx 32rpx;
             image {
-                height: 150rpx;
-                width: 150rpx;
-                margin-top: 40rpx;
+                height: 200rpx;
+                width: 200rpx;
             }
             .corp-name {
                 color: #5E5E5E;
                 font-size: 34rpx;
                 font-weight: bold;
-                margin-top: 20rpx;
             }
             .corp-type {
                 font-size: 26rpx;
                 color: #A0A0A0;
-                margin: 8rpx auto 40rpx auto;
+                margin-top: 8rpx;
             }
         }
         .gray-blank {
@@ -31,11 +33,33 @@
             color: #353535;
         }
         .corp-intro {
+            display: flex;
+            flex-direction: column;
             margin: 20rpx 30rpx;
             .introduce {
                 font-size: 28rpx;
                 line-height: 40rpx;
                 color: #888888;
+            }
+            .fold-block {
+                margin: 20rpx 0;
+            }
+            .fold {
+                
+            }
+            .foldbtn {
+                text-align: center;
+                color: #ff9e00;
+                font-size: 24rpx;
+            }
+            .mblog {
+                margin-top: 40rpx;
+                width: 100%;
+                height: 300rpx;
+                image {
+                    width: 100%;
+                    height: 300rpx;
+                }
             }
         }
         .corp-address {
@@ -100,54 +124,68 @@
 
 <template>  
   <view class="corp-view">
-    <view class="head">
-        <image src="{{corpInfo.logo?corpInfo.logo:'/images/icons/upload_head.png'}}" ></image>
-        <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
-        <view class="corp-type">{{corpInfo.city}} | {{corpInfo.scope}} | {{corpInfo.industry}}</view>
-    </view>
-    <view class="gray-blank"></view>
-    <view class="corp-intro">
-        <view class="title">公司简介</view>
-        <view class="gray-line"></view>
-        <view class="introduce">
-            {{corpInfo.description}}
-        </view>
-    </view>
-    <view class="gray-blank"></view>
-    <view class="corp-address">
-        <view class="title">公司地址</view>
-        <view class="gray-line"></view>
-        <view class="address" bindtap="goMap({{corpInfo.address}})">
-            <image src="/images/icons/location_blue.png"></image>
-            <view class="addr-info">{{corpInfo.address}}</view>
-        </view>
-    </view>
-    <view class="gray-blank"></view>
-    <view class="corp-jobs">
-        <view class="title">该公司发布的所有职位</view>
-        <view class="gray-line"></view>
-        <repeat for="{{companyJobs}}" key="index" index="index" item="item">
-            <view class="job-item" bindtap="goJobView({{item.corpid}},{{item.jobid}})">
-                <view class="job-content">
-                    <view class="left">
-                        <view class="position">{{item.jobname}}</view>
-                        <view class="corp-name">{{item.corpname}}</view>
-                        <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
-                    </view>
-                    <view class="right">
-                        <view class="salary">{{item.salary}}</view>
-                    </view>
-                </view>
-                <view class="gray-line"></view>
+        <view class="head">
+            <view class="corp-brief">
+                <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
+                <view class="corp-type">{{corpInfo.city}} | {{corpInfo.scope}} | {{corpInfo.industry}}</view>
             </view>
-        </repeat>
-    </view>
-    <shareminipro hidden="{{!showShareBtn}}"
-            :urlWithArgs.sync="urlWithArgs" 
-            :currentUrl.sync="currentUrl" 
-            :corpInfo.sync="corpInfo"
-            :dataOrg="dataOrg"></shareminipro>
+            <image src="{{corpInfo.logo ? corpInfo.logo:'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}"  mode="aspectFill"></image>
+        </view>
+        <view class="gray-blank"></view>
+        <view class="corp-intro">
+            <view class="title">公司简介</view>
+            <view class="gray-line"></view>
+            <text class="introduce" wx:if="{{isFold}}">
+                {{corpInfoBrief}}
+            </text>
+            <text class="introduce" wx:else="{{isFold}}">
+                {{corpInfo.description}}
+            </text>
+            <view class="fold-block" wx:if="{{descFoldShow}}">
+                <view class="foldbtn"  @tap.stop="foldFn" wx:if="{{isFold}}">展开</view> 
+                <view class="foldbtn"  @tap.stop="foldFn" wx:else>收起</view> 
+            </view>
+            <view class="mblog" wx:if="{{corpInfo.mblog}}">
+                <image src="{{corpInfo.mblog}}" mode="aspectFill"></image>
+            </view>
+        </view>
+        <view class="gray-blank"></view>
+        <view class="corp-address">
+            <view class="title">公司地址</view>
+            <view class="gray-line"></view>
+            <view class="address" bindtap="goMap({{corpInfo.address}})">
+                <image src="/images/icons/location_blue.png"></image>
+                <view class="addr-info">{{corpInfo.address}}</view>
+            </view>
+        </view>
+        <view class="gray-blank"></view>
+        <view class="corp-jobs">
+            <view class="title">该公司发布的所有职位</view>
+            <view class="gray-line"></view>
+            <repeat for="{{companyJobs}}" key="index" index="index" item="item">
+                <view class="job-item" bindtap="goJobView({{item.corpid}},{{item.jobid}})">
+                    <view class="job-content">
+                        <view class="left">
+                            <view class="position">{{item.jobname}}</view>
+                            <view class="corp-name">{{item.corpname}}</view>
+                            <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
+                        </view>
+                        <view class="right">
+                            <view class="salary">{{item.salary}}</view>
+                        </view>
+                    </view>
+                    <view class="gray-line"></view>
+                </view>
+            </repeat>
+        </view>
+        <navigationload :syncLoadShow.sync="showPageLoading"></navigationload>
+        <shareminipro hidden="{{!showShareBtn}}"
+                :urlWithArgs.sync="urlWithArgs" 
+                :currentUrl.sync="currentUrl" 
+                :corpInfo.sync="corpInfo"
+                :dataOrg="dataOrg"></shareminipro>
   </view>
+  
 </template>
 
 <script>
@@ -156,6 +194,7 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
 import ShareMiniPro from '../../components/shareminipro';
+import NavigationLoad from '../../components/navigationload';
 import utils from '../../utils/utils';
 
 export default class CorpDatailsView extends wepy.page {
@@ -170,7 +209,11 @@ export default class CorpDatailsView extends wepy.page {
     urlWithArgs: "",
     currentUrl: "",
     showShareBtn: false,
-    dataOrg: "corpview"
+    dataOrg: "corpview",
+    isFold: true,
+    descFoldShow: true,
+    corpInfoBrief: '',
+    showPageLoading: true
   }
 
   onLoad(options){
@@ -187,7 +230,8 @@ export default class CorpDatailsView extends wepy.page {
   }
 
   components = {
-    shareminipro: ShareMiniPro
+    shareminipro: ShareMiniPro,
+    navigationload: NavigationLoad
   }
 
   // 转发分享
@@ -224,15 +268,19 @@ export default class CorpDatailsView extends wepy.page {
                     console.log(data.data.message)
                 }
             });
+        },
+        foldFn(){//切换展开
+          this.isFold = !this.isFold;
         }
     }
 
 //获取公司详情数据
   async getCorpView(companyid) {
-    wx.showLoading({
-        title: '加载中',
-    })
+    // wx.showLoading({
+    //     title: '加载中',
+    // })
     const that = this;
+    that.showPageLoading = true;
     const json = await api.getCompanyList({
       query: {
             head: {
@@ -247,12 +295,20 @@ export default class CorpDatailsView extends wepy.page {
     })
     if (json.data.returnCode == "AAAAAAA") {
       that.corpInfo = json.data.data.corpinfo;
+      if(that.corpInfo.description.length > 100) {
+        that.descFoldShow = true;
+        that.corpInfoBrief = that.corpInfo.description.substring(0, 100) + '......';
+      } else {
+        that.descFoldShow = false;
+        that.corpInfoBrief = that.corpInfo.description;
+      }
       that.companyJobs = json.data.data.companyJobs;
+      that.showPageLoading = false;
       that.$apply();
     } else {
       tip.error(json.returnMsg);
     }
-    wx.hideLoading() //隐藏loading效果
+    // wx.hideLoading() //隐藏loading效果
   }
   
   // 打开地图

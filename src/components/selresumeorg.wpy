@@ -85,7 +85,7 @@
             <view class="sel-box">
                 <view class="lists">
                     <repeat for="{{resumeList}}" key="index" index="index" item="item">
-                        <view class="list-item" @tap.stop="chooseResume({{index}}, {{item.resumeid}})">
+                        <view class="list-item" @tap.stop="chooseResume({{index}}, {{item.resumeid}}, {{item.percent}})">
                             <text>{{item.resumename}}</text>
                             <view class="seled-check">
                                 <image src="/images/icons/no-sel.png" class="icon-sel"></image>
@@ -131,7 +131,7 @@
             },
             haveResume: {
                 type: Boolean,
-                default: true,
+                // default: true,
                 twoWay: true
             }
         }
@@ -141,7 +141,9 @@
             selIndex: 0,
             resumeList: [],
             resumeid: '',
-            isDelivery: false
+            percent: '',
+            isDelivery: false,
+            isShowLogin: false
         }
 
         onLoad(){
@@ -152,9 +154,10 @@
         }
 
         methods = {
-            chooseResume(selIndex, resumeid) {// 切换简历
+            chooseResume(selIndex, resumeid, percent) {// 切换简历
                 this.selIndex = selIndex;
                 this.resumeid = resumeid;
+                this.percent = percent;
                 this.$apply();
             },
             cancelFn(){//取消
@@ -162,16 +165,16 @@
                 this.$apply();
             },
             confirmFn(event){//确认
-                this.deliverJob(this.jobId, this.resumeid)
+                this.deliverJob(this.jobId, this.resumeid, this.percent);
             }
         }
 
         //获取简历列表
         async getResumeList() {
             const that = this;
-            wx.showLoading({
-                title: '加载中',
-            })
+            // wx.showLoading({
+            //     title: '加载中',
+            // })
             const json = await api.getCollectJob({
             query: {
                     head: {
@@ -190,18 +193,18 @@
                     that.resumeid = json.data.data[0].resumeid;
                     that.$apply();
                 }else{
-                    
                     that.haveResume = false;
                     that.$apply();
                 }
             }else{
-                console.log(json)
+                that.haveResume = false;
+                that.$apply();
             }
-            wx.hideLoading()
+            // wx.hideLoading()
         }
 
         //企业职位申请
-        async deliverJob(jobid, resumeid) {
+        async deliverJob(jobid, resumeid, percent) {
             const that = this;
             this.isShowSelContainer = false;
             const json = await api.getCompanyjob({
@@ -219,9 +222,14 @@
                 }
             })
             if (json.data.returnCode == "AAAAAAA") {
-                that.isDelivery = !that.isDelivery;
-                tip.success("投递成功");
-                that.$apply();
+                console.log(percent)
+                if(percent < 70) {
+                    tip.error("请完善您的简历");
+                } else {
+                    that.isDelivery = !that.isDelivery;
+                    tip.success("投递成功");
+                    that.$apply();
+                }
             } else {
                 tip.error(json.data.returnMsg);
             }
