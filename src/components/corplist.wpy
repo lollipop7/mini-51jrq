@@ -4,7 +4,7 @@
     flex-direction: row;
     // height: 150rpx;
     padding-top: 20rpx;
-    padding-bottom: 24rpx;
+    padding-bottom: 24rpx; 
     align-items: center;
     margin: 0 32rpx;
     border-bottom: 1px solid #F1F1F1;

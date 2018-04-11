@@ -7,7 +7,7 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            padding: 40rpx 32rpx;
+            padding: 20rpx 32rpx 40rpx;
             image {
                 height: 200rpx;
                 width: 200rpx;
@@ -90,30 +90,41 @@
             .job-item {
                 .job-content {
                     display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    .left {
+                    flex-direction: column;
+                    // 
+                    .one {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
                         .position {
                             color: #353535;
-                            font-size: 28rpx;
-                            margin: 12rpx auto;
+                            font-size: 30rpx;
                             font-weight: bold;
                         }
-                        .corp-name {
-                            color: #888888;
-                            font-size: 26rpx;
+                        .salary {
+                            color: #FF9E00;
+                            font-size: 28rpx;
+                            font-weight: bold;
                         }
+                    }
+                    .two {
+                        .corp-name {
+                            color: #888;
+                            font-size: 30rpx;
+                        }
+                    }
+                    .three {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
                         .corp-type {
                             color: #b2b2b2;
                             font-size: 22rpx;
                             margin-top: 8rpx;
                         }
-                    }
-                    .right {
-                        .salary {
-                            color: #FF9E00;
-                            font-size: 28rpx;
-                            font-weight: bold;
+                        .up-date {
+                            font-size: 26rpx;
+                            color: #a0a0a0;
                         }
                     }
                 }
@@ -165,13 +176,16 @@
             <repeat for="{{companyJobs}}" key="index" index="index" item="item">
                 <view class="job-item" bindtap="goJobView({{item.corpid}},{{item.jobid}})">
                     <view class="job-content">
-                        <view class="left">
+                        <view class="one">
                             <view class="position">{{item.jobname}}</view>
-                            <view class="corp-name">{{item.corpname}}</view>
-                            <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
-                        </view>
-                        <view class="right">
                             <view class="salary">{{item.salary}}</view>
+                        </view>
+                        <view class="two">
+                            <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
+                        </view>
+                        <view class="three">
+                            <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
+                            <view class="up-date">{{item.createdate}}</view>
                         </view>
                     </view>
                     <view class="gray-line"></view>
@@ -265,6 +279,10 @@ export default class CorpDatailsView extends wepy.page {
                         address: address
                     })
                 }else{
+                    wx.showToast({
+                      title: `地址信息不全`,
+                      icon: 'none'
+                    })
                     console.log(data.data.message)
                 }
             });
@@ -303,6 +321,9 @@ export default class CorpDatailsView extends wepy.page {
         that.corpInfoBrief = that.corpInfo.description;
       }
       that.companyJobs = json.data.data.companyJobs;
+      that.companyJobs.forEach(element => {
+           element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
+      });
       that.showPageLoading = false;
       that.$apply();
     } else {

@@ -4,7 +4,7 @@ page {
 .gray-line {
     height: 2rpx;
     width: 100%;
-    margin: 12rpx auto;
+    margin: 20rpx auto;
     background-color: #F1F1F1;
 }
 .gray-blank {

@@ -510,6 +510,26 @@ export default class ShareMiniPro extends wepy.component {
             }, 300)
         });
     }
+
+    //小程序中没提供获文本宽度的方法 判断各种字符宽度 返回字符串总宽度
+    mesureText(text) {
+        text = text.split('');
+        let width = 0;
+        text.forEach(function (item) {
+            if (/[a-zA-Z]/.test(item)) {
+                width += 14;
+            } else if (/[0-9]/.test(item)) {
+                width += 11;
+            } else if (/\./.test(item)) {
+                width += 5.4;
+            } else if (/-/.test(item)) {
+                width += 6.5;
+            } else if (/[\u4e00-\u9fa5]/.test(item)) {
+                width += 20;
+            }
+        });
+        return width;
+    }
 }
 </script>
 

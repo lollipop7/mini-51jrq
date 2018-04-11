@@ -10,7 +10,6 @@
             margin: 0 12rpx;
         }
         .corp-brief {
-            padding-top: 13rpx;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -102,7 +101,7 @@
                   <view class="corp-size">
                     <text>{{syncPosidata.industry}}</text> 
                   </view>
-                  <text class="up-date">{{syncPosidata.createdate}}</text> 
+                  <text class="up-date">{{syncPosidata.refreshdate ? syncPosidata.refreshdate : syncPosidata.updatedate}}</text> 
               </view>
           </view>
       </view>

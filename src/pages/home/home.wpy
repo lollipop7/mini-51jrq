@@ -135,7 +135,7 @@ s
     if (json.data.returnCode == "AAAAAAA") {
       that.hunterjobList = [...that.hunterjobList, ...json.data.data.list]; 
       that.hunterjobList.forEach(element => {
-          element.createdate = utils.date('Y/m/d',(element.createdate)/1000)
+          element.updatedate = utils.date('Y/m/d',(element.updatedate)/1000)
       }); 
       that.totalPage =parseInt(json.data.data.num / 10); 
       if(json.data.data.num == 0) {

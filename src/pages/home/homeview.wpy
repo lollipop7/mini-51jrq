@@ -9,6 +9,8 @@
     .posi-container {
         display: flex;
         flex-direction: column;
+        padding-top: 20rpx;
+        padding-bottom: 24rpx;
         .ver {
             margin: 0 12rpx;
         }
@@ -16,17 +18,18 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            font-size: 28rpx;
+            font-size: 30rpx;
             .posi-name {
                 font-weight: bold;
                 color: #353535;
+                font-size: 36rpx;
             }
             .posi-sal {
                 color: #FF9E00;
             }
         }
         .posi-duty {
-            padding-top: 4rpx;
+            padding-top: 10rpx;
             font-size: 22rpx;
             color: #B2B2B2;
             text-align:left;
@@ -420,6 +423,10 @@
                         address: address
                     })
                 }else{
+                    wx.showToast({
+                      title: `地址信息不全`,
+                      icon: 'none'
+                    })
                     console.log(data.data.message)
                 }
             });
